@@ -1,0 +1,128 @@
+.settings-dialog {
+	width: 440px;
+	max-height: calc(100vh - 60px);
+	overflow-y: auto;
+	color: var(--text);
+	padding: 20px 24px 16px;
+	background: var(--chrome);
+	border: 0;
+	border-radius: 15px;
+	box-shadow: var(--shadow-dialog);
+}
+.settings-dialog::backdrop {
+	background: #15101966;
+}
+.settings-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+.settings-title h2 {
+	font-size: 19px;
+	font-weight: 600;
+	margin: 0;
+}
+.settings-dialog section {
+	margin-bottom: 19px;
+}
+.settings-dialog h3 {
+	font-size: 12px;
+	margin: 0 0 5px;
+	font-weight: 600;
+}
+.settings-dialog section > p {
+	font-size: 11px;
+	color: var(--text-muted);
+	margin: 0 0 15px;
+}
+.appearance-options {
+	display: flex;
+	gap: 15px;
+}
+.appearance-choice {
+	display: flex;
+	flex: 1;
+	flex-wrap: wrap;
+	font-size: 11px;
+	gap: 5px;
+	padding: 5px;
+}
+.theme-preview {
+	width: 100%;
+	height: 54px;
+	border-radius: 7px;
+	background: #f5f3f7;
+	position: relative;
+	border: 1px solid #c7c1cd;
+	margin-bottom: 4px;
+}
+.theme-preview::before {
+	content: '';
+	position: absolute;
+	inset: 13px 5px 4px 28px;
+	background: #fff;
+	border-radius: 2px;
+}
+.theme-preview::after {
+	content: '';
+	position: absolute;
+	top: 6px;
+	left: 6px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: #b8a2cf;
+	box-shadow:
+		7px 0 #a6a0b1,
+		14px 0 #c8c3cf;
+}
+.appearance-choice.dark .theme-preview {
+	background: #343139;
+	border-color: #56505f;
+}
+.appearance-choice.dark .theme-preview::before {
+	background: #242427;
+}
+.appearance-choice.system .theme-preview {
+	background: linear-gradient(110deg, #f5f3f7 50%, #343139 50%);
+}
+.appearance-choice.system .theme-preview::before {
+	background: linear-gradient(110deg, #fff 50%, #242427 50%);
+}
+.appearance-choice.selected .theme-preview {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+.appearance-choice.selected {
+	color: var(--accent);
+}
+.setting-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 12px;
+	padding: 9px 0;
+	border-bottom: 1px solid var(--border);
+}
+.setting-row select {
+	padding: 4px 8px;
+	border-radius: 5px;
+	background: var(--raised);
+	border: 1px solid var(--border-input);
+}
+.settings-footer {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	color: var(--text-muted);
+	font-size: 11px;
+	padding-top: 10px;
+}
+.settings-footer small {
+	margin-left: 4px;
+}
+.settings-footer > span:last-child {
+	margin-left: auto;
+	font-size: 10px;
+}

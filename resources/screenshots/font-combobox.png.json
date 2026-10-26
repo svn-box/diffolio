@@ -1,0 +1,16 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Appearance and text preferences with the searchable font-size Combobox open.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": [
+    "fixtures/reference/text/before.ts"
+  ]
+}

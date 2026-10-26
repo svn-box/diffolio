@@ -1,0 +1,17 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Image wipe comparison at 40 percent using the two included sample images.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": [
+    "fixtures/reference/left/assets/preview.png",
+    "fixtures/reference/right/assets/preview.png"
+  ]
+}

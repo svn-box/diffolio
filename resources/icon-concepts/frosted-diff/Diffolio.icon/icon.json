@@ -1,0 +1,37 @@
+{
+  "fill": {
+    "automatic-gradient": "srgb:0.47451,0.32549,0.64706,1.00000"
+  },
+  "groups": [
+    {
+      "name": "Diffolio · 轻透错层文稿",
+      "layers": [
+        {
+          "image-name": "comparison.png",
+          "name": "前后错开的双文稿",
+          "glass": false,
+          "position": {
+            "scale": 0.988701,
+            "translation-in-points": [
+              -8.898,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting": "combined",
+      "specular": false,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.08
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}

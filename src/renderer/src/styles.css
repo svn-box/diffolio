@@ -1,0 +1,13 @@
+@import './tokens.css';
+@import './styles/base.css';
+@import './styles/shell.css';
+@import './styles/text-comparison.css';
+@import './styles/comparison-controls.css';
+@import './styles/compare-setup.css';
+@import './styles/feedback-inspector.css';
+@import './styles/settings.css';
+@import './styles/media-comparisons.css';
+@import './styles/adaptations.css';
+@import './styles/combobox.css';
+@import './styles/home.css';
+@import './styles/compact.css';

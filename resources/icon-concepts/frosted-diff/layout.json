@@ -1,0 +1,27 @@
+{
+  "width": 1024,
+  "height": 1024,
+  "bounds": {
+    "left": 178,
+    "right": 863,
+    "top": 158,
+    "bottom": 865
+  },
+  "visibleWidth": 686,
+  "visibleHeight": 708,
+  "center": [
+    520.5,
+    511.5
+  ],
+  "alphaCentroid": [
+    521.5210942037604,
+    511.48408321021594
+  ],
+  "scale": 0.988701,
+  "translationInPoints": [
+    -8.898,
+    0
+  ],
+  "renderedForegroundWidth": 678.2488860000001,
+  "renderedForegroundHeight": 700.000308
+}

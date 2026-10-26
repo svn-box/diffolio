@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+
+# Build, packaging and cache output
+/out/
+/dist/
+/release/
+/.cache/
+/.vite/
+*.tsbuildinfo
+
+# Temporary work and test output
+/work/
+/tmp/
+/temp/
+/test-results/
+/playwright-report/
+/coverage/
+/.nyc_output/
+
+# Generated icons; keep resources/icon.png and native .icon sources
+/resources/icon.icns
+/resources/icon-source.json
+/resources/icon-concepts/*/icon.icns
+/resources/icon-concepts/*/icon.png
+/resources/icon-concepts/*/icon-64.png
+/resources/icon-concepts/*/preview.png
+/resources/icon-concepts/*/dark.png
+/resources/icon-concepts/*/tinted.png
+
+# Local environment and signing credentials; keep configuration templates
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.template
+!.env.*.template
+*.p12
+*.pfx
+*.p8
+*.key
+*.mobileprovision
+*.provisionprofile
+
+# Logs and macOS metadata
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+._*
+
+# Local workspace, design-session output and editor backups
+/.wu/
+/.impeccable/questions/
+/.impeccable/review/
+# Local third-party reference captures; keep original Diffolio assets in resources/
+/replica/screens/
+/.idea/
+*.swp
+*.swo
+*~

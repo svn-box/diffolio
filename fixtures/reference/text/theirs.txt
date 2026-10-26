@@ -1,0 +1,5 @@
+title=Comparison
+theme=system
+fontSize=13
+showLineNumbers=true
+language=zh-CN

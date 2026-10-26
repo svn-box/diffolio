@@ -1,0 +1,17 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Folder comparison showing modified, equal and unmatched entries from the included fixture directories.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": [
+    "fixtures/reference/left",
+    "fixtures/reference/right"
+  ]
+}

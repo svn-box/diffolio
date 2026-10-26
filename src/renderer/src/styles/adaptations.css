@@ -1,0 +1,59 @@
+.spinning {
+	animation: spin 1s linear infinite;
+}
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@media (max-width: 1100px) {
+	.sidebar {
+		width: 180px;
+		min-width: 180px;
+	}
+	.titlebar {
+		gap: 10px;
+		padding-right: 10px;
+	}
+	.titlebar-left {
+		gap: 5px;
+	}
+	.window-heading {
+		padding-left: 0;
+	}
+	.titlebar-actions {
+		gap: 3px;
+	}
+	.statusbar {
+		gap: 6px;
+	}
+	.diff-summary {
+		gap: 7px;
+	}
+	.path-size {
+		display: none;
+	}
+	.inspector {
+		width: 190px;
+		min-width: 190px;
+		padding: 18px 13px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		scroll-behavior: auto !important;
+	}
+}
+@media (prefers-contrast: more) {
+	:root {
+		--border: var(--border-input);
+	}
+}
+
+.text-comparison .cm-changedText,
+.text-comparison .cm-changedText * {
+	color: var(--text) !important;
+}

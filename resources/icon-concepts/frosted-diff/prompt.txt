@@ -1,0 +1,19 @@
+Diffolio frosted overlapping-document concept.
+Generated with the built-in imagegen tool.
+Reference 1: the user-provided current Diffolio icon, used only for the overlapping-document silhouette.
+Reference 2: approved SVNBox icon, used only for material, finish and restraint.
+The native purple background is supplied separately by Icon Composer.
+
+Prompt:
+
+Use case: logo-brand / precise-object-edit.
+Create the transparent foreground emblem for Diffolio, a refined native macOS file-comparison app.
+
+REFERENCE ROLES:
+Image 1 is the SHAPE REFERENCE ONLY. Preserve its elegant silhouette: exactly TWO upright rounded-rectangle document sheets, the rear sheet shifted DOWN and LEFT, the front sheet shifted UP and RIGHT. Both have the same dimensions, with substantial overlap. Keep both perfectly vertical, with level horizontal edges, no rotation or perspective skew. The rear sheet is mostly hidden. The front sheet carries three simple horizontal text strokes, the third shorter. Do not use two side-by-side pages, paper-fold corners, an open book or a tray.
+Image 2 is the MATERIAL AND FINISH REFERENCE ONLY: the approved SVNBox glass icon. Borrow its thin milky-white frosted glass, subtle transmitted light, fine luminous rims and restrained shallow layering. Do not borrow its archive-box subject.
+
+Render the two overlapping document sheets as beautiful thin frosted-glass layers. Rear sheet: softly translucent pale lavender glass. Front sheet: brighter milky-white glass with the gentlest lilac shading. The overlap should softly transmit the rear layer through the edge of the front, with a restrained separation shadow. Front strokes: just three clean subdued violet inset lines with rounded ends, sized modestly; flush with the page, not raised capsule buttons. No red or green bars, extra symbols or lettering. The whole symbol should feel light, precise, elegant and original, with the calm geometric simplicity of the first image and the polished glass finish of the second.
+
+OUTPUT: foreground ONLY on a 1024×1024 RGBA canvas with genuine transparency outside the sheets. The overall emblem should occupy roughly the central 65% width and 70% height, centered horizontally and optically vertically, with comfortable transparent margins. Native Icon Composer will supply a purple squircle background separately.
+Remove/omit every background and frame from the reference: no purple square, blue square, dark surround, white outer border, inset app-icon frame or ground plane. No text, brand name, large glyph, face, arrows, added cards, thick bevels, deep extrusion, shiny plastic blocks, photorealistic paper texture, hard shadows, mockup scene, checkerboard or watermark. Exactly two overlapping upright document sheets, one quiet recognizable symbol, readable at Dock size.

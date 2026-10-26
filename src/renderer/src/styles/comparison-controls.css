@@ -1,0 +1,105 @@
+.statusbar {
+	display: flex;
+	align-items: center;
+	min-height: 28px;
+	height: 28px;
+	border-top: 1px solid var(--border);
+	background: var(--chrome);
+	padding: 0 10px;
+	gap: 10px;
+	color: var(--text-muted);
+	font-size: 10px;
+	font-variant-numeric: tabular-nums;
+}
+.status-left,
+.status-right,
+.status-center {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.status-left {
+	gap: 8px;
+}
+.status-center {
+	flex: 1;
+	min-width: 0;
+	justify-content: center;
+}
+.status-right {
+	gap: 3px;
+}
+.status-right > span {
+	margin: 0 5px;
+	white-space: nowrap;
+}
+.statusbar .icon-button {
+	width: 25px;
+	height: 23px;
+}
+.status-divider {
+	height: 12px;
+	width: 1px;
+	background: var(--border);
+}
+.diff-summary {
+	display: flex;
+	gap: 14px;
+	white-space: nowrap;
+}
+.diff-summary > span {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+.diff-summary i {
+	width: 5px;
+	height: 5px;
+	background: currentColor;
+	border-radius: 2px;
+}
+.added {
+	color: var(--success);
+}
+.deleted {
+	color: var(--danger);
+}
+.modified {
+	color: var(--modified);
+}
+.create-result {
+	margin-right: 10px;
+}
+.editing-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 37px;
+	padding: 0 12px;
+	background: var(--surface);
+	border-top: 1px solid var(--border);
+	font-size: 11px;
+	color: var(--accent);
+}
+.editing-actions {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin-left: auto;
+}
+.editing-actions .subtle-button {
+	margin-right: 6px;
+	color: var(--text);
+}
+.editing-actions .primary-button {
+	margin-left: 8px;
+}
+.save-notice {
+	color: var(--success);
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

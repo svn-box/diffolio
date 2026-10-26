@@ -1,0 +1,30 @@
+{
+  "application": "Diffolio",
+  "version": "0.1.0",
+  "logicalSize": {
+    "width": 1280,
+    "height": 800
+  },
+  "interfaceLanguage": "zh-CN",
+  "fontSize": 14,
+  "data": "Included fixtures; isolated temporary preferences and recent history; no user files or clipboard used.",
+  "sources": [
+    {
+      "path": "fixtures/reference/text/before.ts",
+      "sha256": "8afebb9cfe4e40d47c94240d6b519ccfedb909f828cbc132c8798295d66460bc"
+    },
+    {
+      "path": "fixtures/reference/text/after.ts",
+      "sha256": "528818a809284ad7aaaf592634a133d2e918df965ac912e3b532f61f9d677816"
+    },
+    {
+      "path": "fixtures/reference/left/assets/preview.png",
+      "sha256": "a3bdd937ff3c55f7b9b6c94b5145c161abff78d8d0f6c23a6cbec6636997be25"
+    },
+    {
+      "path": "fixtures/reference/right/assets/preview.png",
+      "sha256": "58af178b6bdf197f87eac4ab0100d37f41d0f3b3466a1daf685cf7fe35045ad4"
+    }
+  ],
+  "command": "npm run docs:screenshots"
+}

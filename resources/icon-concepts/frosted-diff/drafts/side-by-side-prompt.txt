@@ -1,0 +1,18 @@
+Diffolio frosted comparison-document concept.
+Generated with the built-in imagegen tool using the approved SVNBox icon as a material reference.
+Native Icon Composer supplies the purple background. The original Diffolio icon remains available separately.
+
+Prompt:
+
+Use case: logo-brand.
+Asset: an original transparent foreground emblem for Diffolio, an elegant native macOS file-comparison app.
+
+The attached approved SVNBox icon is a MATERIAL AND FINISH REFERENCE ONLY. Match its thin milky-white frosted glass, gently luminous white rims, restrained shallow layering, softly rounded corners and clean frontal geometry. Create a different emblem for comparing two documents; do not reproduce the archive tray, V-notch or stacked-card subject.
+
+Emblem: TWO matching upright document panes side by side, precisely level and symmetrical about one shared vertical centerline. Equal height and width, a narrow clean transparent gap between them, no overlap or rotation. Give each pane just three short broad horizontal text-like strokes. On the corresponding middle row, use a small muted coral-red difference bar on the LEFT pane and a small soft mint-green difference bar on the RIGHT; the other strokes are quiet translucent slate-lilac. These few colored marks are the only accent details. A calm simple file-comparison metaphor, readable at 32px.
+
+Both document faces are pale neutral white frosted glass with a little lilac transmitted light, subtly translucent filled surfaces, thin clean white rims and very shallow soft highlights. No thick sculpted bevels. The pages should feel like thin polished layers, not two physical blocks or computer monitors. All top and bottom edges must be perfectly horizontal, no perspective slant or right-side extrusion. No page text or typography.
+
+Canvas: 1024×1024 square, true RGBA transparency. Center the entire two-pane emblem horizontally and optically vertically. Keep the subject approximately 720px wide and 640px tall with transparent padding. Produce foreground ONLY: no rounded-square backplate, purple field, blue field, white square, mockup frame or ground. Native Icon Composer will add the purple background separately, so preserve genuine alpha outside and between the glass panes. Favor larger simple shapes over tiny details.
+
+Taste: cohesive with the approved reference, graceful, light, confident, precise, restrained macOS app-icon quality. No archive box, tray, book, face, eyes, arrows, branch diagram, giant plus/minus symbols, magnifying glass, badges, browser title bars, window controls, watermarks, labels, checkerboard or scene. One original emblem only.

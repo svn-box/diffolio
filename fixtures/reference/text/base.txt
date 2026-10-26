@@ -1,0 +1,5 @@
+title=Comparison
+theme=light
+fontSize=13
+showLineNumbers=true
+language=en

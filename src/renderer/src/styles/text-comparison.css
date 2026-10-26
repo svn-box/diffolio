@@ -1,0 +1,210 @@
+.pathbar {
+	position: relative;
+	display: flex;
+	min-height: 30px;
+	height: 30px;
+	border-bottom: 1px solid var(--border);
+	background: var(--surface);
+}
+.path-half {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	width: 50%;
+	min-width: 0;
+	padding: 0 12px;
+	font-size: 11px;
+}
+.path-half + .path-half {
+	border-left: 1px solid var(--border);
+}
+.side-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 10px;
+	width: 17px;
+	height: 17px;
+	border-radius: 4px;
+	background: var(--accent-soft);
+	color: var(--accent);
+	font-weight: 600;
+	flex-shrink: 0;
+}
+.result-tag {
+	background: var(--diff-added);
+	color: var(--success);
+}
+.path-parent {
+	color: var(--text-muted);
+	max-width: 120px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.path-half > svg {
+	color: var(--text-muted);
+	flex-shrink: 0;
+}
+.path-half strong {
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.path-chevron {
+	transform: rotate(-90deg);
+}
+.path-size {
+	margin-left: auto;
+	font-size: 10px;
+	color: var(--text-muted);
+	padding-left: 8px;
+	flex-shrink: 0;
+}
+.pathbar > .icon-button {
+	position: absolute;
+	left: 50%;
+	top: 4px;
+	width: 22px;
+	height: 22px;
+	transform: translateX(-50%);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 50%;
+	z-index: 2;
+}
+.content-area {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+}
+.content-main {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+}
+.text-comparison {
+	height: 100%;
+}
+.text-comparison > .cm-mergeView {
+	height: 100%;
+	overflow: auto;
+}
+.text-comparison .cm-mergeViewEditors {
+	min-height: 100%;
+}
+.text-comparison .cm-mergeViewEditor {
+	min-width: 0;
+	width: 50%;
+}
+.text-comparison .cm-mergeViewEditor + .cm-mergeViewEditor {
+	border-left: 1px solid var(--border);
+}
+.text-comparison .cm-editor {
+	min-height: 100%;
+	color: var(--text);
+	background: var(--bg);
+}
+.text-comparison.unified > .cm-editor {
+	height: 100%;
+}
+.text-comparison .cm-editor.cm-focused {
+	outline: none;
+}
+.text-comparison .cm-scroller {
+	line-height: 1.8;
+}
+.text-comparison .cm-content {
+	padding: 12px 0 64px;
+}
+.text-comparison .cm-line {
+	padding: 0 20px 0 12px;
+}
+.text-comparison .cm-gutters {
+	background: var(--bg);
+	border: 0;
+	color: var(--text-muted);
+	padding-top: 0;
+	font-size: 11px;
+}
+.text-comparison .cm-lineNumbers .cm-gutterElement {
+	min-width: 40px;
+	padding-right: 12px;
+}
+.text-comparison .cm-activeLineGutter {
+	background: var(--hover);
+	color: var(--text);
+}
+.text-comparison .cm-merge-a .cm-changedLine {
+	background: var(--diff-deleted);
+}
+.text-comparison .cm-merge-b .cm-changedLine {
+	background: var(--diff-added);
+}
+.text-comparison .cm-editor .diff-modified {
+	background: var(--diff-modified);
+}
+.text-comparison .cm-changedText {
+	background: var(--diff-added-strong) !important;
+	text-decoration: none;
+}
+.text-comparison .cm-merge-a .cm-changedText {
+	background: var(--diff-deleted-strong) !important;
+}
+.text-comparison .diff-modified .cm-changedText {
+	background: var(--diff-modified-strong) !important;
+}
+.text-comparison .cm-changedLineGutter {
+	background: transparent !important;
+	color: var(--accent);
+	width: 5px;
+}
+.text-comparison .cm-deletedChunk {
+	background: var(--diff-deleted);
+	color: var(--text);
+	padding-left: 12px;
+}
+.text-comparison .cm-deletedText {
+	background: var(--diff-deleted-strong) !important;
+}
+.text-comparison .cm-deletedLine {
+	text-decoration: none;
+}
+.text-comparison .cm-selectionBackground,
+.text-comparison .cm-focused .cm-selectionBackground {
+	background: color-mix(in srgb, var(--accent) 26%, transparent) !important;
+}
+.text-comparison .cm-cursor {
+	border-left-color: var(--accent);
+}
+.text-comparison .cm-panels {
+	background: var(--chrome);
+	color: var(--text);
+	border-color: var(--border);
+}
+.text-comparison .cm-search {
+	padding: 7px 12px;
+}
+.text-comparison .cm-textfield {
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border-input);
+	border-radius: 4px;
+	padding: 3px 7px;
+}
+.text-comparison .cm-button {
+	background: var(--raised);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	box-shadow: none;
+	font: inherit;
+}
+.text-comparison .cm-collapsedLines {
+	color: var(--text-muted);
+	background: var(--surface);
+	border: 0;
+	border-radius: 0;
+	font-size: 11px;
+}

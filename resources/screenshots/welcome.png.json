@@ -1,0 +1,21 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Welcome with actual recent text, folder and image fixture comparisons.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": [
+    "fixtures/reference/text/before.ts",
+    "fixtures/reference/text/after.ts",
+    "fixtures/reference/left",
+    "fixtures/reference/right",
+    "fixtures/reference/left/assets/preview.png",
+    "fixtures/reference/right/assets/preview.png"
+  ]
+}

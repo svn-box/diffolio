@@ -1,0 +1,94 @@
+.combobox-trigger {
+	width: 90px;
+	height: 28px;
+	padding: 0 9px;
+	justify-content: space-between;
+	background: var(--raised);
+	border: 1px solid var(--border-input);
+	font-weight: 400;
+}
+.combobox-trigger > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.combobox-trigger > svg {
+	width: 13px;
+	height: 13px;
+	color: var(--text-muted);
+}
+.popover-content {
+	background: var(--raised);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 9px;
+	box-shadow: var(--shadow-dialog);
+	outline: none;
+}
+.combobox-content {
+	width: 176px;
+	overflow: hidden;
+	max-height: var(--radix-popover-content-available-height);
+}
+.command {
+	width: 100%;
+}
+.command-input-wrap {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	height: 36px;
+	padding: 0 10px;
+	border-bottom: 1px solid var(--border);
+	color: var(--text-muted);
+}
+.command-input-wrap input {
+	width: 100%;
+	min-width: 0;
+	height: 30px;
+	border: 0;
+	background: transparent;
+	padding: 0;
+	font-size: 11px;
+	outline: none;
+}
+.command-input-wrap input::placeholder {
+	color: var(--text-muted);
+	opacity: 1;
+}
+.command-list {
+	max-height: 230px;
+	overflow: auto;
+	overscroll-behavior: contain;
+	padding: 4px;
+}
+.command-empty {
+	text-align: center;
+	padding: 17px 10px;
+	color: var(--text-muted);
+	font-size: 11px;
+}
+.command-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 29px;
+	padding: 5px 8px;
+	border-radius: 5px;
+	font-size: 12px;
+	outline: none;
+}
+.command-item[data-selected='true'] {
+	background: var(--accent-soft);
+	color: var(--text);
+}
+.command-item > svg {
+	color: var(--accent);
+	flex-shrink: 0;
+}
+.command-item .invisible {
+	visibility: hidden;
+}
+.command-item .block {
+	display: block;
+}

@@ -1,0 +1,14 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Empty A/B source entry with separate choose and paste actions.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": []
+}

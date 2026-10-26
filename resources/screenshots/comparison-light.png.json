@@ -1,0 +1,17 @@
+{
+  "origin": "Targeted macOS window capture of the packaged Diffolio application",
+  "description": "Light text comparison with an editable result copy; current change uses A.",
+  "interfaceLanguage": "zh-CN",
+  "logicalSize": [
+    1280,
+    800
+  ],
+  "pixelSize": [
+    2560,
+    1600
+  ],
+  "inputs": [
+    "fixtures/reference/text/before.ts",
+    "fixtures/reference/text/after.ts"
+  ]
+}
