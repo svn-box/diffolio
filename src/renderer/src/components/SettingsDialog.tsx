@@ -3,6 +3,7 @@ import { X, Sun, Moon } from 'lucide-react';
 import { useWorkspace, workspaceStore } from '../state/workspace';
 import { IconButton, Mark } from './Primitives';
 import { Combobox } from './ui/combobox';
+import { version } from '../../../../package.json';
 
 export function SettingsDialog() {
 	const dialog = useRef<HTMLDialogElement>(null);
@@ -90,7 +91,7 @@ export function SettingsDialog() {
 			<div className="settings-footer">
 				<Mark size={22} />
 				<span>
-					Diffolio <small>0.1.0</small>
+					Diffolio <small>{version}</small>
 				</span>
 				<span>为专注的比较而设计</span>
 			</div>

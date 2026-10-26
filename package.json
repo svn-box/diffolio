@@ -19,7 +19,10 @@
 		"docs:screenshots": "npm run package:dir && node scripts/capture-readme.mjs",
 		"package:dir": "npm run icons:build && npm run build && electron-builder --mac dir --publish never",
 		"design:check": "node scripts/design-tokens.mjs",
-		"test:packaged": "node scripts/smoke-packaged.mjs"
+		"test:packaged": "node scripts/smoke-packaged.mjs",
+		"release:check": "node scripts/release-metadata.mjs",
+		"release:mac": "npm run release:check && npm run format:check && npm test && npm run icons:build && npm run build && node scripts/release-mac.mjs --unsigned",
+		"release:verify": "node scripts/verify-release.mjs"
 	},
 	"build": {
 		"appId": "app.diffolio.desktop",

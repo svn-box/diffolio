@@ -8,6 +8,7 @@
   <p>
     <a href="#功能">功能</a> ·
     <a href="#界面预览">界面预览</a> ·
+    <a href="#安装">安装</a> ·
     <a href="#使用方法">使用方法</a> ·
     <a href="#开发">开发</a>
   </p>
@@ -136,6 +137,12 @@ Diffolio 是一款紧凑的 macOS 文件对比工具，用于比较本机文本�
 
 三方合并、Git/CLI 集成、Fluid 连线、忽略空白规则、目录复制与同步、图片像素差异遮罩仍在计划中。当前进度见 [PLAN.md](docs/PLAN.md)，更完整的范围见[功能清单](replica/features.csv)。
 
+## 安装
+
+**0.1.0** 面向 Apple Silicon（arm64）。打开带版本号的 DMG，将 Diffolio 拖到 Applications；也可解压 ZIP 后移入 Applications。功能与当前限制见 [0.1.0 发布说明](docs/releases/0.1.0.md)。
+
+当前发布命令生成未使用 Developer ID 签名、尚未 Apple 公证的本地候选包，目前没有配置在线下载地址。构建和验证 DMG、ZIP 与 SHA-256 校验文件的步骤见 [发布流程](docs/RELEASING.md)。
+
 ## 开发
 
 ### 从源码运行
@@ -198,6 +205,7 @@ npm run docs:screenshots
 | [设计规范](docs/DESIGN.md)               | 布局、配色、字体与交互约束        |
 | [代码架构](docs/ARCHITECTURE.md)         | 状态归属、模块职责与回归检查      |
 | [重构审查](docs/REVIEW.md)               | 首次提交前的发现、修复与验证      |
+| [发布流程](docs/RELEASING.md)           | 版本检查、DMG/ZIP 生成与安装验收  |
 | [组件说明](replica/design/components.md) | 已实现的组件及其状态              |
 | [比较样例](fixtures/README.md)           | 文本、目录、图片及后续合并输入    |
 | [公开资源](resources/README.md)          | README 截图、选定图形与图标构建   |

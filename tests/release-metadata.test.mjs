@@ -1,0 +1,89 @@
+import { afterEach, describe, expect, it } from 'vitest';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { fileChecksum, readReleaseMetadata, verifyReleaseFiles, writeReleaseFiles } from '../scripts/release-metadata.mjs';
+
+const temporary = [];
+
+async function fixture() {
+	const root = await mkdtemp(join(tmpdir(), 'diffolio-release-test-'));
+	temporary.push(root);
+	const version = '0.1.0';
+	await writeFile(join(root, 'package.json'), JSON.stringify({ version, build: { appId: 'app.diffolio.desktop' } }));
+	await writeFile(join(root, 'package-lock.json'), JSON.stringify({ version, packages: { '': { version } } }));
+	await mkdir(join(root, 'docs/releases'), { recursive: true });
+	await writeFile(join(root, 'docs/releases/0.1.0.md'), '# Diffolio 0.1.0\n\nFirst release.\n');
+	const metadata = await readReleaseMetadata(root);
+	await mkdir(metadata.directory, { recursive: true });
+	for (const name of metadata.archives) {
+		await writeFile(join(metadata.directory, name), `test artifact: ${name}`);
+	}
+	await writeReleaseFiles(metadata, metadata.directory, 'a'.repeat(40));
+	return metadata;
+}
+
+afterEach(async () => {
+	for (const path of temporary.splice(0)) {
+		await rm(path, { recursive: true, force: true });
+	}
+});
+
+describe('release metadata and integrity', () => {
+	it('records matching artifacts and their committed source without claiming signing', async () => {
+		const metadata = await fixture();
+		const manifest = await verifyReleaseFiles(metadata);
+		expect(manifest).toMatchObject({
+			version: '0.1.0',
+			tag: 'v0.1.0',
+			platform: 'darwin',
+			arch: 'arm64',
+			developerIdSigned: false,
+			notarized: false,
+			sourceRevision: 'a'.repeat(40),
+		});
+		expect(manifest.files).toHaveLength(2);
+		expect(manifest.files[0].sha256).toBe(await fileChecksum(join(metadata.directory, metadata.archives[0])));
+	});
+
+	it('rejects package/lock version disagreement and prerelease versions', async () => {
+		const metadata = await fixture();
+		await writeFile(join(metadata.root, 'package-lock.json'), JSON.stringify({ version: '0.2.0', packages: { '': { version: '0.1.0' } } }));
+		await expect(readReleaseMetadata(metadata.root)).rejects.toThrow('Lockfile version');
+		await writeFile(join(metadata.root, 'package.json'), JSON.stringify({ version: '0.1.0-beta.1' }));
+		await expect(readReleaseMetadata(metadata.root)).rejects.toThrow('stable three-part');
+	});
+
+	it('rejects notes for a different version', async () => {
+		const metadata = await fixture();
+		await writeFile(metadata.notes, '# Diffolio 0.2.0\n');
+		await expect(readReleaseMetadata(metadata.root)).rejects.toThrow('heading must match');
+	});
+
+	it('rejects modified archives, missing files and unexpected output', async () => {
+		const metadata = await fixture();
+		const archive = join(metadata.directory, metadata.archives[0]);
+		const original = await readFile(archive);
+		await writeFile(archive, 'changed');
+		await expect(verifyReleaseFiles(metadata)).rejects.toThrow('SHA-256');
+		await writeFile(archive, original);
+		await writeFile(join(metadata.directory, 'unexpected.log'), 'extra');
+		await expect(verifyReleaseFiles(metadata)).rejects.toThrow('unexpected or missing');
+		await rm(join(metadata.directory, 'unexpected.log'));
+		await rm(archive);
+		await expect(verifyReleaseFiles(metadata)).rejects.toThrow('unexpected or missing');
+	});
+
+	it('rejects a changed manifest even when its checksum has been regenerated', async () => {
+		const metadata = await fixture();
+		const path = join(metadata.directory, 'release-manifest.json');
+		const manifest = JSON.parse(await readFile(path, 'utf8'));
+		manifest.version = '0.2.0';
+		await writeFile(path, JSON.stringify(manifest));
+		const checksumsPath = join(metadata.directory, 'SHA256SUMS');
+		const checksum = await fileChecksum(path);
+		const checksums = (await readFile(checksumsPath, 'utf8')).replace(/^[a-f\d]+  release-manifest\.json$/m, `${checksum}  release-manifest.json`);
+		await writeFile(checksumsPath, checksums);
+		await expect(verifyReleaseFiles(metadata)).rejects.toThrow('Invalid release manifest version');
+	});
+});

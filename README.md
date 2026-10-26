@@ -8,6 +8,7 @@
   <p>
     <a href="#features">Features</a> ·
     <a href="#screenshots">Screenshots</a> ·
+    <a href="#installation">Installation</a> ·
     <a href="#usage">Usage</a> ·
     <a href="#development">Development</a>
   </p>
@@ -24,7 +25,7 @@ The current app interface is in **Simplified Chinese**. This repository provides
 - **Flexible input** — choose files, drop them into A/B independently, or add clipboard text. The first source opens immediately as a read-only preview; adding a compatible second source starts comparison.
 - **Editable results** — create a result copy from B, apply the current change from A, edit manually, undo or redo across layout switches, and save through the native Save As dialog. Saving preserves B's UTF-8 BOM and line-ending convention and checks the destination for external changes.
 - **Folder comparison** — compare contents, browse aligned directory trees, filter names or show only differences, and open a file with a double-click or the keyboard. Choose the two folders from separate locations; inspect progress or cancel a scan.
-- **Image comparison** — view PNG, JPEG, WebP and GIF files side by side, zoom or fit the canvas, and use a wipe slider for images with matching dimensions.
+- **Image comparison** — view PNG, JPEG, WebP and GIF files side by side, share zoom and pan, fit the canvas, and use a wipe slider for images with matching dimensions.
 - **Comparison sessions** — switch between multiple comparisons with tabs, reopen recent file pairs, and return to the welcome screen without losing the current result edits or undo history.
 - **Desktop appearance** — system, light and dark workspace modes, adjustable editor size, compact native window controls and a separate welcome screen. The app icon includes native default, dark and tinted appearances.
 
@@ -136,6 +137,12 @@ Text input supports **UTF-8**, including BOM and LF, CRLF or CR line endings. Op
 
 Three-way merging, Git/CLI integration, Fluid-style connectors, whitespace-ignore rules, folder copy/synchronization and image pixel-difference masks remain planned. See [PLAN.md](docs/PLAN.md) for implementation status and the [feature inventory](replica/features.csv) for the wider scope.
 
+## Installation
+
+Version **0.1.0** targets Apple Silicon (arm64). Open the versioned DMG and drag Diffolio to Applications, or extract the ZIP and move the app there. See the [0.1.0 release notes](docs/releases/0.1.0.md) for features and current limits.
+
+The current release command produces an unsigned local candidate without Apple notarization. No hosted download is configured yet. To build and verify the DMG, ZIP and SHA-256 checksums, follow the [release instructions](docs/RELEASING.md).
+
 ## Development
 
 ### Run from source
@@ -198,6 +205,7 @@ This builds the app and captures its actual macOS window using fixtures and temp
 | [Design system](docs/DESIGN.md)                          | Layout, color, typography and interaction rules             |
 | [Code architecture](docs/ARCHITECTURE.md)                 | State ownership, module responsibilities and regression checks |
 | [Refactor review](docs/REVIEW.md)                         | Findings, fixes and verification before the initial commit  |
+| [Release instructions](docs/RELEASING.md)                  | Version checks, DMG/ZIP generation and installer acceptance |
 | [Component specifications](replica/design/components.md) | Implemented components and their states                     |
 | [Comparison fixtures](fixtures/README.md)                | Text, folder, image and future merge samples                |
 | [Public resources](resources/README.md)                  | README screenshots, selected artwork and native icon build  |
