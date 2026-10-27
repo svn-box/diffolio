@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
+import { backupClipboard, restoreClipboard } from './helpers/clipboard.mjs';
 
 const require = createRequire(import.meta.url);
 const data = await mkdtemp(join(tmpdir(), 'diffolio-entry-'));
@@ -215,14 +216,8 @@ try {
 	await page.screenshot({ path: join(review, 'entry-choose-hover-dark.png') });
 	await page.locator('.paste-button').first().hover();
 	await page.screenshot({ path: join(review, 'entry-paste-hover-dark.png') });
-	await instance.evaluate(async ({ clipboard, ClipboardItem }) => {
-		globalThis.diffolioEntryClipboard = await Promise.all(
-			(await clipboard.read()).map(
-				async (item) => new ClipboardItem(Object.fromEntries(await Promise.all(item.types.map(async (type) => [type, await item.getType(type)])))),
-			),
-		);
-		await clipboard.writeText('');
-	});
+	await instance.evaluate(backupClipboard, 'diffolioEntryClipboard');
+	await instance.evaluate(({ clipboard }) => clipboard.writeText(''));
 	await page.getByRole('button', { name: '从剪贴板加入A', exact: true }).click();
 	await expect(page.locator('.source-empty-note')).toHaveText('已加入空文本');
 	await expect(page.locator('.source-header-actions')).toContainText('0 B');
@@ -249,14 +244,10 @@ try {
 		'PASS: welcome-only rail; full-width comparison; independent folder pickers and cancellation; B-first files; sequential opens; real A/B drops and type-error recovery; retained edits and undo across recents; conditional tabs; compact entry and comparison.',
 	);
 } finally {
-	await instance
-		?.evaluate(async ({ clipboard }) => {
-			if (globalThis.diffolioEntryClipboard) {
-				await clipboard.write(globalThis.diffolioEntryClipboard);
-				delete globalThis.diffolioEntryClipboard;
-			}
-		})
-		.catch(() => {});
-	await instance?.close();
-	await rm(data, { recursive: true, force: true });
+	try {
+		await instance?.evaluate(restoreClipboard, 'diffolioEntryClipboard');
+	} finally {
+		await instance?.close();
+		await rm(data, { recursive: true, force: true });
+	}
 }

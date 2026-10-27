@@ -5,6 +5,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import assert from 'node:assert/strict';
+import { backupClipboard, restoreClipboard } from './helpers/clipboard.mjs';
 
 const require = createRequire(import.meta.url);
 const appPath = resolve(process.env.DIFFOLIO_PACKAGED_APP ?? 'release/mac-arm64/Diffolio.app');
@@ -20,15 +21,10 @@ let instance;
 try {
 	instance = await electron.launch({ executablePath: join(appPath, 'Contents/MacOS/Diffolio'), args: [], env: { ...process.env, DIFFOLIO_DATA_DIR: data } });
 	const page = await instance.firstWindow();
-	await instance.evaluate(async ({ BrowserWindow, clipboard, ClipboardItem }) => {
-		BrowserWindow.getAllWindows()[0].hide();
-		globalThis.diffolioSmokeClipboard = await Promise.all(
-			(await clipboard.read()).map(async (item) => {
-				const values = await Promise.all(item.types.map(async (type) => [type, await item.getType(type)]));
-				return new ClipboardItem(Object.fromEntries(values));
-			}),
-		);
-	});
+	await instance.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].hide());
+	await instance.evaluate(backupClipboard, 'diffolioSmokeClipboard');
+	await instance.evaluate(({ clipboard }) => clipboard.clear());
+	await instance.evaluate(backupClipboard, 'diffolioSmokeEmptyClipboard');
 	await expect(page.locator('.welcome')).toBeVisible();
 	const version = await instance.evaluate(({ app }) => ({ name: app.getName(), version: app.getVersion(), packaged: app.isPackaged }));
 	assert.deepEqual(version, { name: 'Diffolio', version: expectedVersion, packaged: true });
@@ -57,16 +53,17 @@ try {
 	await page.getByRole('button', { name: '设置 ⌘,', exact: true }).click();
 	await expect(page.locator('.settings-footer')).toContainText(expectedVersion);
 	await page.getByRole('button', { name: '关闭设置', exact: true }).click();
-	console.log('PASS: packaged macOS application, production preload, native open-dialog route, clipboard A/B, package content exclusions.');
+	await instance.evaluate(restoreClipboard, 'diffolioSmokeEmptyClipboard');
+	assert.deepEqual(await instance.evaluate(async ({ clipboard }) => ({ text: await clipboard.readText(), types: (await clipboard.read()).flatMap((item) => item.types) })), {
+		text: '',
+		types: [],
+	});
+	console.log('PASS: packaged macOS application, production preload, native open-dialog route, empty clipboard backup/restore, clipboard A/B, package content exclusions.');
 } finally {
-	await instance
-		?.evaluate(async ({ clipboard }) => {
-			if (globalThis.diffolioSmokeClipboard) {
-				await clipboard.write(globalThis.diffolioSmokeClipboard);
-				delete globalThis.diffolioSmokeClipboard;
-			}
-		})
-		.catch(() => {});
-	await instance?.close();
-	await rm(data, { recursive: true, force: true });
+	try {
+		await instance?.evaluate(restoreClipboard, 'diffolioSmokeClipboard');
+	} finally {
+		await instance?.close();
+		await rm(data, { recursive: true, force: true });
+	}
 }
