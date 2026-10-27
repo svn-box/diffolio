@@ -24,12 +24,6 @@
 	.titlebar-actions {
 		gap: 3px;
 	}
-	.statusbar {
-		gap: 6px;
-	}
-	.diff-summary {
-		gap: 7px;
-	}
 	.path-size {
 		display: none;
 	}

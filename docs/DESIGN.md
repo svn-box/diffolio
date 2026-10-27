@@ -311,11 +311,25 @@ components:
         textColor: '{colors.light-text-muted}'
         padding: '0 12px'
         height: '34px'
+    comparison-footer:
+        backgroundColor: '{colors.light-chrome}'
+        textColor: '{colors.light-text-muted}'
+        height: '36px'
+        padding: '0 10px'
+    comparison-footer-control:
+        rounded: '5px'
+        width: '28px'
+        height: '26px'
+    comparison-footer-overview:
+        backgroundColor: '{colors.light-raised}'
+        textColor: '{colors.light-text}'
+        width: '252px'
+        padding: '14px'
 ---
 
 # Design System: Diffolio
 
-> The original Electron comparison baseline is retained; the current runtime is Tauri/WebKit. Settings and update history follow the approved native-window revision. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
+> The current runtime is Tauri/WebKit. Comparison panes retain the Electron baseline; the text footer, independent Settings and update history follow their approved revisions. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
 
 ## Overview
 
@@ -404,8 +418,8 @@ The main Tauri window retains the Electron baseline of 964 × 564px and permits 
 | Welcome rail                   | 180px wide, opaque graphite from top to bottom; no rail in new comparison or comparison                 |
 | Comparison tabs                | 31px high, shown only with multiple sessions; tabs span 140–240px and scroll horizontally               |
 | Paired path headers            | 30px high; equal halves, truncated paths and file names                                                 |
-| Bottom status                  | 28px high when comparison is ready; counts, encoding, result status and navigation                      |
-| Result editing bar             | 37px minimum height above status                                                                        |
+| Text comparison footer         | One 36px row: display options left, result actions centered on the full window, difference navigation right |
+| Other comparison status        | 28px high; local-comparison status for image/folder and unpaired inputs                                     |
 | Source inputs before selection | 632px pair, max-width 100%, two equal columns and 32px gap                                              |
 | Empty source container         | 10px corners, 16px padding and 16px between header and body                                             |
 | Source actions                 | Separate 28px Choose/Paste buttons, 7px corners on every corner, 8px action gap                         |
@@ -491,6 +505,12 @@ The first file, image or clipboard text immediately opens a full-width two-pane 
 
 Text comparison uses CodeMirror aligned split ranges or a unified view. Added/deleted/modified line fills are subtle; the changed text uses the stronger partner fill and plain main text color. Current-change navigation moves the caret and centers corresponding ranges; result editing and applying A operate on the current chunk. The footer shows the current/total change count. Save and editing state remain explicit.
 
+The text footer keeps the same 36px height before and after result creation. Its three groups use equal flexible side columns around the intrinsic center group, so opening the inspector does not move the result actions. Display controls provide Find, Wrap and Collapse, followed by an Overview popover containing added/deleted/modified counts and A/B encoding, BOM and line endings. Result controls provide Create Result or its current save state, Apply A, Undo, Redo and Save As. The right group supplies the current/total count and previous/next difference arrows; identical inputs show “内容相同” and disable navigation.
+
+Footer icons use 28 × 26px targets with 5px corners. In-group gaps are 4px (2px for navigation), major grid gaps are 12px, and fine 14px dividers separate related subgroups. The 82px identity slot keeps result actions stable when its label changes. The Overview is 252px wide with 14px padding and preserves Escape/focus-return behavior. Undo and Redo reflect actual editor history; Apply A requires an editable result and a remaining difference. Save confirmation floats 8px above the footer, wraps long names within 560px or the window inset, and never changes the row height. These controls retain semantic colors and visible focus in light and dark appearances.
+
+**The Single Footer Rule.** Keep display options, result actions and difference navigation in one stable row. Keep result actions centered on the full workspace and move detailed metadata into Overview.
+
 The welcome’s centered entry action, fixed top-right clipboard/file capsule, opaque rail and true recent rows are reusable home patterns. Its original bands continue behind the main-column title. Empty recents provide a short explanation; populated rows show name, kind and date, reveal their reopen arrow on hover or keyboard focus, and reopen the actual paths. The rail carries new/example/continue actions without a duplicate action card or footer. Examples remain identified throughout comparison. Implemented states live in `src/renderer/src/components/` and `src/renderer/src/state/`; framework-free visual specimens are in `.impeccable/design.json`.
 
 ## Do's and Don'ts
@@ -507,6 +527,7 @@ The welcome’s centered entry action, fixed top-right clipboard/file capsule, o
 - **Do** preserve valid empty-text sources, independent folder choices, mode caches and edits/undo when returning and continuing.
 - **Do** keep Settings native and compact, with top icon tabs, aligned preference rows and a font preview at the selected size.
 - **Do** load release history locally and keep network checks, downloads and installation explicit user actions.
+- **Do** keep result state explicit and derive Undo/Redo availability from the editor's actual history.
 
 ### Don't:
 
@@ -518,3 +539,4 @@ The welcome’s centered entry action, fixed top-right clipboard/file capsule, o
 - **Don't** restore a comparison rail, translucent welcome rail, violet navigation hover, competing empty-state action card or always-visible tabs.
 - **Don't** make the source body a replacement button or use a full-width Paste strip with shared or partial corners.
 - **Don't** add global wrapping/collapse switches, an identity footer or filler prose to Settings, or apply the welcome artwork to update history.
+- **Don't** add a second editing row, let save feedback displace controls, or show unimplemented block actions in the footer.

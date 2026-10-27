@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 2,
-	"generatedAt": "2026-10-27T17:05:50.366Z",
+	"generatedAt": "2026-10-27T17:58:53.101Z",
 	"title": "Design System: Diffolio",
 	"extensions": {
 		"shadows": [
@@ -54,14 +54,15 @@
 	],
 	"narrative": {
 		"northStar": "The Comparison Workbench",
-		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.",
+		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.\n\nText comparison uses one stable 36px footer: display options on the left, result actions centered on the full window and difference navigation on the right. Detailed counts and text formats live in Overview; save feedback sits above the row.",
 		"keyCharacteristics": [
 			"Compact native window proportions and grouped toolbar controls.",
 			"Violet for interaction; green, red and blue for comparison meaning.",
 			"Two levels of diff emphasis: changed lines and changed text.",
 			"A welcome-only graphite rail; full-width source previews and comparison panes.",
 			"Original SVG geometry and icons; semantic CSS custom properties.",
-			"Independent native preferences and a local release-history page."
+			"Independent native preferences and a local release-history page.",
+			"A single compact comparison footer with stable three-group alignment."
 		],
 		"rules": [
 			{
@@ -88,6 +89,11 @@
 				"name": "The Independent Preferences Rule",
 				"body": "Keep Settings a compact native window with only implemented preferences. Keep aligned labels, top icon tabs and actual-size font feedback; preserve the active comparison when it closes.",
 				"section": "components"
+			},
+			{
+				"name": "The Single Footer Rule",
+				"body": "Keep display options, result actions and difference navigation in one stable row. Keep result actions centered on the full workspace and move detailed metadata into Overview.",
+				"section": "components"
 			}
 		],
 		"dos": [
@@ -100,7 +106,8 @@
 			"Do space source headers, bodies and individual Choose/Paste controls, then show supplied content immediately in a read-only pane.",
 			"Do preserve valid empty-text sources, independent folder choices, mode caches and edits/undo when returning and continuing.",
 			"Do keep Settings native and compact, with top icon tabs, aligned preference rows and a font preview at the selected size.",
-			"Do load release history locally and keep network checks, downloads and installation explicit user actions."
+			"Do load release history locally and keep network checks, downloads and installation explicit user actions.",
+			"Do keep result state explicit and derive Undo/Redo availability from the editor's actual history."
 		],
 		"donts": [
 			"Don't propagate the welcome gradient or dark-only palette into the comparison workspace.",
@@ -110,7 +117,8 @@
 			"Don't use Kaleidoscope artwork, logos or screenshots as shipping product assets.",
 			"Don't restore a comparison rail, translucent welcome rail, violet navigation hover, competing empty-state action card or always-visible tabs.",
 			"Don't make the source body a replacement button or use a full-width Paste strip with shared or partial corners.",
-			"Don't add global wrapping/collapse switches, an identity footer or filler prose to Settings, or apply the welcome artwork to update history."
+			"Don't add global wrapping/collapse switches, an identity footer or filler prose to Settings, or apply the welcome artwork to update history.",
+			"Don't add a second editing row, let save feedback displace controls, or show unimplemented block actions in the footer."
 		]
 	}
 }

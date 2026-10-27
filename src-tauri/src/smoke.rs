@@ -39,6 +39,17 @@ pub fn smoke_action(
             .ok_or("Missing window")?
             .minimize()
             .map_err(|e| e.to_string())?,
+        "minimum-window" | "restore-window" => {
+            let (width, height) = if action == "minimum-window" {
+                (880.0, 540.0)
+            } else {
+                (964.0, 564.0)
+            };
+            app.get_webview_window("main")
+                .ok_or("Missing window")?
+                .set_size(tauri::LogicalSize::new(width, height))
+                .map_err(|e| e.to_string())?;
+        }
         "settings-status" => {
             let output = PathBuf::from(std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").unwrap());
             let report = std::fs::read(output.join("settings-report.json"))
@@ -127,6 +138,9 @@ pub async fn smoke_snapshot(window: tauri::WebviewWindow, name: String) -> Resul
         "settings-light",
         "settings-text",
         "updates",
+        "footer-editing-light",
+        "footer-minimum-editing",
+        "footer-saved",
     ]
     .contains(&name.as_str())
     {

@@ -8,13 +8,4 @@
 	.open-button {
 		padding: 0 8px;
 	}
-	.status-left {
-		gap: 5px;
-	}
-	.diff-summary {
-		gap: 6px;
-	}
-	.create-result {
-		margin-right: 5px;
-	}
 }

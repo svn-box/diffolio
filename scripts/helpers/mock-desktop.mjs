@@ -58,7 +58,7 @@ export function mockDesktop({ sources, defaults, fixtureRoot, version }) {
 		},
 		selectFolder: async (path) => path ?? null,
 		clipboard: async () => ({ id: 'clipboard', name: '剪贴板文本', content: '', bytes: 0, kind: 'text', bom: false, lineEnding: 'LF' }),
-		save: async () => ({ path: '/tmp/result.ts' }),
+		save: async () => ({ path: window.__savePath ?? '/tmp/result.ts' }),
 		confirmUnsaved: async () => 'cancel',
 		dirty: () => {},
 		close: () => {},

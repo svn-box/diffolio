@@ -6,7 +6,6 @@ import { FolderCompare } from '@/components/FolderCompare';
 import { ImageCompare } from '@/components/ImageCompare';
 import { TextCompare } from '@/components/TextCompare';
 import { Inspector } from '@/components/Inspector';
-import { EditingBar } from '@/components/EditingBar';
 
 export function ComparisonWorkspace() {
 	const session = useActiveSession();
@@ -43,7 +42,6 @@ export function ComparisonWorkspace() {
 				</div>
 				{inspector && <Inspector />}
 			</div>
-			<EditingBar />
 		</>
 	);
 }

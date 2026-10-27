@@ -42,6 +42,19 @@
 		await click('返回最近比较');
 		await click('示例比较');
 		await until(() => document.querySelectorAll('.cm-editor').length === 2, 'split editors');
+		const footerLayout = () => {
+			const footer = document.querySelector('.text-statusbar').getBoundingClientRect();
+			const [left, middle, right] = ['.footer-display', '.footer-result', '.footer-navigation'].map((selector) => document.querySelector(selector).getBoundingClientRect());
+			return (
+				footer.height === 36 &&
+				left.right < middle.x &&
+				middle.right < right.x &&
+				Math.abs(middle.x + middle.width / 2 - footer.x - footer.width / 2) < 1 &&
+				right.right <= innerWidth
+			);
+		};
+		assert(footerLayout() && !document.querySelector('.editing-bar'), 'Comparison tools occupy one centered 36px footer');
+		assert(button('当前差异采用 A').disabled && button('另存结果').disabled && button('撤销编辑 ⌘Z').disabled, 'Read-only comparisons enable only existing safe commands');
 		await click('查找 ⌘F');
 		const field = await until(() => document.querySelector('[aria-label="搜索比较内容"]'), 'search');
 		input(field, 'studio');
@@ -59,6 +72,16 @@
 		await click('创建结果');
 		await click('当前差异采用 A');
 		await until(async () => (await invoke('smoke_action', { action: 'status' })).dirty, 'native dirty state');
+		assert(!button('撤销编辑 ⌘Z').disabled && button('重做编辑 ⌘⇧Z').disabled, 'History button availability comes from actual CodeMirror history');
+		await snapshot('footer-editing-light');
+		await invoke('smoke_action', { action: 'minimum-window' });
+		await until(() => innerWidth === 880, 'minimum width');
+		await click('显示文件信息');
+		assert(footerLayout(), 'Minimum-size footer remains centered with the inspector open');
+		await snapshot('footer-minimum-editing');
+		await click('显示文件信息');
+		await invoke('smoke_action', { action: 'restore-window' });
+		await until(() => innerWidth === 964, 'restored width');
 		await window.diffolio.showSettings();
 		const settings = await until(async () => {
 			const status = await invoke('smoke_action', { action: 'settings-status' });
@@ -87,6 +110,8 @@
 		await click('另存结果');
 		await until(() => document.querySelector('.save-notice')?.textContent.includes('已保存'), 'saved result');
 		assert(true, 'Result saves through the real Tauri bridge and Rust atomic writer');
+		assert(footerLayout() && document.querySelector('.footer-result-state').textContent === '已保存', 'Saving preserves footer geometry and exposes the result state');
+		await snapshot('footer-saved');
 		await click('统一布局 ⌘2');
 		await until(() => document.querySelectorAll('.cm-editor').length === 1, 'unified');
 		await click('双栏布局 ⌘1');
@@ -96,6 +121,12 @@
 		const base = window.__DIFFOLIO_SMOKE__.root + '/../fixtures/reference';
 		const result = await window.diffolio.readPaths([base + '/text/before.ts', base + '/text/after.ts']);
 		assert(result.files.length === 2 && result.files.every((source) => source.kind === 'text'), 'Native IPC reads actual text fixtures');
+		await invoke('smoke_action', { action: 'paths', paths: [base + '/text/before.ts', base + '/text/before.ts'] });
+		await until(() => document.querySelector('.difference-count')?.textContent === '内容相同', 'identical comparison');
+		assert(
+			button('上一处差异').disabled && button('下一处差异').disabled && button('当前差异采用 A').disabled,
+			'Identical files disable difference navigation and block adoption',
+		);
 		const folder = await window.diffolio.readPaths([base + '/left', base + '/right']);
 		assert(
 			folder.folder.entries.some((entry) => entry.path === 'assets/preview.png' && entry.status === 'modified'),

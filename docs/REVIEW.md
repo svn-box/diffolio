@@ -12,6 +12,8 @@ The migration retains the original comparison UI and introduces a Tauri adapter 
 | Settings         | One on-demand 568 × 348 native window; repeated opens focus the same instance; closing it preserves comparison edits                              |
 | Preferences      | Field patches preserve unrelated changes; serialized persistence broadcasts appearance/font updates to all native windows                         |
 | Settings layout  | Compact General/Text icon tabs, aligned rows, existing font Combobox and actual-size preview; no global wrap/collapse switches or identity footer |
+| Comparison footer | One 36px row with display options, globally centered result actions and difference navigation; Overview holds detailed counts and formats                 |
+| Result commands   | Existing Apply A, Undo/Redo and Save As retained; history availability uses CodeMirror depth, with read-only/busy/identical states disabled appropriately |
 | File fidelity    | UTF-8/BOM/LF/CRLF/CR round trips preserved; binary and invalid UTF-8 inputs rejected                                                              |
 | Saving           | Sibling temporary file, file flush, repeated destination hash check, symlink/read-only rejection and atomic rename                                |
 | Repeated saves   | Metadata registry updates after app writes; stale and external snapshots are rejected                                                             |
@@ -27,7 +29,7 @@ The migration retains the original comparison UI and introduces a Tauri adapter 
 | Build            | macOS 27 proc-macro strip workaround is limited to build tools; shipped executable remains stripped                                               |
 | Packaging        | Production build excludes test report/snapshot/dialog overrides; legal texts and native icon catalog are included                                 |
 
-Finish review disposition: ship within the approved Settings/update scope. The sole material finding, native update-menu restoration/focus, is resolved and verified; the reviewed captures remain valid because the fix did not change layout.
+Finish review disposition: ship within the approved Settings/update and footer scopes. The earlier native update-menu restoration/focus finding is resolved and verified. The footer review found no material layout issues.
 
 ## Evidence
 
@@ -37,9 +39,11 @@ Finish review disposition: ship within the approved Settings/update scope. The s
 - Chromium + Playwright WebKit UI flow checks, with an additional live Electron baseline. Key geometry is compared within two CSS pixels; welcome and entry layout measurements are identical on this Mac. Native scrollbar allocation matches Electron; headless Chromium uses overlay scrollbars.
 - 16 native checks against optimized Rust and the embedded production frontend (`tauri://localhost`), including search A/B alignment (0 px offset), native menu search, save, unsaved-close protection, actual filesystem/image data, early cancellation, native drop-event hit testing and disabled verification-build updates.
 - The Settings/update revision passed 21 native checks, including separate-window open/focus/close, synchronized preferences, retained comparison edits and local history without an automatic check. Both `work/native/report.json` and `settings-report.json` record success. `menuCheckFocused: true` verifies that native Check for Updates restores/focuses the minimized main window while Settings is frontmost; closing Settings then preserves the unsaved result and Continue returns to it. The historical optimized-build result above remains a separate baseline.
+- The footer revision passed 27 optimized native WebKit/Rust checks, including the single-row geometry, actual history availability, minimum-size inspector layout, result save state and disabled commands for identical files. Chromium/WebKit flows also exercised Wrap/Collapse, Overview Escape/focus return, difference navigation, Apply A, Undo/Redo and long save-name feedback. Both 880 × 540 and 964 × 564 captures were inspected in light/dark appearance. The historical Electron footer geometry is intentionally excluded from baseline matching because this revision replaces it.
+- An independent layout review of the readonly, editing, minimum dark, Overview, identical-file and long-name captures found no material layout issues. Local evidence is in ignored `work/visual/*footer*.png` and `work/native/footer-*.png`; the final layout scan returned no findings.
 - Native WebKit screenshots in `resources/screenshots/tauri-*.png`; local browser/Electron comparison output in ignored `work/visual/`.
 - Reviewed Settings/update captures: `.impeccable/review/settings-light.png`, `settings-dark.png`, `settings-text.png`, `desktop.png` and `minimum.png`; welcome is in `work/native/welcome.png`. These are native WebKit content captures, without operating-system window chrome. The current main window remains 964 × 564, minimum 880 × 540; Settings is 568 × 348.
-- The final local `package:app` build completed after the menu fix; it is an ad-hoc build, not evidence of Apple notarization.
+- The final local `package:app` build completed after the footer revision and passed application verification; it is an ad-hoc build, not evidence of Apple notarization.
 - `scripts/verify-package.mjs` validates the app and mounted DMG, arm64 architecture, ad-hoc signature, native icon catalog, matching legal files/executables and absence of test hooks/Electron runtime.
 
 ## Acceptance boundaries
@@ -48,7 +52,7 @@ The release workflow reuses the existing Apple secrets and runner, imports a tem
 
 Physical Finder dragging, real Chinese IME composition, accessibility and older macOS releases still require hands-on acceptance. Automated Unicode insertion and injected native drag events validate the bridge and UI, not an actual keyboard input method or physical drag gesture. Screenshot comparisons do not guarantee pixel identity across OS/WebKit versions.
 
-The design refresh is limited to the approved Settings/update surfaces. Historical comparison tokens and unrelated recorded design drift are preserved; this review does not certify a complete design-token re-audit. No release tag or new signing configuration is part of this revision.
+The design refresh covers the approved Settings/update surfaces and the existing-function text-footer consolidation. Future block-decision and display-rule features remain in PLAN.md. Historical comparison tokens and unrelated recorded design drift are preserved; this review does not certify a complete design-token re-audit. No release tag or new signing configuration is part of this revision.
 
 ## Local artifact measurements
 

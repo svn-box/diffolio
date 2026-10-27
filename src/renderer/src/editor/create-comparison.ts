@@ -1,6 +1,6 @@
 import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView, keymap, highlightActiveLineGutter } from '@codemirror/view';
-import { defaultKeymap, history, historyField, historyKeymap } from '@codemirror/commands';
+import { defaultKeymap, history, historyField, historyKeymap, undoDepth, redoDepth } from '@codemirror/commands';
 import { highlightSelectionMatches } from '@codemirror/search';
 import { bracketMatching } from '@codemirror/language';
 import { MergeView, getChunks, unifiedMergeView } from '@codemirror/merge';
@@ -32,6 +32,8 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 			deleted,
 			modified: chunks.length - added - deleted,
 			current: currentChunkIndex(chunks, view.state.selection.main.head) + 1,
+			canUndo: undoDepth(view.state) > 0,
+			canRedo: redoDepth(view.state) > 0,
 		});
 	}
 

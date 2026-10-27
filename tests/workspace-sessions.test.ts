@@ -37,7 +37,7 @@ describe('comparison sessions', () => {
 		const { actions, current } = workspace();
 		await actions.acceptOpen({ files: [source(), source()] });
 		const original = current();
-		const stats = { total: 2, added: 1, deleted: 0, modified: 1, current: 2 };
+		const stats = { total: 2, added: 1, deleted: 0, modified: 1, current: 2, canUndo: false, canRedo: false };
 		actions.updateStats(original.id, original.documentId, stats);
 		actions.addSession();
 		actions.activateSession(original.id);

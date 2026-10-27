@@ -7,9 +7,11 @@ export interface ComparisonStats {
 	deleted: number;
 	modified: number;
 	current: number;
+	canUndo: boolean;
+	canRedo: boolean;
 }
 
-export const emptyStats: ComparisonStats = { total: 0, added: 0, deleted: 0, modified: 0, current: 0 };
+export const emptyStats: ComparisonStats = { total: 0, added: 0, deleted: 0, modified: 0, current: 0, canUndo: false, canRedo: false };
 
 export interface EditorSnapshot {
 	state: EditorState;

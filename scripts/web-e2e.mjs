@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import packageInfo from '../package.json' with { type: 'json' };
 import { mockDesktop } from './helpers/mock-desktop.mjs';
 import { exerciseSettings, exerciseUpdates } from './helpers/settings-check.mjs';
+import { exerciseFooter, exerciseResultFooter, footerGeometry } from './helpers/footer-check.mjs';
 
 const output = resolve('work/visual');
 const { version } = packageInfo;
@@ -74,6 +75,9 @@ async function exercise(page, name, sendAction) {
 	await page.getByRole('button', { name: '示例比较', exact: true }).click();
 	await expect(page.locator('.cm-editor')).toHaveCount(2);
 	await shot('split');
+	if (name !== 'electron') {
+		await exerciseFooter(page, output, name);
+	}
 	await page.getByRole('button', { name: '查找 ⌘F', exact: true }).click();
 	const input = page.getByRole('textbox', { name: '搜索比较内容', exact: true });
 	const status = page.locator('.search-match-count');
@@ -109,8 +113,22 @@ async function exercise(page, name, sendAction) {
 	await page.getByRole('button', { name: '双栏布局 ⌘1', exact: true }).click();
 	await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
 	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).not.toContainText('迁移验证');
+	if (name !== 'electron') {
+		await exerciseResultFooter(page, output, name);
+	}
 	await exerciseSettings(page, output, name);
+	if (name !== 'electron') {
+		await footerGeometry(page);
+	}
 	await shot('dark');
+	if (name !== 'electron') {
+		await sendAction('paths', [join(fixtureRoot, 'text/before.ts'), join(fixtureRoot, 'text/before.ts')]);
+		await expect(page.locator('.difference-count')).toHaveText('内容相同');
+		await expect(page.getByRole('button', { name: '上一处差异', exact: true })).toBeDisabled();
+		await expect(page.getByRole('button', { name: '下一处差异', exact: true })).toBeDisabled();
+		await footerGeometry(page);
+		await page.screenshot({ path: join(output, `${name}-footer-identical.png`) });
+	}
 	await sendAction('paths', [join(fixtureRoot, 'left/assets/preview.png'), join(fixtureRoot, 'right/assets/preview.png')]);
 	await expect(page.locator('.image-comparison')).toBeVisible();
 	await shot('image');
@@ -176,6 +194,10 @@ try {
 		for (const [selector, rect] of Object.entries(selectors)) {
 			const other = reports.webkit[state][selector];
 			for (const key of ['x', 'y', 'width', 'height']) {
+				// The unified footer intentionally changes vertical space from the historical Electron baseline.
+				if (reports.electron && (selector === '.statusbar' || (selector.startsWith('.cm-merge-') && key === 'height'))) {
+					continue;
+				}
 				// Headless Chromium uses overlay scrollbars; the native Electron baseline uses the macOS scrollbars, like WebKit.
 				if (!reports.electron && selector.startsWith('.cm-merge-') && (key === 'x' || key === 'width')) {
 					continue;
