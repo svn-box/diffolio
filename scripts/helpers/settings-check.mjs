@@ -45,7 +45,7 @@ export async function exerciseSettings(page, output, name) {
 	await settings.setViewportSize({ width: 568, height: 348 });
 	await expect(settings.getByRole('tab', { name: '通用', exact: true })).toHaveAttribute('aria-selected', 'true');
 	await expect(settings.locator('dialog, .settings-footer')).toHaveCount(0);
-	await expect(settings.locator('body')).not.toContainText(/让工作区适应|为专注的比较而设计|自动换行|折叠不变区域/);
+	await expect(settings.locator('body')).not.toContainText(/让工作区适应|为专注的比较而设计|自动换行|折叠不变区域|软件更新|查看更新/);
 	await settings.screenshot({ path: join(output, `${name}-settings-light.png`) });
 	await settings.getByRole('tab', { name: '通用', exact: true }).focus();
 	await settings.keyboard.press('ArrowRight');
@@ -62,12 +62,13 @@ export async function exerciseSettings(page, output, name) {
 	await expect(page.locator('html')).toHaveAttribute('data-appearance', 'dark');
 	await expect(settings.locator('html')).toHaveAttribute('data-appearance', 'dark');
 	await settings.screenshot({ path: join(output, `${name}-settings-dark.png`) });
-	await settings.getByRole('button', { name: '查看更新…', exact: true }).click();
-	await expect(page.locator('.updates-page')).toBeVisible();
 	const closed = settings.waitForEvent('close');
 	// The keyup can race the expected popup destruction in WebKit.
 	await settings.keyboard.press('Escape').catch(() => {});
 	await closed;
+	await page.getByRole('button', { name: '返回最近比较', exact: true }).click();
+	await page.getByRole('button', { name: '更新日志', exact: true }).click();
+	await expect(page.locator('.updates-page')).toBeVisible();
 	await page.getByRole('button', { name: '继续比较', exact: true }).click();
 	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).toBeVisible();
 }

@@ -17,7 +17,11 @@
 	};
 	try {
 		await until(() => document.querySelector('.settings-window'));
-		if (innerWidth !== 568 || document.querySelector('dialog, .settings-footer') || /让工作区适应|为专注的比较而设计|自动换行|折叠不变区域/.test(document.body.innerText)) {
+		if (
+			innerWidth !== 568 ||
+			document.querySelector('dialog, .settings-footer') ||
+			/让工作区适应|为专注的比较而设计|自动换行|折叠不变区域|软件更新|查看更新/.test(document.body.innerText)
+		) {
 			throw new Error('Settings content or independent window dimensions are wrong');
 		}
 		await snapshot('settings-light');
@@ -37,8 +41,6 @@
 		await until(() => document.querySelector('[role="combobox"]').textContent.trim() === '14 px');
 		await snapshot('settings-text');
 		button('通用').click();
-		await until(() => button('查看更新…'));
-		button('查看更新…').click();
 		await window.diffolio.showSettings();
 		await invoke('smoke_action', { action: 'minimize-main' });
 		await until(async () => (await invoke('smoke_action', { action: 'settings-status' })).mainMinimized);

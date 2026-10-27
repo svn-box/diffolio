@@ -469,7 +469,7 @@ Inline error banners use deletion colors with an alert role and dismiss action; 
 
 ### Native Settings
 
-The General and Text tabs place a 25px open-library icon above an 11px label. Selected tabs use accent text, a seven-percent text tint and a fine inset highlight. Arrow keys, Home and End change tabs and keyboard focus. General contains only system/light/dark appearance choices and a manual-update/history entry. Appearance thumbnails have a 2px accent outline with 2px offset when selected. The update row is separated by a fine divider and opens the welcome update-history page. Text contains the existing font-size Combobox and a syntax-colored monospace preview rendered at the chosen size. Wrapping and unchanged-region collapse remain comparison controls; they are absent from Settings. There is no identity footer or explanatory filler.
+The General and Text tabs place a 25px open-library icon above an 11px label. Selected tabs use accent text, a seven-percent text tint and a fine inset highlight. Arrow keys, Home and End change tabs and keyboard focus. General contains only system/light/dark appearance choices. Appearance thumbnails have a 2px accent outline with 2px offset when selected. Text contains the existing font-size Combobox and a syntax-colored monospace preview rendered at the chosen size. Wrapping and unchanged-region collapse remain comparison controls; they are absent from Settings. There is no identity footer or explanatory filler.
 
 Repeated opens focus the existing Settings instance. Both native windows share one Rust backend; preference writes patch only changed fields, then broadcast to all native windows. Appearance updates native themes and renderer palettes; font-size changes update the main editor and preview. Closing Settings leaves comparison edits intact. The window has no web modal backdrop.
 
@@ -479,7 +479,7 @@ Repeated opens focus the existing Settings instance. Both native windows share o
 
 The welcome “更新日志” page displays the actual Chinese sections from `docs/releases/*.md`, loaded at build time and sorted by version. The welcome rail and dark palette remain; its gradient and SVG bands are absent. Version headings, a current-version tag, fine release dividers and comfortably spaced notes form the reading surface. Opening history performs no automatic network check.
 
-The titlebar supplies one phase-appropriate manual action: check, download, or restart/install, plus a separate release-page icon button. Checking/downloading/installing disable repeated actions; progress and status appear above the notes. Disabled development mode, network errors, unavailable updates and retry are explicit. Unsaved results or active tasks disable installation; the Rust backend independently enforces the same protection. Settings' “查看更新…” entry restores/focuses the main window and opens history. The native “检查更新…” menu action also restores/focuses the main window and starts the explicitly requested check.
+The titlebar supplies one phase-appropriate manual action: check, download, or restart/install, plus a separate release-page icon button. Checking/downloading/installing disable repeated actions; progress and status appear above the notes. Disabled development mode, network errors, unavailable updates and retry are explicit. Unsaved results or active tasks disable installation; the Rust backend independently enforces the same protection. The native “检查更新…” menu action also restores/focuses the main window and starts the explicitly requested check.
 
 ### Source entry and immediate preview
 

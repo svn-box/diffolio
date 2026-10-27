@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Moon, RefreshCw, Settings, Sun, TextCursorInput } from 'lucide-react';
+import { Moon, Settings, Sun, TextCursorInput } from 'lucide-react';
 import { isTauri } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useWorkspace, workspaceStore } from '@/state/workspace';
@@ -108,18 +108,6 @@ export function SettingsWindow() {
 										</span>
 									</button>
 								))}
-							</div>
-						</div>
-						<div className="preference-row settings-update-row">
-							<span className="preference-label">软件更新：</span>
-							<div className="settings-update-actions">
-								<span>
-									<RefreshCw size={15} />
-									手动检查
-								</span>
-								<button className="subtle-button" onClick={() => void window.diffolio.showUpdates().catch(fail)}>
-									查看更新…
-								</button>
 							</div>
 						</div>
 					</>
