@@ -1,0 +1,124 @@
+.text-comparison-workspace {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+.text-comparison-workspace > .text-comparison {
+	flex: 1;
+	min-height: 0;
+	height: auto;
+}
+.comparison-searchbar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	height: 36px;
+	padding: 0 12px;
+	background: var(--surface);
+	border-bottom: 1px solid var(--border);
+	font-size: 11px;
+}
+.comparison-search-field {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex: 0 1 260px;
+	min-width: 130px;
+	height: 26px;
+	padding: 0 8px;
+	border: 1px solid var(--border-input);
+	border-radius: 7px;
+	background: var(--bg);
+	color: var(--text-muted);
+}
+.comparison-search-field:focus-within {
+	outline: 2px solid var(--accent);
+	outline-offset: 1px;
+}
+.comparison-search-field input {
+	width: 100%;
+	min-width: 0;
+	border: 0;
+	outline: none;
+	background: transparent;
+	color: var(--text);
+	font: inherit;
+	caret-color: var(--accent);
+}
+.comparison-search-field input::placeholder {
+	color: var(--text-muted);
+}
+.search-scope,
+.search-navigation {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+.search-scope {
+	padding: 2px;
+	background: var(--hover);
+	border-radius: 7px;
+}
+.search-scope button {
+	width: 28px;
+	height: 22px;
+	border-radius: 4px;
+	color: var(--text-muted);
+}
+.search-scope button[aria-pressed='true'] {
+	background: var(--accent-soft);
+	color: var(--accent);
+	font-weight: 600;
+}
+.comparison-searchbar .icon-button {
+	width: 25px;
+	height: 26px;
+}
+.search-match-count {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+.search-match-count.invalid {
+	color: var(--danger);
+}
+.search-done {
+	flex-shrink: 0;
+	height: 25px;
+	padding: 0 9px;
+	border-radius: 6px;
+	background: var(--hover);
+}
+.search-options {
+	width: 168px;
+	padding: 8px;
+}
+.search-options label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 30px;
+	font-size: 12px;
+}
+.comparison-search-match {
+	background: var(--accent-soft) !important;
+	color: var(--text) !important;
+	box-shadow: inset 0 -1px var(--accent);
+}
+.comparison-search-match span {
+	background: inherit !important;
+	color: inherit !important;
+}
+.comparison-search-match.is-current {
+	background: var(--accent) !important;
+	color: var(--on-accent) !important;
+}
+.comparison-search-match.is-current span {
+	color: inherit !important;
+}

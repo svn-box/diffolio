@@ -1,7 +1,14 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron';
 import type { DiffolioApi } from '../shared/types';
+import type { AppUpdateState } from '../shared/app-updates';
 
 const api: DiffolioApi = {
+	update: (action) => ipcRenderer.invoke('diffolio:update', action),
+	onUpdate(callback) {
+		const listener = (_event: unknown, state: AppUpdateState): void => callback(state);
+		ipcRenderer.on('diffolio:update-state', listener);
+		return () => ipcRenderer.removeListener('diffolio:update-state', listener);
+	},
 	bootstrap: () => ipcRenderer.invoke('diffolio:bootstrap'),
 	open: (kind, multiple, taskId) => ipcRenderer.invoke('diffolio:open', kind, multiple, taskId),
 	selectFolder: (path) => ipcRenderer.invoke('diffolio:select-folder', path),

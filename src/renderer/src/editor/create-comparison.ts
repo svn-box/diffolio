@@ -1,20 +1,22 @@
 import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView, keymap, highlightActiveLineGutter } from '@codemirror/view';
 import { defaultKeymap, history, historyField, historyKeymap } from '@codemirror/commands';
-import { search, searchKeymap, highlightSelectionMatches } from '@codemirror/search';
+import { highlightSelectionMatches } from '@codemirror/search';
 import { bracketMatching } from '@codemirror/language';
 import { MergeView, getChunks, unifiedMergeView } from '@codemirror/merge';
 import { currentChunkIndex } from '../../../shared/chunks';
 import { baseExtensions, markModified } from './extensions';
 import type { TextComparisonProps } from './types';
+import type { ComparisonSearch } from './comparison-search';
 
 export interface ComparisonEditor {
 	view: EditorView;
 	left: EditorView | null;
+	search: ComparisonSearch;
 	destroy(): void;
 }
 
-export function createComparison(root: HTMLElement, getProps: () => TextComparisonProps): ComparisonEditor {
+export function createComparison(root: HTMLElement, getProps: () => TextComparisonProps, search: ComparisonSearch): ComparisonEditor {
 	const current = getProps();
 	const previous = current.snapshots.get(current.id);
 	let merging: MergeView | undefined;
@@ -39,13 +41,13 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 			highlightActiveLineGutter(),
 			bracketMatching(),
 			highlightSelectionMatches(),
-			search({ top: true }),
-			keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+			...search.extensions(side),
+			keymap.of([...defaultKeymap, ...historyKeymap]),
 			history(),
 			markModified,
 			EditorState.readOnly.of(side === 'a' || !current.editing),
 			EditorView.editable.of(side === 'b' && current.editing),
-			EditorView.contentAttributes.of({ 'aria-label': side === 'a' ? '原始文件 A' : current.editing ? '编辑比较结果' : '对照文件 B', spellcheck: 'false' }),
+			EditorView.contentAttributes.of({ 'aria-label': side === 'a' ? '原始文件 A' : current.editing ? '编辑比较结果' : '对照文件 B', spellcheck: 'false', tabindex: '0' }),
 			side === 'b' && previous ? historyField.init(() => previous.state.field(historyField)) : [],
 			EditorView.updateListener.of((update) => {
 				if (side !== 'b') {
@@ -101,12 +103,15 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 		});
 		view.scrollDOM.scrollTop = previous?.scroll ?? 0;
 	}
+	search.attach(left, view);
 	report(view);
 	return {
 		view,
 		left,
+		search,
 
 		destroy() {
+			search.detach();
 			current.snapshots.set(current.id, { state: view.state, scroll: merging ? merging.dom.scrollTop : view.scrollDOM.scrollTop });
 			if (merging) {
 				merging.destroy();

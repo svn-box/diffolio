@@ -61,23 +61,39 @@ This inventory conservatively covers every production dependency in package-lock
 | @radix-ui/react-use-rect | 1.1.4 | [MIT](resources/licenses/npm/0e80a2d229d2fd4f.txt) |
 | @radix-ui/react-use-size | 1.1.5 | [MIT](resources/licenses/npm/0e80a2d229d2fd4f.txt) |
 | @radix-ui/rect | 1.1.3 | [MIT](resources/licenses/npm/0e80a2d229d2fd4f.txt) |
+| argparse | 2.0.1 | [Python-2.0](resources/licenses/npm/de4d1f2d2ad5ad0c.txt) |
 | aria-hidden | 1.2.6 | [MIT](resources/licenses/npm/30f0cfddf483d112.txt) |
+| builder-util-runtime | 9.7.0 | [MIT](resources/licenses/npm/bed8d0ab3e603181.txt) |
 | class-variance-authority | 0.7.1 | [Apache-2.0](resources/licenses/npm/0ccbf956cffc8dcf.txt) |
 | clsx | 2.1.1 | [MIT](resources/licenses/npm/9a9edad7baae5262.txt) |
 | cmdk | 1.1.1 | [MIT](resources/licenses/npm/b5acfd21b3b61508.txt) |
 | crelt | 1.0.7 | [MIT](resources/licenses/npm/23852ebf6aef7fad.txt) |
+| debug | 4.4.3 | [MIT](resources/licenses/npm/3a61c6c96caf5c1d.txt) |
 | detect-node-es | 1.1.0 | [MIT](resources/licenses/npm/54b32293ea560d22.txt) |
+| electron-updater | 6.8.11 | [MIT](resources/licenses/npm/bed8d0ab3e603181.txt) |
+| semver | 7.7.4 | [ISC](resources/licenses/npm/4ec3d4c66cd87f5c.txt) |
+| fs-extra | 10.1.0 | [MIT](resources/licenses/npm/1e76029602ae9b21.txt) |
 | get-nonce | 1.0.1 | [MIT](resources/licenses/npm/acf3b087b348d2f2.txt) |
+| graceful-fs | 4.2.11 | [ISC](resources/licenses/npm/f65c5d9f22a317b2.txt) |
+| js-yaml | 4.3.2 | [MIT](resources/licenses/npm/a07bc24468b9654c.txt) |
+| jsonfile | 6.2.1 | [MIT](resources/licenses/npm/a9801fb52ba22ef8.txt) |
+| lazy-val | 1.0.5 | [MIT](resources/licenses/npm/953c6aa4cac9df4e.txt) |
+| lodash.escaperegexp | 4.1.2 | [MIT](resources/licenses/npm/ffd8b33b354585f4.txt) |
+| lodash.isequal | 4.5.0 | [MIT](resources/licenses/npm/e159c6d48c989185.txt) |
 | lucide-react | 1.61.0 | [ISC + MIT (Feather)](resources/licenses/npm/b495047bd93a9b06.txt) |
+| ms | 2.1.3 | [MIT](resources/licenses/npm/1662fae9b5314d11.txt) |
 | react | 19.3.1 | [MIT](resources/licenses/npm/da6d3703ed11cbe4.txt) |
 | react-dom | 19.3.1 | [MIT](resources/licenses/npm/da6d3703ed11cbe4.txt) |
 | react-remove-scroll | 2.7.2 | [MIT](resources/licenses/npm/30f0cfddf483d112.txt) |
 | react-remove-scroll-bar | 2.3.8 | [MIT](resources/licenses/npm/a79aae0c0f21990d.txt) |
 | react-style-singleton | 2.2.3 | [MIT](resources/licenses/npm/30f0cfddf483d112.txt) |
+| sax | 1.6.1 | [BlueOak-1.0.0](resources/licenses/npm/8a1af140fdfbf5af.txt) |
 | scheduler | 0.28.0 | [MIT](resources/licenses/npm/da6d3703ed11cbe4.txt) |
 | style-mod | 4.1.4 | [MIT](resources/licenses/npm/cb4474e265473971.txt) |
 | tailwind-merge | 3.7.0 | [MIT](resources/licenses/npm/d4c70c7ce38cea87.txt) |
+| tiny-typed-emitter | 2.1.0 | [MIT](resources/licenses/npm/4b3faf884ee71eec.txt) |
 | tslib | 2.8.1 | [0BSD](resources/licenses/npm/210b19e543130388.txt) |
+| universalify | 2.0.1 | [MIT](resources/licenses/npm/3fda5977c0904e22.txt) |
 | use-callback-ref | 1.3.3 | [MIT](resources/licenses/npm/30f0cfddf483d112.txt) |
 | use-sidecar | 1.1.3 | [MIT](resources/licenses/npm/30f0cfddf483d112.txt) |
 | w3c-keyname | 2.2.8 | [MIT](resources/licenses/npm/869c30f368eb0873.txt) |
@@ -92,6 +108,10 @@ The Button, Popover, Command, and Combobox components in src/renderer/src/compon
 react-remove-scroll-bar declares MIT in its package metadata and README but omits a license file from its npm archive. Its [upstream MIT text](resources/licenses/upstream/react-remove-scroll-bar-MIT.txt) is retained from [upstream commit 7301c160fda44cb8cf2b9fdfde61efad35736196](https://github.com/theKashey/react-remove-scroll-bar/blob/7301c160fda44cb8cf2b9fdfde61efad35736196/LICENSE).
 
 react-remove-scroll-bar 的 npm 包声明 MIT，但未附许可文件，因此同时保留上游仓库的完整 MIT 文本。
+
+lazy-val 1.0.5 declares MIT and author Vladimir Krivosheev in its package metadata but includes no separate license text or copyright notice. The [retained declaration and standard MIT terms](resources/licenses/upstream/lazy-val-MIT.txt) reproduce that metadata without inventing a copyright year.
+
+lazy-val 1.0.5 声明 MIT 与作者 Vladimir Krivosheev，但未附独立许可或版权文本；保留的声明列出原包元数据与标准 MIT 条款，不推断版权年份。
 
 ## Electron runtime / Electron 运行时
 

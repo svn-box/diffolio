@@ -1,0 +1,6 @@
+{
+	"provider": "github",
+	"owner": "svn-box",
+	"repo": "diffolio",
+	"updaterCacheDirName": "diffolio-updater"
+}

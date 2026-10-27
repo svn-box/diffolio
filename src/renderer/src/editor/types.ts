@@ -24,6 +24,7 @@ export interface EditorSnapshots {
 export interface TextCompareHandle {
 	navigate(direction: number): void;
 	find(): void;
+	searchNext(direction: number): void;
 	undo(): void;
 	redo(): void;
 	useA(): void;

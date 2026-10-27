@@ -26,7 +26,9 @@
 		"release:verify": "node scripts/verify-release.mjs",
 		"release:publish": "node scripts/github-release.mjs publish",
 		"licenses:generate": "node scripts/third-party-notices.mjs",
-		"licenses:check": "node scripts/third-party-notices.mjs --check"
+		"licenses:check": "node scripts/third-party-notices.mjs --check",
+		"test:search": "npm run build && node scripts/search-e2e.mjs",
+		"test:updates": "node scripts/updates-e2e.mjs"
 	},
 	"build": {
 		"appId": "app.diffolio.desktop",
@@ -58,6 +60,10 @@
 			{
 				"from": "resources/licenses",
 				"to": "legal/resources/licenses"
+			},
+			{
+				"from": "resources/app-update.yml",
+				"to": "app-update.yml"
 			}
 		]
 	},
@@ -79,6 +85,7 @@
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",
 		"cmdk": "1.1.1",
+		"electron-updater": "6.8.11",
 		"lucide-react": "1.61.0",
 		"react": "19.3.1",
 		"react-dom": "19.3.1",

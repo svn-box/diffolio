@@ -35,8 +35,8 @@ for (const [location, metadata] of Object.entries(lock.packages)) {
 	assert.equal(installed.license, metadata.license, `${location} has conflicting license metadata.`);
 	const files = (await readdir(directory, { withFileTypes: true })).filter((entry) => entry.isFile() && licensePattern.test(entry.name));
 	const notices = await Promise.all(files.map((entry) => readFile(join(directory, entry.name))));
-	if (installed.name === 'react-remove-scroll-bar' && notices.length === 0) {
-		notices.push(await readFile(join(root, 'resources/licenses/upstream/react-remove-scroll-bar-MIT.txt')));
+	if (['react-remove-scroll-bar', 'lazy-val'].includes(installed.name) && notices.length === 0) {
+		notices.push(await readFile(join(root, `resources/licenses/upstream/${installed.name}-MIT.txt`)));
 	}
 	assert.ok(notices.length > 0, `${installed.name} has no license text; review the upstream license before regenerating.`);
 	assert.ok(metadata.license, `${installed.name} has no declared license.`);
@@ -78,6 +78,10 @@ The Button, Popover, Command, and Combobox components in src/renderer/src/compon
 react-remove-scroll-bar declares MIT in its package metadata and README but omits a license file from its npm archive. Its [upstream MIT text](resources/licenses/upstream/react-remove-scroll-bar-MIT.txt) is retained from [upstream commit 7301c160fda44cb8cf2b9fdfde61efad35736196](https://github.com/theKashey/react-remove-scroll-bar/blob/7301c160fda44cb8cf2b9fdfde61efad35736196/LICENSE).
 
 react-remove-scroll-bar 的 npm 包声明 MIT，但未附许可文件，因此同时保留上游仓库的完整 MIT 文本。
+
+lazy-val 1.0.5 declares MIT and author Vladimir Krivosheev in its package metadata but includes no separate license text or copyright notice. The [retained declaration and standard MIT terms](resources/licenses/upstream/lazy-val-MIT.txt) reproduce that metadata without inventing a copyright year.
+
+lazy-val 1.0.5 声明 MIT 与作者 Vladimir Krivosheev，但未附独立许可或版权文本；保留的声明列出原包元数据与标准 MIT 条款，不推断版权年份。
 
 ## Electron runtime / Electron 运行时
 

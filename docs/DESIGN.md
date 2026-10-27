@@ -398,7 +398,7 @@ Compact actions use a familiar native-tool character. Primary save actions use a
 
 ### Fields and font-size Combobox
 
-Folder search is an outlined, icon-led field with a 2px focus-within outline. The editor's own search field is compact and uses the input-border role. Font size uses the actual shadcn composition adapted from SVNBox: Button + Radix Popover + cmdk Command. The trigger is 90 × 28px; the popover is 176px wide with a 36px search header and a list capped at 230px. Search, empty results, arrow navigation, Enter, a visible checked value, Escape and focus return are part of the component. The list's highlighted item and the committed value's check are distinct states.
+Folder search is an outlined, icon-led field with a 2px focus-within outline. Comparison search occupies one shared 36px row below the path headers. A 26px field, A/B scope segments, previous/next arrows, a quiet match count, an options popover and Done stay on one line down to the minimum window with the inspector open. The documents keep the same vertical origin. Options are Chinese, query highlights use accent-soft/accent, invalid regex has explicit text, and Escape returns focus to the chosen document. Unified layout searches B; A remains visibly unavailable until split layout returns. Font size uses the actual shadcn composition adapted from SVNBox: Button + Radix Popover + cmdk Command. The trigger is 90 × 28px; the popover is 176px wide with a 36px search header and a list capped at 230px. Search, empty results, arrow navigation, Enter, a visible checked value, Escape and focus return are part of the component. The list's highlighted item and the committed value's check are distinct states.
 
 Settings uses a native `dialog`. Pass its element as the Combobox portal container so the popover is inside the modal top layer. Escape dismisses the open popover first and preserves settings. A later Escape closes settings. Checkboxes retain native form behavior and use the accent color.
 
@@ -444,3 +444,7 @@ The welcome’s centered entry action, fixed top-right clipboard/file capsule, o
 - **Don't** use Kaleidoscope artwork, logos or screenshots as shipping product assets.
 - **Don't** restore a comparison rail, translucent welcome rail, violet navigation hover, competing empty-state action card or always-visible tabs.
 - **Don't** make the source body a replacement button or use a full-width Paste strip with shared or partial corners.
+
+### Application updates
+
+Settings includes a compact update section with status, a single phase-appropriate action, progress while downloading, and a release-page link. Checks, downloads and restart/install are manual. Disabled development mode, network errors, unavailable updates and retry are explicit. Unsaved results or active tasks disable installation; the main process independently enforces the same protection. Updates use the existing semantic palette and native dialog scrolling.

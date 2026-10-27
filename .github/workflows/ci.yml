@@ -29,4 +29,5 @@ jobs:
             - run: npm run release:check
             - run: npm test
             - run: npm run build
+            - run: node scripts/search-e2e.mjs
             - run: git diff --exit-code -- package.json package-lock.json src/renderer/src/tokens.css

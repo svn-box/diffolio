@@ -18,6 +18,6 @@ Run `npm run icons:build` to export the selected concept's previews and copy `ic
 
 ## License texts
 
-[`licenses/`](licenses/) stores verbatim third-party license and copyright texts. `npm/` is generated from installed production dependencies, deduplicated by content hash; `upstream/` preserves the shadcn/ui license and the license omitted from react-remove-scroll-bar's npm archive. The complete package inventory and provenance are in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md).
+[`licenses/`](licenses/) stores third-party license and copyright texts. `npm/` is generated from installed production dependencies, deduplicated by content hash; `upstream/` preserves the shadcn/ui license, the license omitted from react-remove-scroll-bar's npm archive, and lazy-val's declared metadata with standard MIT terms. Bundled upstream texts are copied verbatim. The complete package inventory and provenance are in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md).
 
 Electron's full `LICENSES.chromium.html` and `LICENSE.electron.txt` ship with the runtime. The application also includes the Diffolio license, third-party inventory, and linked texts under `Contents/Resources/legal/`.

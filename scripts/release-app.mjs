@@ -17,6 +17,8 @@ export async function verifyApp(path, metadata, teamId) {
 	assert.equal(icon.toString('ascii', 0, 4), 'icns');
 	assert.equal(icon.readUInt32BE(4), icon.length);
 	assert.ok((await readFile(join(path, 'Contents/Resources/Assets.car'))).length > 0, 'Native icon catalog is missing.');
+	const feed = JSON.parse(await readFile(join(path, 'Contents/Resources/app-update.yml'), 'utf8'));
+	assert.deepEqual(feed, { provider: 'github', owner: 'svn-box', repo: 'diffolio', updaterCacheDirName: 'diffolio-updater' }, 'Invalid packaged update source.');
 	for (const name of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
 		assert.deepEqual(await readFile(join(path, 'Contents/Resources/legal', name)), await readFile(resolve(name)), `Packaged ${name} is missing or stale.`);
 	}

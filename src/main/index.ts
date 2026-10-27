@@ -1,9 +1,11 @@
-import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeTheme, shell } from 'electron';
+import { app, BrowserWindow, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron';
 import { readFile, mkdir, writeFile, rename, stat } from 'node:fs/promises';
 import { basename, dirname, extname, join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { defaultPreferences, type OpenResult, type Preferences, type RecentComparison, type SourceFile } from '../shared/types';
 import { compareFolders } from './folders';
+import { installMenu } from './menu';
+import { registerUpdates } from './register-updates';
 import { contentLimit, currentHash, encodeText, readSource, saveAtomic } from './files';
 
 app.setName('Diffolio');
@@ -216,49 +218,12 @@ app.whenReady()
 		}
 		nativeTheme.themeSource = preferences.appearance;
 		registerHandlers();
-		Menu.setApplicationMenu(
-			Menu.buildFromTemplate([
-				{
-					label: 'Diffolio',
-					submenu: [
-						{ role: 'about' },
-						{ type: 'separator' },
-						{ label: '设置…', accelerator: 'CmdOrCtrl+,', click: () => action('settings') },
-						{ type: 'separator' },
-						{ role: 'hide' },
-						{ role: 'hideOthers' },
-						{ role: 'unhide' },
-						{ type: 'separator' },
-						{ role: 'quit' },
-					],
-				},
-				{
-					label: '文件',
-					submenu: [
-						{ label: '新建比较', accelerator: 'CmdOrCtrl+N', click: () => action('new') },
-						{ label: '打开文件…', accelerator: 'CmdOrCtrl+O', click: () => action('open') },
-						{ label: '比较文件夹…', accelerator: 'CmdOrCtrl+Shift+O', click: () => action('folders') },
-						{ type: 'separator' },
-						{ label: '保存结果…', accelerator: 'CmdOrCtrl+S', click: () => action('save') },
-						{ label: '另存结果…', accelerator: 'CmdOrCtrl+Shift+S', click: () => action('save') },
-						{ label: '关闭比较', accelerator: 'CmdOrCtrl+W', click: () => action('close-tab') },
-					],
-				},
-				{ role: 'editMenu', label: '编辑' },
-				{
-					label: '显示',
-					submenu: [
-						{ label: '双栏布局', accelerator: 'CmdOrCtrl+1', click: () => action('split') },
-						{ label: '统一布局', accelerator: 'CmdOrCtrl+2', click: () => action('unified') },
-						{ label: '查找', accelerator: 'CmdOrCtrl+F', click: () => action('find') },
-						{ type: 'separator' },
-						{ role: 'togglefullscreen' },
-						...(app.isPackaged ? [] : [{ role: 'toggleDevTools' as const }]),
-					],
-				},
-				{ role: 'windowMenu', label: '窗口' },
-			]),
-		);
+		registerUpdates({
+			window: () => (window && !window.isDestroyed() ? window : undefined),
+			blockedReason: () => (dirty ? '请先保存所有未保存的比较结果，再安装更新。' : tasks.size ? '请等待当前任务完成后再安装更新。' : undefined),
+			flush: () => storeQueue,
+		});
+		installMenu(action);
 		await createWindow();
 		app.on('activate', () => {
 			if (BrowserWindow.getAllWindows().length === 0) {

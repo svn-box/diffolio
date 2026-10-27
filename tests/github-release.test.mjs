@@ -17,7 +17,7 @@ afterEach(async () => {
 });
 
 async function uploadedDraft(metadata) {
-	const names = [...metadata.archives, 'RELEASE-NOTES.md', 'release-manifest.json', 'SHA256SUMS'];
+	const names = [...metadata.archives, 'latest-mac.yml', 'RELEASE-NOTES.md', 'release-manifest.json', 'SHA256SUMS'];
 	return {
 		tag_name: metadata.tag,
 		draft: true,
@@ -46,7 +46,7 @@ describe('GitHub release publication', () => {
 		expect(run.mock.calls[0][0]).toEqual(expect.arrayContaining(['create', 'v0.1.0', '--draft', '--verify-tag', '--repo', repository]));
 		expect(
 			run.mock.calls[0][0]
-				.slice(-5)
+				.slice(-draft.assets.length)
 				.map((path) => basename(path))
 				.sort(),
 		).toEqual(draft.assets.map((asset) => asset.name).sort());

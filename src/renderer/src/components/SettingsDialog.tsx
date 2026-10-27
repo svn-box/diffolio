@@ -4,6 +4,7 @@ import { useWorkspace, workspaceStore } from '../state/workspace';
 import { IconButton, Mark } from './Primitives';
 import { Combobox } from './ui/combobox';
 import { version } from '../../../../package.json';
+import { AppUpdateSection } from './AppUpdateSection';
 
 export function SettingsDialog() {
 	const dialog = useRef<HTMLDialogElement>(null);
@@ -88,6 +89,7 @@ export function SettingsDialog() {
 					<input type="checkbox" checked={preferences.collapse} onChange={(event) => void setPreference({ collapse: event.target.checked })} />
 				</label>
 			</section>
+			<AppUpdateSection />
 			<div className="settings-footer">
 				<Mark size={22} />
 				<span>

@@ -29,6 +29,8 @@ Diffolio runs on macOS with Apple Silicon and currently has a **Simplified Chine
 - **Comparison sessions** — switch between multiple comparisons with tabs, reopen recent file pairs, and return to the welcome screen without losing the current result edits or undo history.
 - **Desktop appearance** — system, light and dark workspace modes, adjustable editor size, compact native window controls and a separate welcome screen. The app icon includes native default, dark and tinted appearances.
 
+- **Manual updates** — check from the Diffolio menu or settings, choose when to download, then restart to install. Unsaved results prevent installation.
+
 ## Screenshots
 
 Explore text, folder and image comparisons in light and dark workspaces.
@@ -113,6 +115,14 @@ Use the arrow controls to move between changes, **⌘F** to search, and **⌘1 /
 
 Choose **创建结果** (Create Result) to make B editable. **当前差异采用 A** applies the currently indicated change from A. You can also edit directly and undo or redo. **另存结果** (Save Result As), **⌘S** or **⌘⇧S** opens the native save dialog; choose the destination deliberately. Closing a modified result offers save, discard and cancel actions.
 
+### Search the comparison
+
+Press **⌘F** to open the shared search bar, then choose **A** or **B**. Use **Enter / ⇧Enter** or **⌘G / ⌘⇧G** to move between matches. Search options include case sensitivity, whole words, and regular expressions. Matching folded text is revealed automatically; **Escape** or **Done** closes search. Unified layout searches B or your editable result.
+
+### Check for updates
+
+Choose **Diffolio → 检查更新…** (Check for Updates), or open **Settings → 应用更新** (App Updates). Checking, downloading, and restarting are separate actions you control. Save every edited result and wait for active tasks to finish before installing. File contents stay on this Mac; update requests access the public GitHub release service.
+
 ### Compare folders and images
 
 Press **⌘⇧O** or choose folder mode in a new comparison, then select A and B independently. Filter the tree by name, enable differences-only filtering, and double-click a file or focus it and press **Enter / Space** to open it.
@@ -132,6 +142,7 @@ Use the return arrow to visit recent comparisons and **继续比较** (Continue 
 | ⌘⇧O      | Start folder comparison            |
 | ⌘1 / ⌘2  | Side-by-side / unified text layout |
 | ⌘F       | Find in the text comparison        |
+| ⌘G / ⌘⇧G | Next / previous search match       |
 | ⌘Z / ⌘⇧Z | Undo / redo result edits           |
 | ⌘S / ⌘⇧S | Save result as…                    |
 | ⌘W       | Close the current comparison       |

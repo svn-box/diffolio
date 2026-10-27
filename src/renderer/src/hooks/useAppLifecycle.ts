@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useEditorRuntime } from '../editor/EditorRuntime';
 import { workspaceStore } from '../state/workspace';
 import { isDirty } from '../state/session';
+import { useAppUpdates } from '../state/app-updates';
 
 export function useAppLifecycle(): void {
 	const { compare } = useEditorRuntime();
@@ -35,11 +36,17 @@ export function useAppLifecycle(): void {
 		sync();
 		const unsubscribe = workspaceStore.subscribe(sync);
 		const offProgress = api.onProgress(({ taskId, count }) => workspaceStore.getState().updateProgress(taskId, count));
+		const offUpdate = api.onUpdate((state) => useAppUpdates.getState().accept(state));
+		void useAppUpdates.getState().act('status');
 		const offAction = api.onAction((action, paths) => {
 			const state = workspaceStore.getState();
 			switch (action) {
 				case 'settings':
 					state.setSettings(true);
+					break;
+				case 'check-updates':
+					state.setSettings(true);
+					void useAppUpdates.getState().act('check');
 					break;
 				case 'new':
 					state.addSession();
@@ -71,12 +78,17 @@ export function useAppLifecycle(): void {
 				case 'find':
 					compare.current?.find();
 					break;
+				case 'find-next':
+				case 'find-previous':
+					compare.current?.searchNext(action === 'find-next' ? 1 : -1);
+					break;
 			}
 		});
 		void workspaceStore.getState().initialize();
 		return () => {
 			unsubscribe();
 			offProgress();
+			offUpdate();
 			offAction();
 			clearTimeout(noticeTimer);
 		};

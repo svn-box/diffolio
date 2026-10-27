@@ -38,11 +38,13 @@ try {
 	for (const relative of ['Contents/Info.plist', 'Contents/MacOS/Diffolio', 'Contents/Resources/app.asar', 'Contents/Resources/Assets.car', 'Contents/Resources/icon.icns']) {
 		assert.equal(await fileChecksum(join(app, relative)), await fileChecksum(join(diskApp, relative)), `DMG and ZIP differ: ${relative}`);
 	}
-	await new Promise((done, reject) => {
-		const child = spawn(process.execPath, ['scripts/smoke-packaged.mjs'], { env: { ...buildEnvironment(), DIFFOLIO_PACKAGED_APP: app }, stdio: 'inherit' });
-		child.once('error', reject);
-		child.once('close', (code) => (code === 0 ? done() : reject(new Error('Extracted installer smoke check failed.'))));
-	});
+	for (const script of ['scripts/smoke-packaged.mjs', 'scripts/updates-e2e.mjs']) {
+		await new Promise((done, reject) => {
+			const child = spawn(process.execPath, [script], { env: { ...buildEnvironment(), DIFFOLIO_PACKAGED_APP: app }, stdio: 'inherit' });
+			child.once('error', reject);
+			child.once('close', (code) => (code === 0 ? done() : reject(new Error(`Extracted installer check failed: ${script}`))));
+		});
+	}
 	console.log('PASS: release checksums, version/architecture/icons, mounted DMG, extracted ZIP, matching app content and real installer startup.');
 } finally {
 	if (mounted) {

@@ -1,6 +1,5 @@
 import { EditorView } from '@codemirror/view';
 import { redo, undo } from '@codemirror/commands';
-import { openSearchPanel } from '@codemirror/search';
 import { getChunks, rejectChunk } from '@codemirror/merge';
 import { currentChunkIndex } from '../../../shared/chunks';
 import type { ComparisonEditor } from './create-comparison';
@@ -31,10 +30,11 @@ export function createEditorCommands(get: () => { editor: ComparisonEditor | nul
 		},
 
 		find() {
-			const view = get().editor?.view;
-			if (view) {
-				openSearchPanel(view);
-			}
+			get().editor?.search.open();
+		},
+
+		searchNext(direction) {
+			get().editor?.search.navigate(direction);
 		},
 
 		undo() {

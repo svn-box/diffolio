@@ -1,2 +1,2 @@
-# Preserve upstream license texts byte-for-byte for notice verification.
-resources/licenses/**/*.txt -text whitespace=trailing-space,space-before-tab,cr-at-eol
+# Preserve upstream license bytes, including CRLF and original final blank lines.
+resources/licenses/**/*.txt -text whitespace=-blank-at-eof,blank-at-eol,space-before-tab,cr-at-eol

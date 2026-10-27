@@ -178,29 +178,6 @@
 .text-comparison .cm-cursor {
 	border-left-color: var(--accent);
 }
-.text-comparison .cm-panels {
-	background: var(--chrome);
-	color: var(--text);
-	border-color: var(--border);
-}
-.text-comparison .cm-search {
-	padding: 7px 12px;
-}
-.text-comparison .cm-textfield {
-	color: var(--text);
-	background: var(--bg);
-	border: 1px solid var(--border-input);
-	border-radius: 4px;
-	padding: 3px 7px;
-}
-.text-comparison .cm-button {
-	background: var(--raised);
-	color: var(--text);
-	border: 1px solid var(--border);
-	border-radius: 4px;
-	box-shadow: none;
-	font: inherit;
-}
 .text-comparison .cm-collapsedLines {
 	color: var(--text-muted);
 	background: var(--surface);

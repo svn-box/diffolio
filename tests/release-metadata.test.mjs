@@ -55,6 +55,22 @@ describe('release metadata and integrity', () => {
 		await expect(readReleaseMetadata(metadata.root)).rejects.toThrow('heading must match');
 	});
 
+	it('publishes a SHA-512 feed for the final ZIP and rejects a rewritten download target', async () => {
+		const metadata = await fixture();
+		const path = join(metadata.directory, 'latest-mac.yml');
+		const update = JSON.parse(await readFile(path, 'utf8'));
+		expect(update).toMatchObject({
+			version: metadata.version,
+			path: metadata.archives[1],
+			sha512: await fileChecksum(join(metadata.directory, metadata.archives[1]), 'sha512'),
+		});
+		update.files[0].url = 'https://example.invalid/replacement.zip';
+		await writeFile(path, JSON.stringify(update));
+		const checksumsPath = join(metadata.directory, 'SHA256SUMS');
+		await writeFile(checksumsPath, (await readFile(checksumsPath, 'utf8')).replace(/^[a-f\d]+  latest-mac\.yml$/m, `${await fileChecksum(path)}  latest-mac.yml`));
+		await expect(verifyReleaseFiles(metadata)).rejects.toThrow('Update manifest');
+	});
+
 	it('rejects modified archives, missing files and unexpected output', async () => {
 		const metadata = await fixture();
 		const archive = join(metadata.directory, metadata.archives[0]);

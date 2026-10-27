@@ -56,6 +56,7 @@ git push origin v0.1.0
 
 - `Diffolio-0.1.0-macOS-arm64.dmg`
 - `Diffolio-0.1.0-macOS-arm64.zip`
+- `latest-mac.yml`：指向最终 ZIP 的更新清单，含版本、大小与 SHA-512。
 - `RELEASE-NOTES.md`
 - `release-manifest.json`：版本、签名/公证状态、团队、源码提交、时间和安装包哈希。
 - `SHA256SUMS`
@@ -76,3 +77,9 @@ npm run release:mac:preview
 ## 本机签名构建
 
 如果本机已配置同样的 Apple 公证变量，并将证书导入专用 keychain，额外设置 `CSC_KEYCHAIN` 为该 keychain 路径，然后运行 `npm run release:mac` 和 `npm run release:verify`。凭据缺失时不会回退为未签名包。
+
+## 应用内更新
+
+菜单与设置提供手动检查、下载及重启安装，使用固定的公开仓库 `svn-box/diffolio`。`resources/app-update.yml` 随应用进入 Contents/Resources，配置源和缓存目录；更新器不接收渲染进程指定的地址，也不在应用中附带令牌。新增文件纳入正式 Release 草稿的精确资产核对，清单哈希取最终签名和公证后的 ZIP，完整下载不依赖 blockmap。
+
+`npm run test:updates` 使用打包应用的真实菜单、preload、IPC、状态与界面，但替换网络和安装客户端以避免更换本机应用。发布验收在从 ZIP 解压的应用上运行此检查。实际下载后的签名验证和应用替换仍需通过两个不同的已签名发行版本完成验收；本地未签名预览不能代替这一步。旧 0.1.0 不含更新入口，需手动安装一次包含该功能的新版本。

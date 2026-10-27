@@ -19,6 +19,8 @@ export function source(name = 'input.ts', content = 'original\n'): SourceFile {
 
 export function workspace() {
 	const api = {
+		update: vi.fn<DiffolioApi['update']>().mockResolvedValue({ phase: 'idle', currentVersion: '0.1.0', revision: 0 }),
+		onUpdate: vi.fn<DiffolioApi['onUpdate']>().mockReturnValue(() => {}),
 		bootstrap: vi.fn<DiffolioApi['bootstrap']>().mockResolvedValue({ preferences: { ...defaultPreferences }, recents: [] }),
 		open: vi.fn<DiffolioApi['open']>().mockResolvedValue(null),
 		selectFolder: vi.fn<DiffolioApi['selectFolder']>().mockResolvedValue(null),

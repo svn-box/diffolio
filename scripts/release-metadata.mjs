@@ -5,6 +5,8 @@ import { copyFile, lstat, readFile, readdir, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+export const updateManifest = 'latest-mac.yml';
+
 export function previewMode(arguments_ = [], env = process.env) {
 	const unsigned = arguments_.length === 1 && arguments_[0] === '--unsigned';
 	assert.ok(arguments_.length === 0 || unsigned, 'Only the optional --unsigned preview flag is supported.');
@@ -38,12 +40,28 @@ export async function readReleaseMetadata(root = resolve('.'), { tag, unsigned =
 	};
 }
 
-export async function fileChecksum(path) {
-	const hash = createHash('sha256');
+export async function fileChecksum(path, algorithm = 'sha256') {
+	assert.ok(['sha256', 'sha512'].includes(algorithm), 'Unsupported release checksum.');
+	const hash = createHash(algorithm);
 	for await (const bytes of createReadStream(path)) {
 		hash.update(bytes);
 	}
-	return hash.digest('hex');
+	return hash.digest(algorithm === 'sha512' ? 'base64' : 'hex');
+}
+
+export async function writeUpdateManifest(metadata, directory) {
+	const name = metadata.archives[1];
+	const path = join(directory, name);
+	const sha512 = await fileChecksum(path, 'sha512');
+	// JSON is valid YAML; checksum the final ZIP after signing and notarization.
+	await writeFile(
+		join(directory, updateManifest),
+		JSON.stringify(
+			{ version: metadata.version, files: [{ url: name, sha512, size: (await lstat(path)).size }], path: name, sha512, releaseDate: new Date().toISOString() },
+			null,
+			2,
+		) + '\n',
+	);
 }
 
 export async function writeReleaseFiles(metadata, directory, revision, teamId) {
@@ -51,6 +69,7 @@ export async function writeReleaseFiles(metadata, directory, revision, teamId) {
 	if (!metadata.unsigned) {
 		assert.match(teamId ?? '', /^[A-Z\d]{10}$/, 'Signed release metadata requires a verified Apple team.');
 	}
+	await writeUpdateManifest(metadata, directory);
 	const files = await Promise.all(
 		metadata.archives.map(async (name) => ({ name, bytes: (await lstat(join(directory, name))).size, sha256: await fileChecksum(join(directory, name)) })),
 	);
@@ -75,13 +94,13 @@ export async function writeReleaseFiles(metadata, directory, revision, teamId) {
 			2,
 		) + '\n',
 	);
-	const checksummed = [...metadata.archives, 'release-manifest.json', 'RELEASE-NOTES.md'];
+	const checksummed = [...metadata.archives, updateManifest, 'release-manifest.json', 'RELEASE-NOTES.md'];
 	const checksums = await Promise.all(checksummed.map(async (name) => `${await fileChecksum(join(directory, name))}  ${name}`));
 	await writeFile(join(directory, 'SHA256SUMS'), checksums.join('\n') + '\n');
 }
 
 export async function verifyReleaseFiles(metadata, directory = metadata.directory) {
-	const checksummed = [...metadata.archives, 'release-manifest.json', 'RELEASE-NOTES.md'];
+	const checksummed = [...metadata.archives, updateManifest, 'release-manifest.json', 'RELEASE-NOTES.md'];
 	assert.deepEqual((await readdir(directory)).sort(), [...checksummed, 'SHA256SUMS'].sort(), 'Release directory contains unexpected or missing files.');
 	for (const name of [...checksummed, 'SHA256SUMS']) {
 		const info = await lstat(join(directory, name));
@@ -112,6 +131,15 @@ export async function verifyReleaseFiles(metadata, directory = metadata.director
 	);
 	assert.deepEqual(manifest.files, files, 'Archive metadata does not match the release files.');
 	assert.equal(await readFile(join(directory, 'RELEASE-NOTES.md'), 'utf8'), await readFile(metadata.notes, 'utf8'), 'Release notes differ from the source version.');
+	const update = JSON.parse(await readFile(join(directory, updateManifest), 'utf8'));
+	const name = metadata.archives[1];
+	const sha512 = await fileChecksum(join(directory, name), 'sha512');
+	assert.ok(Number.isFinite(Date.parse(update.releaseDate)), 'Invalid update release date.');
+	assert.deepEqual(
+		update,
+		{ version: metadata.version, files: [{ url: name, sha512, size: (await lstat(join(directory, name))).size }], path: name, sha512, releaseDate: update.releaseDate },
+		'Update manifest does not match the final ZIP.',
+	);
 	return manifest;
 }
 

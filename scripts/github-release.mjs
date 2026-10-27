@@ -4,7 +4,7 @@ import { appendFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
-import { readReleaseMetadata, verifyReleaseFiles } from './release-metadata.mjs';
+import { readReleaseMetadata, verifyReleaseFiles, updateManifest } from './release-metadata.mjs';
 import { ensureReleaseAbsent, readReleaseTarget, releaseRepository, verifyUploadedDraft } from './github-release-api.mjs';
 
 const execute = promisify(execFile);
@@ -13,7 +13,7 @@ export async function publishRelease(metadata, commit, repository, token, run) {
 	assert.equal(metadata.unsigned, false, 'Unsigned previews cannot publish a release.');
 	const manifest = await verifyReleaseFiles(metadata);
 	assert.equal(manifest.sourceRevision, commit, 'Release artifacts do not match the source commit.');
-	const files = [...metadata.archives, 'RELEASE-NOTES.md', 'release-manifest.json', 'SHA256SUMS'].map((name) => join(metadata.directory, name));
+	const files = [...metadata.archives, updateManifest, 'RELEASE-NOTES.md', 'release-manifest.json', 'SHA256SUMS'].map((name) => join(metadata.directory, name));
 	await readReleaseTarget(repository, metadata.tag, commit, token);
 	await ensureReleaseAbsent(repository, metadata.tag, token);
 	await run([

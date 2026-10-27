@@ -1,3 +1,5 @@
+import type { AppUpdateAction, AppUpdateState } from './app-updates';
+
 export type Appearance = 'system' | 'light' | 'dark';
 export type Layout = 'split' | 'unified';
 
@@ -53,6 +55,8 @@ export interface RecentComparison {
 }
 
 export interface DiffolioApi {
+	update(action: AppUpdateAction): Promise<AppUpdateState>;
+	onUpdate(callback: (state: AppUpdateState) => void): () => void;
 	bootstrap(): Promise<{ preferences: Preferences; recents: RecentComparison[] }>;
 	open(kind: 'files' | 'folders', multiple?: boolean, taskId?: string): Promise<OpenResult | null>;
 	selectFolder(path?: string): Promise<string | null>;

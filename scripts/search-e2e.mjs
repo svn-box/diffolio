@@ -1,0 +1,118 @@
+import { _electron as electron } from 'playwright';
+import { expect } from 'playwright/test';
+import { createRequire } from 'node:module';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import assert from 'node:assert/strict';
+
+const require = createRequire(import.meta.url);
+const data = await mkdtemp(join(tmpdir(), 'diffolio-search-'));
+await mkdir(resolve('work/search-review'), { recursive: true });
+let application;
+
+try {
+	application = await electron.launch({ executablePath: require('electron'), args: [resolve('out/main/index.js')], env: { ...process.env, DIFFOLIO_DATA_DIR: data } });
+	const page = await application.firstWindow();
+	await application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].hide());
+	await page.getByRole('button', { name: '示例比较', exact: true }).click();
+	await expect(page.locator('.cm-editor')).toHaveCount(2);
+	await page.getByRole('button', { name: '查找 ⌘F', exact: true }).click();
+	const a = await page.locator('.cm-merge-a .cm-content').boundingBox();
+	const b = await page.locator('.cm-merge-b .cm-content').boundingBox();
+	await page.screenshot({ path: resolve('work/search-review/search.png') });
+	console.log(`Search open: A content y=${a.y}, B content y=${b.y}, offset=${Math.abs(a.y - b.y)}px.`);
+	assert.ok(Math.abs(a.y - b.y) < 1, 'Opening search must keep the A/B document panes vertically aligned.');
+	await expect(page.locator('.cm-search')).toHaveCount(0);
+	await expect(page.getByRole('search')).toBeVisible();
+	const input = page.getByRole('textbox', { name: '搜索比较内容', exact: true });
+	const status = page.locator('.search-match-count');
+	await expect(input).toBeFocused();
+	await input.fill('studio');
+	await expect(status).toHaveText('1 / 2 处匹配');
+	await expect(page.locator('.cm-merge-b .comparison-search-match.is-current')).toHaveCount(1);
+	await expect(page.locator('.cm-merge-a .comparison-search-match')).toHaveCount(0);
+	await input.press('Enter');
+	await expect(status).toHaveText('2 / 2 处匹配');
+	await input.press('Enter');
+	await expect(status).toHaveText('1 / 2 处匹配');
+	await input.press('Shift+Enter');
+	await expect(status).toHaveText('2 / 2 处匹配');
+	await page.getByRole('button', { name: '搜索 A', exact: true }).click();
+	await expect(status).toHaveText('1 / 3 处匹配');
+	await application.evaluate(({ Menu }) =>
+		Menu.getApplicationMenu()
+			.items.find((item) => item.label === '显示')
+			.submenu.items.find((item) => item.label === '查找')
+			.click(),
+	);
+	await expect(input).toBeFocused();
+	await expect(page.getByRole('button', { name: '搜索 A', exact: true })).toHaveAttribute('aria-pressed', 'true');
+	await page.getByRole('button', { name: '搜索选项', exact: true }).click();
+	await page.getByRole('checkbox', { name: '区分大小写', exact: true }).check();
+	await expect(status).toHaveText('1 / 1 处匹配');
+	await page.getByRole('checkbox', { name: '完整单词', exact: true }).check();
+	await page.getByRole('checkbox', { name: '正则表达式', exact: true }).check();
+	await page.keyboard.press('Escape');
+	await expect(page.getByRole('search')).toBeVisible();
+	await expect(page.locator('.search-options')).toHaveCount(0);
+	await input.fill('[');
+	await expect(status).toHaveText('正则表达式无效');
+	await expect(page.getByRole('button', { name: '下一个匹配项 Enter', exact: true })).toBeDisabled();
+	await page.getByRole('button', { name: '搜索选项', exact: true }).click();
+	await page.getByRole('checkbox', { name: '正则表达式', exact: true }).uncheck();
+	await page.keyboard.press('Escape');
+	await input.fill('absent-search-value');
+	await expect(status).toHaveText('A 中无匹配项');
+	await input.fill('studio');
+	await page.getByRole('button', { name: '搜索 B', exact: true }).click();
+	await page.getByRole('button', { name: '创建结果', exact: true }).click();
+	await page.getByRole('textbox', { name: '编辑比较结果', exact: true }).focus();
+	await page.keyboard.press('Meta+End');
+	await page.keyboard.insertText('\nstudio');
+	await expect(status).toContainText('/ 2 处匹配');
+	await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
+	await expect(status).toContainText('/ 1 处匹配');
+	await page.getByRole('button', { name: '搜索 A', exact: true }).click();
+	await page.getByRole('button', { name: '统一布局 ⌘2', exact: true }).click();
+	await expect(page.getByRole('button', { name: '搜索 A', exact: true })).toBeDisabled();
+	await expect(page.getByRole('button', { name: '搜索 B', exact: true })).toHaveAttribute('aria-pressed', 'true');
+	await page.getByRole('button', { name: '完成', exact: true }).focus();
+	await page.keyboard.press('Enter');
+	await expect(page.getByRole('search')).toHaveCount(0);
+	await expect(page.locator('.comparison-search-match')).toHaveCount(0);
+	await page.getByRole('button', { name: '双栏布局 ⌘1', exact: true }).click();
+	await page.locator('.cm-merge-a .cm-content').click();
+	await page.keyboard.press('Meta+f');
+	await expect(input).toBeFocused();
+	await expect(page.getByRole('button', { name: '搜索 A', exact: true })).toHaveAttribute('aria-pressed', 'true');
+	await application.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].setSize(880, 540));
+	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
+	await expect(page.getByRole('button', { name: '完成', exact: true })).toBeInViewport();
+	assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+	await page.screenshot({ path: resolve('work/search-review/search-light-compact.png') });
+	await page.getByRole('button', { name: '设置 ⌘,', exact: true }).click();
+	await page.getByRole('button', { name: '深色', exact: true }).click();
+	await page.getByRole('checkbox', { name: '折叠不变区域', exact: true }).click();
+	await expect(page.getByRole('checkbox', { name: '折叠不变区域', exact: true })).toBeChecked();
+	await page.getByRole('button', { name: '关闭设置', exact: true }).click();
+	await page.screenshot({ path: resolve('work/search-review/search-dark-compact.png') });
+	const lines = Array.from({ length: 50 }, (_, index) => (index === 25 ? 'hidden-needle' : `unchanged line ${index}`)).join('\n');
+	const paths = [join(data, 'before.txt'), join(data, 'after.txt')];
+	await writeFile(paths[0], `before\n${lines}\n`);
+	await writeFile(paths[1], `after\n${lines}\n`);
+	await application.evaluate(({ BrowserWindow }, paths) => BrowserWindow.getAllWindows()[0].webContents.send('diffolio:action', 'paths', paths), paths);
+	await expect(page.locator('.cm-collapsedLines').first()).toBeVisible();
+	await page.getByRole('button', { name: '查找 ⌘F', exact: true }).click();
+	await input.fill('hidden-needle');
+	await expect(status).toHaveText('1 / 1 处匹配');
+	await expect(page.locator('.cm-merge-b .cm-line').filter({ hasText: 'hidden-needle' })).toBeVisible();
+	await expect(page.locator('.cm-merge-a .cm-line').filter({ hasText: 'hidden-needle' })).toBeVisible();
+	const foldedA = await page.locator('.cm-merge-a .cm-line').filter({ hasText: 'hidden-needle' }).boundingBox();
+	const foldedB = await page.locator('.cm-merge-b .cm-line').filter({ hasText: 'hidden-needle' }).boundingBox();
+	assert.ok(Math.abs(foldedA.y - foldedB.y) < 1, 'Unfolding a search match must keep the paired lines aligned.');
+	console.log('PASS: aligned search, A/B scopes, matching options, navigation/wrap, keyboard, unified mode, compact themes, and collapsed matches.');
+} finally {
+	await application?.close();
+	await rm(data, { recursive: true, force: true });
+}
