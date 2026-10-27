@@ -1,6 +1,6 @@
 # 发布流程
 
-当前版本说明见 [0.1.0](releases/0.1.0.md)。目标为 macOS Apple Silicon，保留选定的原生 `.icon` 图标。流程参考 SVNBox，分为签名、公证、实际安装包验收和发布四部分。
+当前版本说明见 [0.1.1](releases/0.1.1.md)。目标为 macOS Apple Silicon，保留选定的原生 `.icon` 图标。流程参考 SVNBox，分为签名、公证、实际安装包验收和发布四部分。
 
 ## GitHub 仓库配置
 
@@ -33,8 +33,8 @@ npm run build
 
 ```bash
 git push origin main
-git tag -a v0.1.0 -m "Diffolio 0.1.0"
-git push origin v0.1.0
+git tag -a v0.1.1 -m "Diffolio 0.1.1"
+git push origin v0.1.1
 ```
 
 `.github/workflows/release-macos.yml` 会先核对标签、源码、版本和现有 Release，再执行：
@@ -52,10 +52,10 @@ git push origin v0.1.0
 
 ## 产物
 
-正式目录为 `release/0.1.0/macos/arm64/`，只包含：
+正式目录为 `release/0.1.1/macos/arm64/`，只包含：
 
-- `Diffolio-0.1.0-macOS-arm64.dmg`
-- `Diffolio-0.1.0-macOS-arm64.zip`
+- `Diffolio-0.1.1-macOS-arm64.dmg`
+- `Diffolio-0.1.1-macOS-arm64.zip`
 - `latest-mac.yml`：指向最终 ZIP 的更新清单，含版本、大小与 SHA-512。
 - `RELEASE-NOTES.md`
 - `release-manifest.json`：版本、签名/公证状态、团队、源码提交、时间和安装包哈希。
@@ -72,7 +72,7 @@ npm ci
 npm run release:mac:preview
 ```
 
-预览保存在 `release/preview/0.1.0/macos/arm64/`，清单明确记录未签名、未公证。版本标签不允许使用 `--unsigned`；正式发布器也拒绝预览产物。
+预览保存在 `release/preview/0.1.1/macos/arm64/`，清单明确记录未签名、未公证。版本标签不允许使用 `--unsigned`；正式发布器也拒绝预览产物。
 
 ## 本机签名构建
 

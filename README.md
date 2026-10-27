@@ -12,7 +12,7 @@
     <a href="#usage">Usage</a> ·
     <a href="#license">License</a>
   </p>
-  <p><sub>v0.1.0 · macOS · Apple Silicon (arm64)</sub></p>
+  <p><sub>v0.1.1 · macOS · Apple Silicon (arm64)</sub></p>
 </div>
 
 Diffolio compares local text files, folders and images in a compact desktop window. Open two versions, inspect their differences, and create an editable result when you need one. Compared inputs open read-only; saving a result is an explicit action.
@@ -99,7 +99,7 @@ Choose system, light or dark appearance and adjust editor size with the searchab
 
 Download the macOS Apple Silicon (arm64) build from [Releases](https://github.com/svn-box/diffolio/releases). Open the DMG and drag Diffolio to Applications, or extract the ZIP and move the app there.
 
-See the [0.1.0 release notes](docs/releases/0.1.0.md) for features and supported formats.
+See the [0.1.1 release notes](docs/releases/0.1.1.md) for features and supported formats.
 
 ## Usage
 

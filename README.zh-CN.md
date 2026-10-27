@@ -12,7 +12,7 @@
     <a href="#使用方法">使用方法</a> ·
     <a href="#许可">许可</a>
   </p>
-  <p><sub>v0.1.0 · macOS · Apple Silicon（arm64）</sub></p>
+  <p><sub>v0.1.1 · macOS · Apple Silicon（arm64）</sub></p>
 </div>
 
 Diffolio 是一款紧凑的 macOS 文件对比工具，用于比较本机文本、文件夹和图片。打开两个版本，查看差异，需要时创建可编辑的结果副本。原始输入以只读方式打开，保存结果由你明确执行。
@@ -99,7 +99,7 @@ Diffolio 是一款紧凑的 macOS 文件对比工具，用于比较本机文本�
 
 从 [Releases](https://github.com/svn-box/diffolio/releases) 下载 macOS Apple Silicon（arm64）版本。打开 DMG，将 Diffolio 拖到 Applications；也可解压 ZIP 后移入 Applications。
 
-功能与支持范围见 [0.1.0 发布说明](docs/releases/0.1.0.md)。
+功能与支持范围见 [0.1.1 发布说明](docs/releases/0.1.1.md)。
 
 ## 使用方法
 
