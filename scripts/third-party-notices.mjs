@@ -52,7 +52,8 @@ for (const [location, metadata] of Object.entries(lock.packages)) {
 
 const electron = JSON.parse(await readFile(join(root, 'node_modules/electron/package.json'), 'utf8'));
 assert.equal(electron.version, definition.devDependencies.electron, 'Electron version differs from package.json.');
-await include('resources/licenses/electron-MIT.txt', await readFile(join(root, 'node_modules/electron/dist/LICENSE')));
+// Check licenses before electron-builder downloads the runtime in a clean install.
+await include('resources/licenses/electron-MIT.txt', await readFile(join(root, 'node_modules/electron/LICENSE')));
 const contents = `# Third-party notices / 第三方声明
 
 Diffolio includes third-party software and adapted components listed below. They retain their original licenses and copyrights. Diffolio's custom license does not restrict rights granted by these third-party licenses. Full license and copyright texts are included at the linked local paths, including Lucide's MIT notices for Feather-derived icons and the complete Apache 2.0 license for class-variance-authority.

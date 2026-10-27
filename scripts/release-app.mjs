@@ -25,6 +25,11 @@ export async function verifyApp(path, metadata, teamId) {
 	for (const name of ['LICENSES.chromium.html', 'LICENSE.electron.txt']) {
 		assert.ok((await readFile(join(path, 'Contents/Resources', name))).length > 0, `Electron runtime notice ${name} is missing.`);
 	}
+	assert.deepEqual(
+		await readFile(join(path, 'Contents/Resources/LICENSE.electron.txt')),
+		await readFile(resolve('resources/licenses/electron-MIT.txt')),
+		'Packaged Electron license differs from the committed notice.',
+	);
 	if (!metadata.unsigned) {
 		assert.match(teamId ?? '', /^[A-Z\d]{10}$/, 'Signed app verification requires the Apple team.');
 		await verifySignature(path, teamId, true);
