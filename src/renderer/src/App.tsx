@@ -7,10 +7,10 @@ import { WelcomeBackdrop } from '@/components/Home';
 import { Titlebar } from '@/components/shell/Titlebar';
 import { HomeSidebar } from '@/components/shell/HomeSidebar';
 import { Workspace } from '@/components/Workspace';
-import { SettingsDialog } from '@/components/SettingsDialog';
 
 function AppWindow() {
 	const home = useWorkspace((state) => state.home);
+	const homePage = useWorkspace((state) => state.homePage);
 	const [dragging, setDragging] = useState(false);
 	const { load } = workspaceStore.getState();
 	useAppLifecycle();
@@ -27,7 +27,7 @@ function AppWindow() {
 
 	return (
 		<div
-			className={`app-shell${home ? ' is-home' : ''}`}
+			className={`app-shell${home ? ` is-home${homePage === 'updates' ? ' is-updates' : ''}` : ''}`}
 			onDropCapture={() => setDragging(false)}
 			onDragOver={(event) => {
 				event.preventDefault();
@@ -52,7 +52,7 @@ function AppWindow() {
 				}
 			}}
 		>
-			{home && <WelcomeBackdrop />}
+			{home && homePage === 'recents' && <WelcomeBackdrop />}
 			<Titlebar />
 			<div className="app-body">
 				{home && <HomeSidebar />}
@@ -65,7 +65,6 @@ function AppWindow() {
 					<span>两个文本、两张图片，或两个文件夹</span>
 				</div>
 			)}
-			<SettingsDialog />
 		</div>
 	);
 }

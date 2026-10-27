@@ -1,5 +1,3 @@
-> Tauri port: this document preserves the original product/design baseline. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
-
 ---
 name: 'Diffolio'
 description: 'A compact, considered file comparison workspace for macOS.'
@@ -125,6 +123,22 @@ typography:
         fontWeight: 500
         lineHeight: 1.5
         letterSpacing: '-0.3px'
+    title-settings:
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        fontSize: '13px'
+        fontWeight: 600
+        lineHeight: 1.5
+    title-release:
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        fontSize: '27px'
+        fontWeight: 650
+        lineHeight: 1.25
+        letterSpacing: '-0.6px'
+    body-release:
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        fontSize: '12px'
+        fontWeight: 400
+        lineHeight: 1.85
 rounded:
     control: '7px'
     icon: '6px'
@@ -214,12 +228,42 @@ components:
         textColor: '{colors.light-text}'
         rounded: '{rounded.group}'
         width: '176px'
-    settings-dialog:
-        backgroundColor: '{colors.light-chrome}'
+    settings-window:
+        backgroundColor: '{colors.light-bg}'
         textColor: '{colors.light-text}'
-        rounded: '{rounded.dialog}'
-        width: '440px'
-        padding: '20px 24px 16px'
+        width: '568px'
+        height: '348px'
+    settings-window-dark:
+        backgroundColor: '{colors.dark-bg}'
+        textColor: '{colors.dark-text}'
+        width: '568px'
+        height: '348px'
+    settings-content:
+        padding: '26px 32px 24px'
+    settings-tab:
+        textColor: '{colors.light-text-muted}'
+        width: '68px'
+        height: '61px'
+    settings-tab-selected:
+        textColor: '{colors.light-accent}'
+        width: '68px'
+        height: '61px'
+    settings-font-preview:
+        backgroundColor: '{colors.light-surface}'
+        textColor: '{colors.light-text}'
+        rounded: '{rounded.control}'
+        padding: '12px 16px'
+    updates-page:
+        backgroundColor: '{colors.home-bg}'
+        textColor: '{colors.home-text}'
+    update-check-button:
+        textColor: '{colors.home-text}'
+        padding: '0 14px'
+    release-current:
+        backgroundColor: '{colors.home-accent-soft}'
+        textColor: '{colors.home-accent}'
+        rounded: '{rounded.tag}'
+        padding: '2px 7px'
     home-recent:
         backgroundColor: '{colors.home-panel}'
         textColor: '{colors.home-text}'
@@ -271,6 +315,8 @@ components:
 
 # Design System: Diffolio
 
+> The original Electron comparison baseline is retained; the current runtime is Tauri/WebKit. Settings and update history follow the approved native-window revision. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
+
 ## Overview
 
 **Creative North Star: "The Comparison Workbench"**
@@ -279,6 +325,8 @@ Diffolio is a compact macOS comparison workbench: graphite or warm light surface
 
 The welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.
 
+Settings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.
+
 **Key Characteristics:**
 
 - Compact native window proportions and grouped toolbar controls.
@@ -286,6 +334,7 @@ The welcome screen is deliberately dark and colorful, independent of workspace a
 - Two levels of diff emphasis: changed lines and changed text.
 - A welcome-only graphite rail; full-width source previews and comparison panes.
 - Original SVG geometry and icons; semantic CSS custom properties.
+- Independent native preferences and a local release-history page.
 
 This record follows the implemented source after the approved welcome/comparison separation and source-interaction correction. The surface contract’s last two sections supersede earlier rail and input patterns. Runtime values live in `src/renderer/src/tokens.css` and `styles.css`; `npm run design:check` exports local workspace values, layout scope and a contrast report; these generated research files stay outside Git. The YAML frontmatter records explicit light, dark and welcome values. Component snapshots use the light workspace by default, with named dark siblings where useful; live CSS resolves the active semantic properties.
 
@@ -331,13 +380,15 @@ The hierarchy is compact and functional. There is no separate decorative display
 
 ### Hierarchy
 
-- **Dialog title:** the strongest interface heading, used in settings.
+- **Dialog title:** the recorded baseline dialog role; the independent Settings window uses the smaller title-settings role.
 - **Welcome title and prompt:** medium-sized system text; the title uses semibold and the drop prompt uses medium weight.
 - **New-comparison headline:** a centered medium-weight system heading (18px), removed when supplied content opens in the preview canvas.
 - **Body:** settings rows and ordinary controls.
 - **Label:** paths, tabs, secondary actions and welcome navigation. Recent titles use medium weight where indicated by their component.
 - **Metadata:** status, file sizes, recent dates and category labels. Numeric status and size fields use tabular figures. The welcome subtitle uses the metadata role; example badges are a smaller local exception (9px).
 - **Editor:** the frontmatter size is the factory default. Font-size options are 11, 12, 13, 14, 15, 16, 18 and 20px; persisted user preferences remain authoritative. Code uses a generous line height, with independent scroll, wrapping and unchanged-region collapse settings.
+- **Settings title:** compact semibold window text; top icon-tab labels use the existing label role. Preference labels use the body size with semibold weight and right alignment.
+- **Release title and notes:** the title-release role distinguishes each version; its version number uses regular weight and tabular figures. Notes use body-release, with existing compact labels for category headings and the current-version tag.
 
 ### Named Rules
 
@@ -345,7 +396,7 @@ The hierarchy is compact and functional. There is no separate decorative display
 
 ## Layout
 
-The native Electron window opens at 964 × 564px and permits resizing down to 880 × 540px. The titlebar leaves room for actual macOS traffic lights; it is draggable while its controls are not. The app fills the window and scrolls within content regions instead of scrolling the outer document.
+The main Tauri window retains the Electron baseline of 964 × 564px and permits resizing down to 880 × 540px. The titlebar leaves room for actual macOS traffic lights; it is draggable while its controls are not. The app fills the window and scrolls within content regions instead of scrolling the outer document.
 
 | Region                         | Implemented size / behavior                                                                             |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------- |
@@ -361,9 +412,13 @@ The native Electron window opens at 964 × 564px and permits resizing down to 88
 | First supplied file/image/text | Immediate full-width two-pane preview; selected pane has a 34px header, missing pane stays an input     |
 | Text comparison                | Full-width equal document panes; unified layout replaces the paired surface                             |
 | File inspector                 | 224px wide above the compact breakpoint; 190px at 1100px and below                                      |
-| Settings                       | 440px wide; viewport-bounded vertical scrolling                                                         |
+| Settings window                | Independent 568 × 348px native window; fixed size with an internally scrolling content region           |
+| Settings toolbar               | 36px title region, then centered 68 × 61px icon tabs with 8px gap and 10px bottom padding               |
+| Settings rows                  | 100px right-aligned label, 12px gap, remaining control column; content padding 26px 32px 24px           |
+| Settings font preview          | 112px left inset matching the control column; 20px top margin; actual chosen font size                  |
+| Update history                 | Welcome rail retained; no gradient or bands; notes max-width 800px with 22px 24px 32px padding          |
 | Welcome stage                  | 195px total, including the toolbar and 143px hero; original bands continue behind the main-column title |
-| Welcome navigation             | 38px rows; recent, new, optional continue and explicit example                                          |
+| Welcome navigation             | 38px rows; recent, new, optional continue, explicit example and update history                          |
 | Welcome recents                | 46px minimum rows, 10px margins; quiet explanatory empty state without another action card              |
 
 The welcome is a two-column grid: its rail spans both rows, its title begins at the main-column inset, and its artwork continues across that main column. New comparison and comparison fill the window without a navigation rail. Tabs supply session switching only when more than one session exists. Return and continue preserve each session’s content, selection, editing state and undo history.
@@ -374,12 +429,12 @@ The editor’s line content has 12px top and 64px bottom padding. The one-source
 
 ## Elevation & Depth
 
-The workspace primarily uses tonal layering and one-pixel dividers. Raised controls have a faint one-step shadow; the native settings dialog and Radix popover share the stronger dialog shadow. The welcome quick-action capsule adds a small translucent shadow over the stage. These actual values are recorded in the sidecar, which also carries full component snippets.
+The workspace primarily uses tonal layering and one-pixel dividers. Raised controls have a faint one-step shadow; the Radix popover uses the stronger dialog shadow. The independent Settings window uses native window chrome and flat CSS surfaces rather than a CSS modal card or backdrop. The welcome quick-action capsule adds a small translucent shadow over the stage. Relevant Settings/update component snippets and control/popover shadow values are recorded in the sidecar.
 
 ### Shadow Vocabulary
 
 - **Control:** the light/dark `shadow-control` value gives small buttons and selected segments a restrained lift.
-- **Dialog:** the light/dark `shadow-dialog` value separates modal settings and its popover from the document.
+- **Dialog:** the light/dark `shadow-dialog` value separates the font-size popover from its window content.
 - **Welcome quick action:** a soft local shadow identifies the translucent file/clipboard capsule over the gradient.
 
 ### Named Rules
@@ -388,7 +443,7 @@ The workspace primarily uses tonal layering and one-pixel dividers. Raised contr
 
 ## Shapes
 
-Controls use gently rounded corners, icon buttons are slightly tighter, and tags are compact rounded squares. Segmented groups, popovers and welcome recent containers share the group radius; settings uses the larger dialog radius. Empty source containers use their own 10px corners. Choose and Paste are separate controls with all four corners rounded at 7px; their fills stay inside the controls. The original Diffolio mark is a pair of offset rounded documents with three strokes, rendered directly in the welcome target. The welcome quick-action capsule is pill-shaped.
+Controls use gently rounded corners, icon buttons are slightly tighter, and tags are compact rounded squares. Segmented groups, popovers and welcome recent containers share the group radius. Settings tabs use 8px corners; appearance thumbnails and code preview use 7px corners. The native Settings window supplies its own outer shape. The update action has 16px pill corners and the current-version tag uses the existing tag radius. Empty source containers use their own 10px corners. Choose and Paste are separate controls with all four corners rounded at 7px; their fills stay inside the controls. The original Diffolio mark is a pair of offset rounded documents with three strokes, rendered directly in the welcome target. The welcome quick-action capsule is pill-shaped.
 
 Fine dividers organize paths, tabs and rows. Dashed borders identify independently droppable empty sources; a supplied source switches to a continuous rectangular preview with a header and a center pane divider. The content body has no replacement-button hover fill. The full-window drop overlay uses a dashed accent border. Folder rows and editor content remain rectangular and continuous.
 
@@ -402,15 +457,29 @@ Compact actions use a familiar native-tool character. Primary save actions use a
 
 Folder search is an outlined, icon-led field with a 2px focus-within outline. Comparison search occupies one shared 36px row below the path headers. A 26px field, A/B scope segments, previous/next arrows, a quiet match count, an options popover and Done stay on one line down to the minimum window with the inspector open. The documents keep the same vertical origin. Options are Chinese, query highlights use accent-soft/accent, invalid regex has explicit text, and Escape returns focus to the chosen document. Unified layout searches B; A remains visibly unavailable until split layout returns. Font size uses the actual shadcn composition adapted from SVNBox: Button + Radix Popover + cmdk Command. The trigger is 90 × 28px; the popover is 176px wide with a 36px search header and a list capped at 230px. Search, empty results, arrow navigation, Enter, a visible checked value, Escape and focus return are part of the component. The list's highlighted item and the committed value's check are distinct states.
 
-Settings uses a native `dialog`. Pass its element as the Combobox portal container so the popover is inside the modal top layer. Escape dismisses the open popover first and preserves settings. A later Escape closes settings. Checkboxes retain native form behavior and use the accent color.
+Settings uses its own native WebKit window. The Combobox popover portals into that window's document; it needs no modal container. Escape dismisses the open popover first and preserves Settings. A later Escape closes the Settings window. Checkboxes elsewhere retain native form behavior and use the accent color.
 
 ### Navigation and tags
 
-The welcome rail is the only navigation rail. Recent, new, optional continue and example actions use neutral hover/current-page fills rather than the shared violet hover layer. The title aligns above the main content; the small identity/settings footer stays within the rail. The comparison toolbar supplies return and new-comparison actions without repeating welcome navigation. Tabs appear only with multiple sessions, with close actions, example badges, a dirty dot and a thin inset accent on the selected tab. Layout controls use a segmented group with a raised active segment. Side tags distinguish A/B; the edited result switches to a green result tag and explicit result label.
+The welcome rail is the only navigation rail. Recent, new, optional continue, example and update-history actions use neutral hover/current-page fills rather than the shared violet hover layer. The title aligns above the main content; the lower-left footer contains only Settings. The comparison toolbar supplies return and new-comparison actions without repeating welcome navigation. Tabs appear only with multiple sessions, with close actions, example badges, a dirty dot and a thin inset accent on the selected tab. Layout controls use a segmented group with a raised active segment. Side tags distinguish A/B; the edited result switches to a green result tag and explicit result label.
 
 ### Containers and feedback
 
-Settings has compact section spacing, appearance preview choices and a small identity footer. A selected appearance preview receives an accent outline and selected text. Inline error banners use deletion colors with an alert role and dismiss action; loading uses accent-soft with a status role. Saved-result feedback uses success text and a check. The loading icon is the only continuous animation (a one-second linear rotation), disabled by reduced-motion preferences. Increased-contrast preference promotes structural borders to the input-border role.
+Inline error banners use deletion colors with an alert role and dismiss action; loading uses accent-soft with a status role. Saved-result feedback uses success text and a check. The loading icon is the only continuous animation (a one-second linear rotation), disabled by reduced-motion preferences. Increased-contrast preference promotes structural borders to the input-border role.
+
+### Native Settings
+
+The General and Text tabs place a 25px open-library icon above an 11px label. Selected tabs use accent text, a seven-percent text tint and a fine inset highlight. Arrow keys, Home and End change tabs and keyboard focus. General contains only system/light/dark appearance choices and a manual-update/history entry. Appearance thumbnails have a 2px accent outline with 2px offset when selected. The update row is separated by a fine divider and opens the welcome update-history page. Text contains the existing font-size Combobox and a syntax-colored monospace preview rendered at the chosen size. Wrapping and unchanged-region collapse remain comparison controls; they are absent from Settings. There is no identity footer or explanatory filler.
+
+Repeated opens focus the existing Settings instance. Both native windows share one Rust backend; preference writes patch only changed fields, then broadcast to all native windows. Appearance updates native themes and renderer palettes; font-size changes update the main editor and preview. Closing Settings leaves comparison edits intact. The window has no web modal backdrop.
+
+**The Independent Preferences Rule.** Keep Settings a compact native window with only implemented preferences. Keep aligned labels, top icon tabs and actual-size font feedback; preserve the active comparison when it closes.
+
+### Application updates
+
+The welcome “更新日志” page displays the actual Chinese sections from `docs/releases/*.md`, loaded at build time and sorted by version. The welcome rail and dark palette remain; its gradient and SVG bands are absent. Version headings, a current-version tag, fine release dividers and comfortably spaced notes form the reading surface. Opening history performs no automatic network check.
+
+The titlebar supplies one phase-appropriate manual action: check, download, or restart/install, plus a separate release-page icon button. Checking/downloading/installing disable repeated actions; progress and status appear above the notes. Disabled development mode, network errors, unavailable updates and retry are explicit. Unsaved results or active tasks disable installation; the Rust backend independently enforces the same protection. Settings' “查看更新…” entry restores/focuses the main window and opens history. The native “检查更新…” menu action also restores/focuses the main window and starts the explicitly requested check.
 
 ### Source entry and immediate preview
 
@@ -436,17 +505,16 @@ The welcome’s centered entry action, fixed top-right clipboard/file capsule, o
 - **Do** use the original Diffolio mark, SVG bands and open-library icons.
 - **Do** space source headers, bodies and individual Choose/Paste controls, then show supplied content immediately in a read-only pane.
 - **Do** preserve valid empty-text sources, independent folder choices, mode caches and edits/undo when returning and continuing.
+- **Do** keep Settings native and compact, with top icon tabs, aligned preference rows and a font preview at the selected size.
+- **Do** load release history locally and keep network checks, downloads and installation explicit user actions.
 
 ### Don't:
 
 - **Don't** propagate the welcome gradient or dark-only palette into the comparison workspace.
 - **Don't** use color alone to identify a comparison state or apply syntax colors over the stronger changed-text highlight.
-- **Don't** replace the font-size Combobox with a native select or mount its popover outside the modal dialog.
+- **Don't** replace the font-size Combobox with a native select or close Settings on the first Escape while its popover is open.
 - **Don't** introduce a Tailwind runtime or assume utility classes provide styling; the shipped interface uses semantic CSS.
 - **Don't** use Kaleidoscope artwork, logos or screenshots as shipping product assets.
 - **Don't** restore a comparison rail, translucent welcome rail, violet navigation hover, competing empty-state action card or always-visible tabs.
 - **Don't** make the source body a replacement button or use a full-width Paste strip with shared or partial corners.
-
-### Application updates
-
-Settings includes a compact update section with status, a single phase-appropriate action, progress while downloading, and a release-page link. Checks, downloads and restart/install are manual. Disabled development mode, network errors, unavailable updates and retry are explicit. Unsaved results or active tasks disable installation; the main process independently enforces the same protection. Updates use the existing semantic palette and native dialog scrolling.
+- **Don't** add global wrapping/collapse switches, an identity footer or filler prose to Settings, or apply the welcome artwork to update history.

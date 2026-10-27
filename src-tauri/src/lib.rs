@@ -7,7 +7,10 @@ mod model;
 mod read;
 mod state;
 mod updates;
+mod windows;
 
+#[cfg(test)]
+mod preferences_tests;
 #[cfg(feature = "native-smoke")]
 mod smoke;
 #[cfg(test)]
@@ -46,11 +49,16 @@ pub fn run() {
         .on_window_event(|window, event| {
             let backend = window.state::<Backend>();
             if let WindowEvent::CloseRequested { api, .. } = event {
+                if window.label() != "main" {
+                    return;
+                }
                 if backend.0.dirty.load(Ordering::SeqCst)
                     && !backend.0.can_close.load(Ordering::SeqCst)
                 {
                     api.prevent_close();
                     commands::action(window.app_handle(), "close-window", None);
+                } else if let Some(settings) = window.app_handle().get_webview_window("settings") {
+                    let _ = settings.close();
                 }
             }
         })
@@ -64,6 +72,8 @@ pub fn run() {
             commands::dirty,
             commands::close,
             commands::reveal,
+            windows::show_settings,
+            windows::show_updates,
             read::read_paths,
             read::cancel,
             dialogs::open,
@@ -77,6 +87,8 @@ pub fn run() {
             smoke::smoke_snapshot,
             #[cfg(feature = "native-smoke")]
             smoke::smoke_action,
+            #[cfg(feature = "native-smoke")]
+            smoke::smoke_settings_report,
         ])
         .build(tauri::generate_context!())
         .expect("Diffolio 无法启动");

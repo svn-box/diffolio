@@ -55,6 +55,9 @@ export interface RecentComparison {
 }
 
 export interface DiffolioApi {
+	showSettings(): Promise<void>;
+	showUpdates(): Promise<void>;
+	onPreferences(callback: (preferences: Preferences) => void): () => void;
 	update(action: AppUpdateAction): Promise<AppUpdateState>;
 	onUpdate(callback: (state: AppUpdateState) => void): () => void;
 	bootstrap(): Promise<{ preferences: Preferences; recents: RecentComparison[] }>;
@@ -63,7 +66,7 @@ export interface DiffolioApi {
 	readPaths(paths: string[], taskId?: string): Promise<OpenResult>;
 	clipboard(): Promise<SourceFile>;
 	save(content: string, source: SourceFile): Promise<{ path: string } | null>;
-	preferences(value: Preferences): Promise<void>;
+	preferences(value: Partial<Preferences>): Promise<void>;
 	remember(paths: string[], kind: RecentComparison['kind']): Promise<RecentComparison[]>;
 	clearRecents(): Promise<void>;
 	confirmUnsaved(): Promise<'save' | 'discard' | 'cancel'>;

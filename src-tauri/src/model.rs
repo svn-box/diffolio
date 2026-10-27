@@ -31,6 +31,30 @@ impl Preferences {
     }
 }
 
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct PreferencePatch {
+    pub appearance: Option<String>,
+    pub font_size: Option<u8>,
+    pub wrap: Option<bool>,
+    pub collapse: Option<bool>,
+}
+
+impl PreferencePatch {
+    pub fn apply(self, current: &Preferences) -> Result<Preferences, String> {
+        let next = Preferences {
+            appearance: self
+                .appearance
+                .unwrap_or_else(|| current.appearance.clone()),
+            font_size: self.font_size.unwrap_or(current.font_size),
+            wrap: self.wrap.unwrap_or(current.wrap),
+            collapse: self.collapse.unwrap_or(current.collapse),
+        };
+        next.validate()?;
+        Ok(next)
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SourceFile {

@@ -110,11 +110,18 @@
 	border: 0;
 	margin: 0 14px;
 }
-.is-home .sidebar-bottom > span {
+.sidebar-settings {
+	width: 100%;
+	justify-content: flex-start;
+	gap: 9px;
+	height: 32px;
+	padding: 0 6px;
 	color: var(--text-muted);
+	font-size: 11px;
 }
-.is-home .sidebar-bottom .icon-button {
-	color: var(--text-muted);
+.sidebar-settings:hover:not(:disabled) {
+	background: var(--home-nav-hover);
+	color: var(--text);
 }
 .home-welcome {
 	flex: 1;

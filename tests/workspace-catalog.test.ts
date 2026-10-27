@@ -14,7 +14,7 @@ describe('workspace catalog persistence', () => {
 		task.resolve({ preferences: { ...defaultPreferences, appearance: 'dark' }, recents: [] });
 		await Promise.all([first, second, update]);
 		expect(store.getState().preferences).toEqual({ ...defaultPreferences, appearance: 'dark', fontSize: 18 });
-		expect(api.preferences).toHaveBeenCalledWith(store.getState().preferences);
+		expect(api.preferences).toHaveBeenCalledWith({ fontSize: 18 });
 	});
 
 	it('serializes preference changes and recovers after a failed write', async () => {

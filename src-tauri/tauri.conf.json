@@ -31,6 +31,25 @@
 					"effects": ["sidebar"],
 					"state": "followsWindowActiveState"
 				}
+			},
+			{
+				"label": "settings",
+				"create": false,
+				"url": "index.html?window=settings",
+				"title": "设置",
+				"width": 568,
+				"height": 348,
+				"resizable": false,
+				"minimizable": false,
+				"maximizable": false,
+				"center": true,
+				"titleBarStyle": "Overlay",
+				"hiddenTitle": true,
+				"trafficLightPosition": {
+					"x": 16,
+					"y": 14
+				},
+				"backgroundColor": "#eeedeb"
 			}
 		],
 		"security": {
@@ -41,6 +60,11 @@
 					"identifier": "main-window",
 					"windows": ["main"],
 					"permissions": ["core:event:default", "core:window:allow-start-dragging", "core:window:allow-toggle-maximize", "core:webview:allow-internal-toggle-devtools"]
+				},
+				{
+					"identifier": "settings-window",
+					"windows": ["settings"],
+					"permissions": ["core:event:default", "core:window:allow-start-dragging", "core:window:allow-close"]
 				}
 			]
 		}

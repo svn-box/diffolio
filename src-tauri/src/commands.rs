@@ -1,6 +1,6 @@
 use crate::{
     files::{self, CONTENT_LIMIT},
-    model::{path_string, Preferences, RecentComparison, SourceFile, Store},
+    model::{path_string, PreferencePatch, Preferences, RecentComparison, SourceFile, Store},
     read::absolute,
     state::Backend,
 };
@@ -32,7 +32,12 @@ pub fn bootstrap(backend: State<'_, Backend>) -> Store {
 }
 
 #[tauri::command]
-pub fn ready(app: AppHandle, backend: State<'_, Backend>) {
+pub fn ready(app: AppHandle, window: tauri::WebviewWindow, backend: State<'_, Backend>) {
+    if window.label() != "main" {
+        #[cfg(feature = "native-smoke")]
+        crate::smoke::start_settings(&app);
+        return;
+    }
     backend.0.ready.store(true, Ordering::SeqCst);
     let paths = std::mem::take(&mut *backend.0.pending_paths.lock().unwrap());
     if !paths.is_empty() {
@@ -67,7 +72,7 @@ pub fn apply_theme(app: &AppHandle, preferences: &Preferences) -> Result<(), Str
         "light" => Some(Theme::Light),
         _ => None,
     };
-    if let Some(window) = app.get_webview_window("main") {
+    for window in app.webview_windows().values() {
         window.set_theme(theme).map_err(|error| error.to_string())?;
     }
     Ok(())
@@ -77,16 +82,23 @@ pub fn apply_theme(app: &AppHandle, preferences: &Preferences) -> Result<(), Str
 pub async fn preferences(
     app: AppHandle,
     backend: State<'_, Backend>,
-    value: Preferences,
+    value: PreferencePatch,
 ) -> Result<(), String> {
-    value.validate()?;
     let backend = backend.inner().clone();
-    let saved = tauri::async_runtime::spawn_blocking(move || {
-        backend.modify_store(|store| store.preferences = value)
+    tauri::async_runtime::spawn_blocking(move || {
+        // Keep persisted patches, native themes and cross-window events in the same order.
+        let _write = backend
+            .0
+            .preference_writes
+            .lock()
+            .map_err(|_| "设置暂时不可用。")?;
+        let saved = backend.patch_preferences(value)?;
+        apply_theme(&app, &saved.preferences)?;
+        app.emit("diffolio:preferences", &saved.preferences)
+            .map_err(|_| "无法同步设置。".to_string())
     })
     .await
-    .map_err(|_| "保存设置未完成。")??;
-    apply_theme(&app, &saved.preferences)
+    .map_err(|_| "保存设置未完成。")?
 }
 
 #[tauri::command]

@@ -59,6 +59,27 @@
 		await click('创建结果');
 		await click('当前差异采用 A');
 		await until(async () => (await invoke('smoke_action', { action: 'status' })).dirty, 'native dirty state');
+		await window.diffolio.showSettings();
+		const settings = await until(async () => {
+			const status = await invoke('smoke_action', { action: 'settings-status' });
+			return status.report ? status : null;
+		}, 'independent settings window');
+		assert(settings.report.success, settings.report.error ?? 'Native settings tabs, theme, font combobox and repeated-open behavior work');
+		assert(settings.report.menuCheckFocused, 'Native Check for Updates restores and focuses the minimized main window from Settings');
+		await until(async () => !(await invoke('smoke_action', { action: 'settings-status' })).settingsOpen, 'settings closes independently');
+		assert((await invoke('smoke_action', { action: 'status' })).dirty, 'Closing settings preserves unsaved comparison results');
+		await until(() => document.querySelector('.updates-page'), 'update history from settings');
+		assert(
+			!document.querySelector('.home-bands') && document.querySelector('.release-notes h1').textContent.includes((await window.diffolio.update('status')).currentVersion),
+			'Updates have a dedicated page and real release notes',
+		);
+		await snapshot('updates');
+		await click('继续比较');
+		await until(() => document.querySelectorAll('.cm-editor').length === 2, 'comparison returns after updates');
+		assert(
+			document.documentElement.dataset.appearance === 'dark' && settings.preferences.fontSize === 14,
+			'Settings synchronize appearance and font size to the comparison window',
+		);
 		await invoke('smoke_action', { action: 'request-close' });
 		await new Promise((resolve) => setTimeout(resolve, 200));
 		const guarded = await invoke('smoke_action', { action: 'status' });
@@ -71,11 +92,6 @@
 		await click('双栏布局 ⌘1');
 		await until(() => document.querySelectorAll('.cm-editor').length === 2, 'split restored');
 		assert(true, 'Split and unified editors switch without losing state');
-		await click('设置 ⌘,');
-		await click('深色');
-		await until(() => document.documentElement.dataset.appearance === 'dark', 'dark theme');
-		await snapshot('settings');
-		await click('关闭设置');
 		await snapshot('search-dark');
 		const base = window.__DIFFOLIO_SMOKE__.root + '/../fixtures/reference';
 		const result = await window.diffolio.readPaths([base + '/text/before.ts', base + '/text/after.ts']);

@@ -91,7 +91,7 @@ export function createSessionActions(context: WorkspaceContext): SessionActions 
 		},
 
 		showHome() {
-			set({ home: true, error: '' });
+			set({ home: true, homePage: 'recents', error: '' });
 		},
 
 		setEntryKind(entryKind) {

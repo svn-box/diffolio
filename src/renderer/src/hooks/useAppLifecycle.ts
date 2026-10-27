@@ -37,15 +37,19 @@ export function useAppLifecycle(): void {
 		const unsubscribe = workspaceStore.subscribe(sync);
 		const offProgress = api.onProgress(({ taskId, count }) => workspaceStore.getState().updateProgress(taskId, count));
 		const offUpdate = api.onUpdate((state) => useAppUpdates.getState().accept(state));
+		const offPreferences = api.onPreferences((preferences) => workspaceStore.setState({ preferences }));
 		void useAppUpdates.getState().act('status');
 		const offAction = api.onAction((action, paths) => {
 			const state = workspaceStore.getState();
 			switch (action) {
 				case 'settings':
-					state.setSettings(true);
+					state.openSettings();
+					break;
+				case 'show-updates':
+					state.showUpdates();
 					break;
 				case 'check-updates':
-					state.setSettings(true);
+					state.showUpdates();
 					void useAppUpdates.getState().act('check');
 					break;
 				case 'new':
@@ -89,6 +93,7 @@ export function useAppLifecycle(): void {
 			unsubscribe();
 			offProgress();
 			offUpdate();
+			offPreferences();
 			offAction();
 			clearTimeout(noticeTimer);
 		};

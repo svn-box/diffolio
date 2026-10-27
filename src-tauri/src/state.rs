@@ -1,6 +1,6 @@
 use crate::{
     files::save_atomic,
-    model::{io_error, SourceFile, Store},
+    model::{io_error, PreferencePatch, SourceFile, Store},
 };
 use std::{
     collections::{HashMap, VecDeque},
@@ -22,6 +22,7 @@ pub struct Runtime {
     pub can_close: AtomicBool,
     pub pending_paths: Mutex<Vec<String>>,
     pub ready: AtomicBool,
+    pub preference_writes: Mutex<()>,
 }
 
 #[derive(Clone)]
@@ -53,6 +54,7 @@ impl Backend {
             can_close: AtomicBool::new(false),
             pending_paths: Mutex::new(Vec::new()),
             ready: AtomicBool::new(false),
+            preference_writes: Mutex::new(()),
         })))
     }
 
@@ -60,6 +62,17 @@ impl Backend {
         let mut current = self.0.store.lock().map_err(|_| "偏好设置暂时不可用。")?;
         let mut next = current.clone();
         change(&mut next);
+        self.persist_store(&mut current, next)
+    }
+
+    pub fn patch_preferences(&self, patch: PreferencePatch) -> Result<Store, String> {
+        let mut current = self.0.store.lock().map_err(|_| "偏好设置暂时不可用。")?;
+        let mut next = current.clone();
+        next.preferences = patch.apply(&current.preferences)?;
+        self.persist_store(&mut current, next)
+    }
+
+    fn persist_store(&self, current: &mut Store, next: Store) -> Result<Store, String> {
         let bytes = serde_json::to_vec_pretty(&next).map_err(|error| error.to_string())?;
         let expected = crate::files::current_hash(&self.0.store_path)?;
         save_atomic(&self.0.store_path, &bytes, expected.as_deref())?;

@@ -6,8 +6,12 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import assert from 'node:assert/strict';
+import packageInfo from '../package.json' with { type: 'json' };
+import { mockDesktop } from './helpers/mock-desktop.mjs';
+import { exerciseSettings, exerciseUpdates } from './helpers/settings-check.mjs';
 
 const output = resolve('work/visual');
+const { version } = packageInfo;
 await mkdir(output, { recursive: true });
 const fixtureRoot = resolve('fixtures/reference');
 const paths = ['text/before.ts', 'text/after.ts', 'left/assets/preview.png', 'right/assets/preview.png'];
@@ -35,57 +39,6 @@ const sources = Object.fromEntries(
 );
 const defaults = { appearance: 'light', fontSize: 12, wrap: false, collapse: false };
 
-function mockDesktop({ sources, defaults, fixtureRoot }) {
-	const action = new Set();
-	let preferences = { ...defaults };
-	let recents = [];
-	window.__sendAction = (name, paths) => action.forEach((callback) => callback(name, paths));
-	window.diffolio = {
-		bootstrap: async () => ({ preferences, recents }),
-		preferences: async (value) => {
-			preferences = value;
-		},
-		remember: async () => recents,
-		clearRecents: async () => {
-			recents = [];
-		},
-		open: async () => null,
-		readPaths: async (paths) => {
-			if (paths[0] === fixtureRoot + '/left') {
-				return {
-					files: [],
-					folder: {
-						id: 'folder',
-						left: paths[0],
-						right: paths[1],
-						entries: [
-							{ path: 'preferences.ts', kind: 'file', status: 'modified', left: paths[0] + '/preferences.ts', right: paths[1] + '/preferences.ts' },
-							{ path: 'README.txt', kind: 'file', status: 'equal', left: paths[0] + '/README.txt', right: paths[1] + '/README.txt' },
-						],
-					},
-				};
-			}
-			return { files: paths.map((path) => sources[path]) };
-		},
-		selectFolder: async (path) => path ?? null,
-		clipboard: async () => ({ id: 'clipboard', name: '剪贴板文本', content: '', bytes: 0, kind: 'text', bom: false, lineEnding: 'LF' }),
-		save: async () => ({ path: '/tmp/result.ts' }),
-		confirmUnsaved: async () => 'cancel',
-		dirty: () => {},
-		close: () => {},
-		cancel: () => {},
-		reveal: async () => {},
-		filePath: () => '',
-		onAction: (callback) => {
-			action.add(callback);
-			return () => action.delete(callback);
-		},
-		onProgress: () => () => {},
-		onUpdate: () => () => {},
-		update: async () => ({ phase: 'disabled', currentVersion: '0.1.1', revision: 0, message: '此预览版暂未配置更新源，请手动安装新版本。' }),
-	};
-}
-
 async function geometry(page) {
 	return page.evaluate(() =>
 		Object.fromEntries(
@@ -111,6 +64,9 @@ async function exercise(page, name, sendAction) {
 	};
 	await expect(page.getByRole('button', { name: '示例比较', exact: true })).toBeVisible();
 	await shot('welcome');
+	if (name !== 'electron') {
+		await exerciseUpdates(page, output, name, version);
+	}
 	await page.locator('.home-drop').click();
 	await expect(page.locator('.input-target')).toHaveCount(2);
 	await shot('entry');
@@ -153,12 +109,7 @@ async function exercise(page, name, sendAction) {
 	await page.getByRole('button', { name: '双栏布局 ⌘1', exact: true }).click();
 	await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
 	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).not.toContainText('迁移验证');
-	await page.getByRole('button', { name: '设置 ⌘,', exact: true }).click();
-	await page.getByRole('button', { name: '深色', exact: true }).click();
-	await page.getByRole('combobox').click();
-	await page.getByRole('option', { name: '14 px', exact: true }).click();
-	await expect(page.getByRole('combobox')).toHaveText('14 px');
-	await page.getByRole('button', { name: '关闭设置', exact: true }).click();
+	await exerciseSettings(page, output, name);
 	await shot('dark');
 	await sendAction('paths', [join(fixtureRoot, 'left/assets/preview.png'), join(fixtureRoot, 'right/assets/preview.png')]);
 	await expect(page.locator('.image-comparison')).toBeVisible();
@@ -189,8 +140,9 @@ try {
 	]) {
 		const browser = await engine.launch();
 		try {
-			const page = await browser.newPage({ viewport: { width: 964, height: 564 }, deviceScaleFactor: 2, colorScheme: 'light' });
-			await page.addInitScript(mockDesktop, { sources, defaults, fixtureRoot });
+			const context = await browser.newContext({ viewport: { width: 964, height: 564 }, deviceScaleFactor: 2, colorScheme: 'light' });
+			await context.addInitScript(mockDesktop, { sources, defaults, fixtureRoot, version });
+			const page = await context.newPage();
 			await page.goto('http://127.0.0.1:1421');
 			reports[name] = await exercise(page, name, (name, paths) => page.evaluate(({ name, paths }) => window.__sendAction(name, paths), { name, paths }));
 		} finally {

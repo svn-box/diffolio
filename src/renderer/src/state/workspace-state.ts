@@ -9,8 +9,8 @@ export interface WorkspaceState {
 	preferences: Preferences;
 	recents: RecentComparison[];
 	home: boolean;
+	homePage: 'recents' | 'updates';
 	inspector: boolean;
-	settings: boolean;
 	error: string;
 	notice: string;
 	busy: { id: string; label: string; count?: number } | null;
@@ -22,6 +22,8 @@ export interface WorkspaceState {
 	activateSession(id: string): void;
 	continueSession(): void;
 	showHome(): void;
+	showUpdates(): void;
+	openSettings(): void;
 	setEntryKind(kind: EntryKind): void;
 	setLayout(layout: Layout): void;
 	startEditing(): void;
@@ -38,7 +40,6 @@ export interface WorkspaceState {
 	openFolderEntry(entry: FolderEntry): Promise<void>;
 	cancelTask(): void;
 	updateProgress(taskId: string, count: number): void;
-	setSettings(open: boolean): void;
 	toggleInspector(): void;
 	clearError(): void;
 	clearNotice(): void;

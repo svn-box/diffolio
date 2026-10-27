@@ -21,10 +21,9 @@ export function createCatalogActions({ get, set, api }: WorkspaceContext): Catal
 		setPreference(value) {
 			preferenceWrites = preferenceWrites.then(async () => {
 				await initialize();
-				const next = { ...get().preferences, ...value };
 				try {
-					await api.preferences(next);
-					set({ preferences: next });
+					await api.preferences(value);
+					set((state) => ({ preferences: { ...state.preferences, ...value } }));
 				} catch (reason) {
 					get().fail(reason);
 				}

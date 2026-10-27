@@ -31,7 +31,24 @@ pub fn smoke_action(
             .ok_or("Missing window")?
             .close()
             .map_err(|error| error.to_string())?,
-        "find" | "find-next" | "find-previous" => crate::menu::handle(&app, &action),
+        "find" | "find-next" | "find-previous" | "check-updates" => {
+            crate::menu::handle(&app, &action)
+        }
+        "minimize-main" => app
+            .get_webview_window("main")
+            .ok_or("Missing window")?
+            .minimize()
+            .map_err(|e| e.to_string())?,
+        "settings-status" => {
+            let output = PathBuf::from(std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").unwrap());
+            let report = std::fs::read(output.join("settings-report.json"))
+                .ok()
+                .and_then(|bytes| serde_json::from_slice::<serde_json::Value>(&bytes).ok());
+            let main = app.get_webview_window("main").ok_or("Missing window")?;
+            return Ok(
+                serde_json::json!({"report": report, "settingsOpen": app.get_webview_window("settings").is_some(), "windowCount": app.webview_windows().len(), "preferences": backend.0.store.lock().unwrap().preferences, "mainFocused": main.is_focused().unwrap_or(false), "mainMinimized": main.is_minimized().unwrap_or(false)}),
+            );
+        }
         "status" => {}
         _ => return Err("Unknown test action".into()),
     }
@@ -41,6 +58,29 @@ pub fn smoke_action(
 }
 
 static STARTED: AtomicBool = AtomicBool::new(false);
+static SETTINGS_STARTED: AtomicBool = AtomicBool::new(false);
+
+pub fn start_settings(app: &AppHandle) {
+    if std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").is_none()
+        || SETTINGS_STARTED.swap(true, Ordering::SeqCst)
+    {
+        return;
+    }
+    if let Some(window) = app.get_webview_window("settings") {
+        let _ = window.eval(include_str!("../../scripts/native-settings-smoke.js"));
+    }
+}
+
+#[tauri::command]
+pub fn smoke_settings_report(report: serde_json::Value) -> Result<(), String> {
+    let output =
+        PathBuf::from(std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").ok_or("Harness is not enabled")?);
+    std::fs::write(
+        output.join("settings-report.json"),
+        serde_json::to_vec(&report).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())
+}
 
 pub fn start(app: &AppHandle) {
     if std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").is_none() || STARTED.swap(true, Ordering::SeqCst) {
@@ -75,7 +115,7 @@ pub fn smoke_report(
 }
 
 #[tauri::command]
-pub async fn smoke_snapshot(app: AppHandle, name: String) -> Result<(), String> {
+pub async fn smoke_snapshot(window: tauri::WebviewWindow, name: String) -> Result<(), String> {
     if ![
         "welcome",
         "entry",
@@ -84,6 +124,9 @@ pub async fn smoke_snapshot(app: AppHandle, name: String) -> Result<(), String> 
         "folder",
         "image",
         "settings",
+        "settings-light",
+        "settings-text",
+        "updates",
     ]
     .contains(&name.as_str())
     {
@@ -93,8 +136,7 @@ pub async fn smoke_snapshot(app: AppHandle, name: String) -> Result<(), String> 
         PathBuf::from(std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").ok_or("Harness is not enabled")?)
             .join(format!("{name}.png"));
     let (sender, receiver) = std::sync::mpsc::sync_channel(1);
-    app.get_webview_window("main")
-        .ok_or("Missing window")?
+    window
         .with_webview(move |webview| unsafe {
             use objc2_app_kit::{NSBitmapImageFileType, NSBitmapImageRep, NSImage};
             use objc2_foundation::{NSDictionary, NSError, NSString};

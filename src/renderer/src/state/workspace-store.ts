@@ -16,8 +16,8 @@ export function createWorkspaceStore(api: DiffolioApi) {
 			preferences: { ...defaultPreferences },
 			recents: [],
 			home: true,
+			homePage: 'recents',
 			inspector: false,
-			settings: false,
 			error: '',
 			notice: '',
 			busy: null,
@@ -25,8 +25,12 @@ export function createWorkspaceStore(api: DiffolioApi) {
 			...createSessionActions(context),
 			...createSourceActions(context),
 
-			setSettings(settings) {
-				set({ settings });
+			openSettings() {
+				void api.showSettings().catch(get().fail);
+			},
+
+			showUpdates() {
+				set({ home: true, homePage: 'updates', error: '' });
 			},
 
 			toggleInspector() {

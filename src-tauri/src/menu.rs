@@ -1,7 +1,7 @@
 use crate::commands::action;
 use tauri::{
     menu::{AboutMetadata, IsMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu},
-    AppHandle, Manager,
+    AppHandle, Emitter, Manager,
 };
 
 fn item(
@@ -112,6 +112,29 @@ pub fn install(app: &AppHandle) -> tauri::Result<()> {
 
 pub fn handle(app: &AppHandle, id: &str) {
     match id {
+        "check-updates" => match crate::windows::focus_main(app) {
+            Ok(()) => action(app, "check-updates", None),
+            Err(error) => {
+                let _ = app.emit("diffolio:error", error);
+            }
+        },
+        "settings" => {
+            let app = app.clone();
+            tauri::async_runtime::spawn(async move {
+                if let Err(error) = crate::windows::show_settings(app.clone()).await {
+                    let _ = app.emit("diffolio:error", error);
+                }
+            });
+        }
+        "close-tab"
+            if app
+                .get_webview_window("settings")
+                .is_some_and(|window| window.is_focused().unwrap_or(false)) =>
+        {
+            if let Some(window) = app.get_webview_window("settings") {
+                let _ = window.close();
+            }
+        }
         "quit" => action(app, "close-window", None),
         "save-as" => action(app, "save", None),
         "fullscreen" => {
@@ -121,8 +144,8 @@ pub fn handle(app: &AppHandle, id: &str) {
                 }
             }
         }
-        "settings" | "check-updates" | "new" | "open" | "folders" | "save" | "close-tab"
-        | "split" | "unified" | "find" | "find-next" | "find-previous" => action(app, id, None),
+        "new" | "open" | "folders" | "save" | "close-tab" | "split" | "unified" | "find"
+        | "find-next" | "find-previous" => action(app, id, None),
         _ => {}
     }
 }

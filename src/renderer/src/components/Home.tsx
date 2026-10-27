@@ -1,4 +1,4 @@
-import { ArrowRight, ClipboardPlus, Clock3, Columns2, FileDiff, FilePlus2, FolderOpen, Image, Layers3, Plus } from 'lucide-react';
+import { ArrowRight, ClipboardPlus, Clock3, Columns2, FileDiff, FilePlus2, FolderOpen, Image, Layers3, Plus, Sparkles } from 'lucide-react';
 import type { RecentComparison } from '../../../shared/types';
 import { Mark } from '@/components/Primitives';
 
@@ -13,10 +13,26 @@ export function WelcomeBackdrop() {
 	);
 }
 
-export function HomeNavigation({ onNew, onExample, onContinue, activeCount }: { onNew(): void; onExample(): void; onContinue(): void; activeCount: number }) {
+export function HomeNavigation({
+	page,
+	onRecents,
+	onUpdates,
+	onNew,
+	onExample,
+	onContinue,
+	activeCount,
+}: {
+	page: 'recents' | 'updates';
+	onRecents(): void;
+	onUpdates(): void;
+	onNew(): void;
+	onExample(): void;
+	onContinue(): void;
+	activeCount: number;
+}) {
 	return (
 		<nav className="home-navigation" aria-label="欢迎页导航">
-			<button className="selected" aria-current="page">
+			<button className={page === 'recents' ? 'selected' : ''} aria-current={page === 'recents' ? 'page' : undefined} onClick={onRecents}>
 				<Clock3 size={18} />
 				<span>最近比较</span>
 			</button>
@@ -26,7 +42,7 @@ export function HomeNavigation({ onNew, onExample, onContinue, activeCount }: { 
 				<kbd>⌘N</kbd>
 			</button>
 			{activeCount > 0 && (
-				<button onClick={onContinue}>
+				<button onClick={onContinue} aria-label="继续比较" aria-description={`${activeCount} 个进行中的比较`}>
 					<Layers3 size={18} />
 					<span>继续比较</span>
 					<small>{activeCount}</small>
@@ -36,6 +52,10 @@ export function HomeNavigation({ onNew, onExample, onContinue, activeCount }: { 
 			<button onClick={onExample}>
 				<Columns2 size={18} />
 				<span>示例比较</span>
+			</button>
+			<button className={page === 'updates' ? 'selected' : ''} aria-current={page === 'updates' ? 'page' : undefined} onClick={onUpdates}>
+				<Sparkles size={18} />
+				<span>更新日志</span>
 			</button>
 		</nav>
 	);

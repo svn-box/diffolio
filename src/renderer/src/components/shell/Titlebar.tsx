@@ -4,6 +4,7 @@ import { useWorkspace, workspaceStore } from '@/state/workspace';
 import { activeSession } from '@/state/workspace-state';
 import { sessionTitle, sessionView } from '@/state/session';
 import { IconButton } from '@/components/Primitives';
+import { AppUpdateControl } from '@/components/AppUpdateControl';
 
 export function Titlebar() {
 	const { ready, paired, previewing, kind, title, folder, example, layout, total } = useWorkspace(
@@ -13,9 +14,10 @@ export function Titlebar() {
 		}),
 	);
 	const home = useWorkspace((state) => state.home);
+	const homePage = useWorkspace((state) => state.homePage);
 	const inspector = useWorkspace((state) => state.inspector);
 	const busy = useWorkspace((state) => !!state.busy);
-	const { showHome, setLayout, toggleInspector, setSettings, addSession } = workspaceStore.getState();
+	const { showHome, setLayout, toggleInspector, openSettings, addSession } = workspaceStore.getState();
 	return (
 		<header className="titlebar">
 			{!home && (
@@ -24,7 +26,7 @@ export function Titlebar() {
 				</IconButton>
 			)}
 			<div className="window-heading">
-				<strong>{home ? '最近比较' : ready || previewing ? title : '新建比较'}</strong>
+				<strong>{home ? (homePage === 'updates' ? '更新日志' : '最近比较') : ready || previewing ? title : '新建比较'}</strong>
 				{!home && (ready || previewing) && (
 					<span>
 						{!ready
@@ -39,6 +41,7 @@ export function Titlebar() {
 					</span>
 				)}
 			</div>
+			{home && homePage === 'updates' && <AppUpdateControl />}
 			{!home && (
 				<div className="titlebar-actions">
 					{paired && kind === 'text' && (
@@ -56,7 +59,7 @@ export function Titlebar() {
 							<Info size={18} />
 						</IconButton>
 					)}
-					<IconButton label="设置 ⌘," onClick={() => setSettings(true)}>
+					<IconButton label="设置 ⌘," onClick={openSettings}>
 						<Settings2 size={17} />
 					</IconButton>
 					<div className="toolbar-divider" />
