@@ -285,7 +285,7 @@ The welcome screen is deliberately dark and colorful, independent of workspace a
 - A welcome-only graphite rail; full-width source previews and comparison panes.
 - Original SVG geometry and icons; semantic CSS custom properties.
 
-This record follows the implemented source after the approved welcome/comparison separation and source-interaction correction. The surface contract’s last two sections supersede earlier rail and input patterns. Runtime values live in `src/renderer/src/tokens.css` and `styles.css`; `replica/design/tokens.json` and `tokens.css` export the workspace values and current layout scope. The YAML frontmatter records explicit light, dark and welcome values. Component snapshots use the light workspace by default, with named dark siblings where useful; live CSS resolves the active semantic properties.
+This record follows the implemented source after the approved welcome/comparison separation and source-interaction correction. The surface contract’s last two sections supersede earlier rail and input patterns. Runtime values live in `src/renderer/src/tokens.css` and `styles.css`; `npm run design:check` exports local workspace values, layout scope and a contrast report; these generated research files stay outside Git. The YAML frontmatter records explicit light, dark and welcome values. Component snapshots use the light workspace by default, with named dark siblings where useful; live CSS resolves the active semantic properties.
 
 ## Colors
 
@@ -420,7 +420,7 @@ The first file, image or clipboard text immediately opens a full-width two-pane 
 
 Text comparison uses CodeMirror aligned split ranges or a unified view. Added/deleted/modified line fills are subtle; the changed text uses the stronger partner fill and plain main text color. Current-change navigation moves the caret and centers corresponding ranges; result editing and applying A operate on the current chunk. The footer shows the current/total change count. Save and editing state remain explicit.
 
-The welcome’s centered entry action, fixed top-right clipboard/file capsule, opaque rail and true recent rows are reusable home patterns. Its original bands continue behind the main-column title. Empty recents provide a short explanation; populated rows show name, kind and date, reveal their reopen arrow on hover or keyboard focus, and reopen the actual paths. The rail carries new/example/continue actions without a duplicate action card or footer. Examples remain identified throughout comparison. Full implemented state details are in `replica/design/components.md`; framework-free visual specimens are in `.impeccable/design.json`.
+The welcome’s centered entry action, fixed top-right clipboard/file capsule, opaque rail and true recent rows are reusable home patterns. Its original bands continue behind the main-column title. Empty recents provide a short explanation; populated rows show name, kind and date, reveal their reopen arrow on hover or keyboard focus, and reopen the actual paths. The rail carries new/example/continue actions without a duplicate action card or footer. Examples remain identified throughout comparison. Implemented states live in `src/renderer/src/components/` and `src/renderer/src/state/`; framework-free visual specimens are in `.impeccable/design.json`.
 
 ## Do's and Don'ts
 

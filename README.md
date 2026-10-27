@@ -135,7 +135,7 @@ Use the return arrow to visit recent comparisons and **继续比较** (Continue 
 
 Text input supports **UTF-8**, including BOM and LF, CRLF or CR line endings. Opened text/image files and saved results are limited to **16 MiB per file**; folder scans are limited to **100,000 entries**. These are implementation limits, not performance benchmark claims. Symlink entries are compared as links rather than followed during directory traversal.
 
-Three-way merging, Git/CLI integration, Fluid-style connectors, whitespace-ignore rules, folder copy/synchronization and image pixel-difference masks remain planned. See [PLAN.md](docs/PLAN.md) for implementation status and the [feature inventory](replica/features.csv) for the wider scope.
+Three-way merging, Git/CLI integration, Fluid-style connectors, whitespace-ignore rules, folder copy/synchronization and image pixel-difference masks remain planned. See [PLAN.md](docs/PLAN.md) for implementation status and the wider scope.
 
 ## Installation
 
@@ -206,7 +206,5 @@ This builds the app and captures its actual macOS window using fixtures and temp
 | [Code architecture](docs/ARCHITECTURE.md)                 | State ownership, module responsibilities and regression checks |
 | [Refactor review](docs/REVIEW.md)                         | Findings, fixes and verification before the initial commit  |
 | [Release instructions](docs/RELEASING.md)                  | Version checks, DMG/ZIP generation and installer acceptance |
-| [Component specifications](replica/design/components.md) | Implemented components and their states                     |
 | [Comparison fixtures](fixtures/README.md)                | Text, folder, image and future merge samples                |
 | [Public resources](resources/README.md)                  | README screenshots, selected artwork and native icon build  |
-| [Reference research](replica/recon.md)                   | Kaleidoscope screens, flows and implementation observations |

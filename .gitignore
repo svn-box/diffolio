@@ -54,8 +54,8 @@ yarn-error.log*
 /.wu/
 /.impeccable/questions/
 /.impeccable/review/
-# Local third-party reference captures; keep original Diffolio assets in resources/
-/replica/screens/
+# Local reference research and design exports
+/replica/
 /.idea/
 *.swp
 *.swo

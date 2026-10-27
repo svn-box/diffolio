@@ -26,7 +26,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## User requested welcome and control refinement
 
-The user supplied replica/screens/S01-welcome-reference.png on 2026-10-27 and explicitly asked to reproduce that attractive entry. The welcome surface now uses a teal-to-violet-to-rose gradient across its top third, original geometric bands, a centered working drop/open target, a dark navigation rail and genuine recently opened comparisons. This intentionally colorful, dark welcome is distinct from the system/light/dark comparison workspace. No reference artwork is used as a product background. All navigation actions lead to implemented flows; the example stays explicitly labeled.
+The user supplied a welcome-screen reference on 2026-10-27 and explicitly asked to reproduce that attractive entry. The welcome surface now uses a teal-to-violet-to-rose gradient across its top third, original geometric bands, a centered working drop/open target, a dark navigation rail and genuine recently opened comparisons. This intentionally colorful, dark welcome is distinct from the system/light/dark comparison workspace. No reference artwork is used as a product background. All navigation actions lead to implemented flows; the example stays explicitly labeled.
 
 The user also requires shadcn Combobox for font-size selection. Reuse SVNBox's shadcn Popover + Command composition with original Diffolio tokens. The popover must mount inside the native settings dialog top layer and support search, arrow navigation, Enter, Escape, visible selection and focus return.
 

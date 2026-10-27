@@ -34,4 +34,4 @@ Name: Diffolio. The user explicitly requested Kaleidoscope's excellent design an
 
 ## Evidence on Hand
 
-replica/recon.md, replica/features.csv, seven screenshots in replica/screens, and reusable inputs in fixtures/reference. These are reference material and examples, not measurements of Diffolio performance.
+The product plan and design system in docs/, implemented application code, original Diffolio captures in resources/screenshots/, and reusable inputs in fixtures/reference. Examples and screenshots are not measurements of Diffolio performance.

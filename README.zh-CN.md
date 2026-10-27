@@ -135,7 +135,7 @@ Diffolio 是一款紧凑的 macOS 文件对比工具，用于比较本机文本�
 
 文本支持 **UTF-8**，包括 BOM 与 LF、CRLF、CR 换行。打开的文本、图片和保存的结果限制为**单文件 16 MiB**，目录扫描上限为 **100,000 条**。这些是当前实现边界，不是性能测试结论。遍历目录时按链接本身比较符号链接，不继续跟随其目标。
 
-三方合并、Git/CLI 集成、Fluid 连线、忽略空白规则、目录复制与同步、图片像素差异遮罩仍在计划中。当前进度见 [PLAN.md](docs/PLAN.md)，更完整的范围见[功能清单](replica/features.csv)。
+三方合并、Git/CLI 集成、Fluid 连线、忽略空白规则、目录复制与同步、图片像素差异遮罩仍在计划中。当前进度与后续范围见 [PLAN.md](docs/PLAN.md)。
 
 ## 安装
 
@@ -206,7 +206,5 @@ npm run docs:screenshots
 | [代码架构](docs/ARCHITECTURE.md)         | 状态归属、模块职责与回归检查      |
 | [重构审查](docs/REVIEW.md)               | 首次提交前的发现、修复与验证      |
 | [发布流程](docs/RELEASING.md)           | 版本检查、DMG/ZIP 生成与安装验收  |
-| [组件说明](replica/design/components.md) | 已实现的组件及其状态              |
 | [比较样例](fixtures/README.md)           | 文本、目录、图片及后续合并输入    |
 | [公开资源](resources/README.md)          | README 截图、选定图形与图标构建   |
-| [参考分析](replica/recon.md)             | Kaleidoscope 界面、流程与实现观察 |
