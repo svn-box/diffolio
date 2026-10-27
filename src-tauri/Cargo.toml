@@ -1,6 +1,6 @@
 [package]
 name = "diffolio-app"
-version = "0.1.1"
+version = "0.3.0"
 description = "A considered file comparison workspace for macOS"
 authors = ["Kelvin"]
 edition = "2021"

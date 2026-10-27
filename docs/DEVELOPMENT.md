@@ -36,6 +36,6 @@ npm run licenses:generate
 npm run package:dmg
 ```
 
-Outputs are in `src-tauri/target/release/bundle/macos/` and `src-tauri/target/release/bundle/dmg/`. The local preview uses ad-hoc signing. Building a public notarized release requires a separate distribution setup described in [MIGRATION.md](MIGRATION.md).
+Outputs are in `src-tauri/target/release/bundle/macos/` and `src-tauri/target/release/bundle/dmg/`. The local preview uses ad-hoc signing. Public signed releases use the configuration described in [RELEASING.md](RELEASING.md).
 
 Commit `package-lock.json`, `src-tauri/Cargo.lock`, the original `.icon` artwork and generated third-party notices. Build output, native asset catalogs, credentials, test artifacts, `node_modules`, Rust target folders and local replica research are ignored. Keep modules focused and generally below 300 lines. TS/TSX follows `.prettierrc.json`; Rust follows rustfmt and clippy.

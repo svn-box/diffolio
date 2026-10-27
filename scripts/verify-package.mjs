@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile, stat } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
 
 const exec = promisify(execFile);
 const bundle = resolve('src-tauri/target/release/bundle');
@@ -15,11 +16,11 @@ const digest = async (path) =>
 		.update(await readFile(path))
 		.digest('hex');
 
-async function verify(app) {
+export async function verifyApplication(app) {
 	const resources = join(app, 'Contents/Resources');
 	const binary = join(app, 'Contents/MacOS/diffolio-app');
 	const info = JSON.parse((await exec('/usr/bin/plutil', ['-convert', 'json', '-o', '-', join(app, 'Contents/Info.plist')])).stdout);
-	assert.equal(info.CFBundleIdentifier, 'app.diffolio.tauri-preview');
+	assert.equal(info.CFBundleIdentifier, 'app.diffolio.desktop');
 	assert.equal(info.CFBundleShortVersionString, version);
 	assert.equal(info.CFBundleIconName, 'Icon');
 	assert.ok((await exec('/usr/bin/file', [binary])).stdout.includes('arm64'));
@@ -43,26 +44,32 @@ async function verify(app) {
 	return digest(binary);
 }
 
-await mkdir('work', { recursive: true });
-const executableHash = await verify(application);
-await exec('/usr/bin/hdiutil', ['verify', installer]);
-const mount = resolve('work/dmg-mount');
-await mkdir(mount, { recursive: true });
-await exec('/usr/bin/hdiutil', ['attach', '-readonly', '-nobrowse', '-mountpoint', mount, installer]);
-try {
-	assert.equal(await verify(join(mount, 'Diffolio.app')), executableHash);
-} finally {
-	await exec('/usr/bin/hdiutil', ['detach', mount]);
-}
-let appBytes = 0;
-for (const name of await readdir(application, { recursive: true })) {
-	const file = await stat(join(application, name));
-	if (file.isFile()) {
-		appBytes += file.size;
+async function main() {
+	await mkdir('work', { recursive: true });
+	const executableHash = await verifyApplication(application);
+	await exec('/usr/bin/hdiutil', ['verify', installer]);
+	const mount = resolve('work/dmg-mount');
+	await mkdir(mount, { recursive: true });
+	await exec('/usr/bin/hdiutil', ['attach', '-readonly', '-nobrowse', '-mountpoint', mount, installer]);
+	try {
+		assert.equal(await verifyApplication(join(mount, 'Diffolio.app')), executableHash);
+	} finally {
+		await exec('/usr/bin/hdiutil', ['detach', mount]);
 	}
+	let appBytes = 0;
+	for (const name of await readdir(application, { recursive: true })) {
+		const file = await stat(join(application, name));
+		if (file.isFile()) {
+			appBytes += file.size;
+		}
+	}
+	const report = { version, application, installer, appBytes, dmgBytes: (await stat(installer)).size, sha256: await digest(installer), executableHash };
+	await writeFile('work/package-report.json', JSON.stringify(report, null, 2) + '\n');
+	console.log(
+		`PASS: app + mounted DMG, arm64, code signature, native icon catalog, legal notices, identical executables, and test hooks excluded. App ${(appBytes / 1048576).toFixed(2)} MiB; DMG ${(report.dmgBytes / 1048576).toFixed(2)} MiB.`,
+	);
 }
-const report = { version, application, installer, appBytes, dmgBytes: (await stat(installer)).size, sha256: await digest(installer), executableHash };
-await writeFile('work/package-report.json', JSON.stringify(report, null, 2) + '\n');
-console.log(
-	`PASS: app + mounted DMG, arm64, ad-hoc signature, native icon catalog, legal notices, identical executables, and test hooks excluded. App ${(appBytes / 1048576).toFixed(2)} MiB; DMG ${(report.dmgBytes / 1048576).toFixed(2)} MiB.`,
-);
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+	await main();
+}

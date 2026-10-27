@@ -21,7 +21,13 @@ pub fn run() {
     let application = tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(
+            tauri_plugin_updater::Builder::new()
+                .default_version_comparator(|current, release| {
+                    release.version.pre.is_empty() && release.version > current
+                })
+                .build(),
+        )
         .setup(|app| {
             let root = if let Some(path) = std::env::var_os("DIFFOLIO_DATA_DIR") {
                 std::path::PathBuf::from(path)

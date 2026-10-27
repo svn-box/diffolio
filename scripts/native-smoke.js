@@ -130,7 +130,7 @@
 		}
 		assert(true, 'Native drop events hit-test A/B and load actual files through Rust');
 		const update = await window.diffolio.update('status');
-		assert(update.phase === 'disabled' && update.message.includes('更新源'), 'Preview never installs an Electron release as a Tauri update');
+		assert(update.phase === 'disabled' && update.message.includes('验证版本'), 'Native verification never checks or installs production updates');
 		assert(document.documentElement.scrollWidth <= innerWidth, 'Native WebKit layout stays within the window');
 		await invoke('smoke_report', { report: { success: true, checks, metrics, userAgent: navigator.userAgent } });
 	} catch (error) {

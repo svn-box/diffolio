@@ -8,9 +8,6 @@ use tauri::{AppHandle, Emitter, State};
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_updater::{Update, UpdaterExt};
 
-const ENDPOINT: Option<&str> = option_env!("DIFFOLIO_UPDATER_ENDPOINT");
-const PUBLIC_KEY: Option<&str> = option_env!("DIFFOLIO_UPDATER_PUBLIC_KEY");
-
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateState {
@@ -35,8 +32,7 @@ pub struct Updates {
 
 impl Updates {
     pub fn new() -> Self {
-        let enabled = ENDPOINT.is_some_and(|value| value.starts_with("https://"))
-            && PUBLIC_KEY.is_some_and(|value| !value.trim().is_empty());
+        let enabled = !cfg!(any(debug_assertions, feature = "native-smoke"));
         Self {
             state: Mutex::new(UpdateState {
                 phase: if enabled { "idle" } else { "disabled" }.into(),
@@ -48,7 +44,7 @@ impl Updates {
                 message: if enabled {
                     None
                 } else {
-                    Some("此预览版暂未配置更新源，请手动安装新版本。".into())
+                    Some("开发与验证版本不检查更新，请使用正式安装包。".into())
                 },
             }),
             pending: AtomicBool::new(false),
@@ -94,12 +90,6 @@ pub async fn update(
         return Ok(updates.snapshot());
     }
     if action == "release" {
-        if ENDPOINT.is_none() {
-            updates.change(&app, |state| {
-                state.message = Some("此预览版暂无独立发布页，请使用本地安装包。".into())
-            });
-            return Ok(updates.snapshot());
-        }
         app.opener()
             .open_url("https://github.com/svn-box/diffolio/releases", None::<&str>)
             .map_err(|_| "无法打开发布页。")?;
@@ -127,12 +117,8 @@ pub async fn update(
             });
             let updater = app
                 .updater_builder()
-                .pubkey(PUBLIC_KEY.unwrap_or_default())
-                .endpoints(vec![ENDPOINT
-                    .unwrap_or_default()
-                    .parse()
-                    .map_err(|_| "更新源无效。")?])
-                .and_then(|builder| builder.build());
+                .timeout(std::time::Duration::from_secs(30))
+                .build();
             let result = match updater {
                 Ok(updater) => updater.check().await,
                 Err(error) => Err(error),

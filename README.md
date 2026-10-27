@@ -3,7 +3,7 @@
   <h1>Diffolio</h1>
   <p>A considered file comparison workspace for macOS.</p>
   <p><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
-  <p><sub>Tauri preview · macOS 13.3+ · Apple Silicon</sub></p>
+  <p><sub>macOS 13.3+ · Apple Silicon</sub></p>
 </div>
 
 Compare local text files, folders and images in a compact desktop window. The interface is currently in Simplified Chinese.
@@ -25,17 +25,17 @@ Compare local text files, folders and images in a compact desktop window. The in
 
 ## Installation and use
 
-This edition is currently a local preview. Open the supplied Diffolio DMG and drag the app to Applications, or open the supplied Diffolio.app directly. The preview keeps its settings and recent comparisons separate from the Electron edition.
+Download the Apple Silicon DMG from [GitHub Releases](https://github.com/svn-box/diffolio/releases/latest), open it and drag Diffolio to Applications. Moving from Electron 0.1.x or a local preview requires this installation once. Settings and recent comparisons use a separate data directory.
 
 Drop two files or folders into the window, add sources to A and B separately, or start with the built-in example. Original inputs open read-only. Choose **创建结果** to edit a result and **另存结果** to save it.
 
 Use ⌘N for a new comparison, ⌘O to open files, ⌘F to search, ⌘G / ⇧⌘G to navigate matches, ⌘1 / ⌘2 to switch layouts, and ⌘, for settings.
 
-This local preview has not been notarized for public distribution. Updates are installed manually until a dedicated update channel is available. It supports UTF-8 text and files up to 16 MiB, with a 100,000-entry folder scan limit.
+Choose **检查更新** to check manually, confirm the download, then restart to install. Update packages are verified before installation. Save pending results and finish running tasks before installing. Supported text is UTF-8, with a 16 MiB file limit and a 100,000-entry folder scan limit.
 
 ## Privacy
 
-File contents are compared locally. No account or upload is required.
+File contents are compared locally. No account or upload is required. Manual update checks connect to GitHub for version information and downloads; comparison contents are never sent.
 
 ## License
 

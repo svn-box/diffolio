@@ -1,8 +1,8 @@
 {
 	"$schema": "https://schema.tauri.app/config/2",
 	"productName": "Diffolio",
-	"version": "0.1.1",
-	"identifier": "app.diffolio.tauri-preview",
+	"version": "0.3.0",
+	"identifier": "app.diffolio.desktop",
 	"build": {
 		"beforeDevCommand": "npm run dev:web",
 		"devUrl": "http://127.0.0.1:1420",
@@ -22,9 +22,15 @@
 				"center": true,
 				"titleBarStyle": "Overlay",
 				"hiddenTitle": true,
-				"trafficLightPosition": { "x": 18, "y": 18 },
+				"trafficLightPosition": {
+					"x": 18,
+					"y": 18
+				},
 				"backgroundColor": "#faf9f7",
-				"windowEffects": { "effects": ["sidebar"], "state": "followsWindowActiveState" }
+				"windowEffects": {
+					"effects": ["sidebar"],
+					"state": "followsWindowActiveState"
+				}
 			}
 		],
 		"security": {
@@ -39,7 +45,14 @@
 			]
 		}
 	},
-	"plugins": { "updater": { "pubkey": "", "endpoints": [] } },
+	"plugins": {
+		"updater": {
+			"pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDVEMzkxNDA3NEY1RkU5NTQKUldSVTZWOVBCeFE1WFFHTzlOZDgvTDhsdEcvLzdPSUE5MjJyMFd3cWlYOVppUSs3UEpvT01jSWQK",
+			"endpoints": ["https://github.com/svn-box/diffolio/releases/latest/download/latest.json"],
+			"requireSignedVersion": true,
+			"allowDowngrades": false
+		}
+	},
 	"bundle": {
 		"active": true,
 		"targets": ["app", "dmg"],
@@ -53,6 +66,11 @@
 			"../resources/licenses/": "legal/resources/licenses/",
 			"../resources/Assets.car": "Assets.car"
 		},
-		"macOS": { "minimumSystemVersion": "13.3", "signingIdentity": "-", "infoPlist": "Info.plist" }
+		"macOS": {
+			"minimumSystemVersion": "13.3",
+			"signingIdentity": "-",
+			"infoPlist": "Info.plist",
+			"hardenedRuntime": true
+		}
 	}
 }
