@@ -9,7 +9,8 @@
     <a href="#features">Features</a> ·
     <a href="#screenshots">Screenshots</a> ·
     <a href="#installation">Installation</a> ·
-    <a href="#usage">Usage</a>
+    <a href="#usage">Usage</a> ·
+    <a href="#license">License</a>
   </p>
   <p><sub>v0.1.0 · macOS · Apple Silicon (arm64)</sub></p>
 </div>
@@ -139,3 +140,9 @@ Use the return arrow to visit recent comparisons and **继续比较** (Continue 
 ## Supported files and limits
 
 Text input supports **UTF-8**, including BOM and LF, CRLF or CR line endings. Opened text/image files and saved results are limited to **16 MiB per file**; folder scans are limited to **100,000 entries**. Symlink entries are compared as links rather than followed during directory traversal.
+
+## License
+
+Diffolio uses the custom [Diffolio Source Available License 1.0](LICENSE). Personal use and internal use by companies of any size are free, including commercial work. You may modify the app and share original or modified copies free of charge, preserving the license and notices and identifying changes.
+
+Selling the app or a modified version, including renamed or repackaged copies, requires separate written permission. Files and work you create or compare with Diffolio remain yours. This is a source-available project with a resale restriction. Third-party components retain their original licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).

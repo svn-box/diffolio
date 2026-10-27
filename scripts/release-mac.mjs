@@ -12,6 +12,7 @@ const unsigned = previewMode(process.argv.slice(2));
 const metadata = await readReleaseMetadata(resolve('.'), { unsigned, tag: process.env.GITHUB_REF_TYPE === 'tag' ? (process.env.GITHUB_REF_NAME ?? '') : undefined });
 assert.equal((await releaseCommand('git', ['status', '--porcelain'])).stdout.trim(), '', 'Commit source changes before creating release artifacts.');
 const revision = (await releaseCommand('git', ['rev-parse', 'HEAD'])).stdout.trim();
+await runBuild(['scripts/third-party-notices.mjs', '--check']);
 const signing = unsigned ? undefined : await prepareSigning();
 await runBuild(['scripts/build-icons.mjs']);
 await runBuild(['node_modules/typescript/bin/tsc', '--noEmit']);

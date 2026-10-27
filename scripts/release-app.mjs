@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { releaseCommand, verifySignature } from './release-signing.mjs';
 
 export async function verifyApp(path, metadata, teamId) {
@@ -17,6 +17,12 @@ export async function verifyApp(path, metadata, teamId) {
 	assert.equal(icon.toString('ascii', 0, 4), 'icns');
 	assert.equal(icon.readUInt32BE(4), icon.length);
 	assert.ok((await readFile(join(path, 'Contents/Resources/Assets.car'))).length > 0, 'Native icon catalog is missing.');
+	for (const name of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+		assert.deepEqual(await readFile(join(path, 'Contents/Resources/legal', name)), await readFile(resolve(name)), `Packaged ${name} is missing or stale.`);
+	}
+	for (const name of ['LICENSES.chromium.html', 'LICENSE.electron.txt']) {
+		assert.ok((await readFile(join(path, 'Contents/Resources', name))).length > 0, `Electron runtime notice ${name} is missing.`);
+	}
 	if (!metadata.unsigned) {
 		assert.match(teamId ?? '', /^[A-Z\d]{10}$/, 'Signed app verification requires the Apple team.');
 		await verifySignature(path, teamId, true);

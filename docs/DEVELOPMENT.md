@@ -68,6 +68,12 @@ This builds the app and captures its actual macOS window using fixtures and temp
 | [Comparison fixtures](../fixtures/README.md) | Text, folder, image and future merge samples                   |
 | [Public resources](../resources/README.md)   | README screenshots, selected artwork and native icon build     |
 
+### Keep license notices current
+
+After changing dependencies, run `npm ci` and `npm run licenses:generate`, review the license changes, and commit the resulting notice and full license texts. `npm run licenses:check` verifies them against the installed lockfile versions without modifying files. Missing license texts require an upstream review; generation does not infer permission from a package name.
+
+Packaging and release builds check the notices first and include `LICENSE`, `THIRD_PARTY_NOTICES.md`, and all linked texts in `Contents/Resources/legal/`. Preserve Electron's separate runtime notices. This does not replace checking license compatibility when introducing a dependency.
+
 ## 简体中文
 
 ### 从源码运行
@@ -133,3 +139,9 @@ npm run docs:screenshots
 | [发布流程](RELEASING.md)           | 版本检查、DMG/ZIP 生成与安装验收 |
 | [比较样例](../fixtures/README.md)  | 文本、目录、图片及后续合并输入   |
 | [公开资源](../resources/README.md) | README 截图、选定图形与图标构建  |
+
+### 维护许可声明
+
+依赖变更后运行 `npm ci` 和 `npm run licenses:generate`，审阅许可变化，并提交更新后的声明与完整许可文本。`npm run licenses:check` 根据已安装依赖及锁文件核对声明，不修改文件；缺少许可文本时需核对上游，生成脚本不会根据软件包名称推断授权。
+
+打包与发行构建首先检查声明，将 `LICENSE`、`THIRD_PARTY_NOTICES.md` 与链接的完整文本放入 `Contents/Resources/legal/`，同时保留 Electron 的独立运行时声明。引入新依赖时仍需检查许可兼容性。

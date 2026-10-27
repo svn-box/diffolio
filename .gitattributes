@@ -1,0 +1,2 @@
+# Preserve upstream license texts byte-for-byte for notice verification.
+resources/licenses/**/*.txt -text whitespace=trailing-space,space-before-tab,cr-at-eol

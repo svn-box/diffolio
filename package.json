@@ -17,14 +17,16 @@
 		"format:check": "prettier --check src tests scripts .github/workflows electron.vite.config.ts package.json tsconfig.json",
 		"icons:build": "node scripts/build-icons.mjs",
 		"docs:screenshots": "npm run package:dir && node scripts/capture-readme.mjs",
-		"package:dir": "npm run icons:build && npm run build && electron-builder --mac dir --publish never",
+		"package:dir": "npm run licenses:check && npm run icons:build && npm run build && electron-builder --mac dir --publish never",
 		"design:check": "node scripts/design-tokens.mjs",
 		"test:packaged": "node scripts/smoke-packaged.mjs",
 		"release:check": "node scripts/release-metadata.mjs",
 		"release:mac": "node scripts/release-mac.mjs",
 		"release:mac:preview": "node scripts/release-mac.mjs --unsigned && node scripts/verify-release.mjs --unsigned",
 		"release:verify": "node scripts/verify-release.mjs",
-		"release:publish": "node scripts/github-release.mjs publish"
+		"release:publish": "node scripts/github-release.mjs publish",
+		"licenses:generate": "node scripts/third-party-notices.mjs",
+		"licenses:check": "node scripts/third-party-notices.mjs --check"
 	},
 	"build": {
 		"appId": "app.diffolio.desktop",
@@ -43,7 +45,21 @@
 				"dir"
 			],
 			"icon": "resources/icon-concepts/frosted-diff/Diffolio.icon"
-		}
+		},
+		"extraResources": [
+			{
+				"from": "LICENSE",
+				"to": "legal/LICENSE"
+			},
+			{
+				"from": "THIRD_PARTY_NOTICES.md",
+				"to": "legal/THIRD_PARTY_NOTICES.md"
+			},
+			{
+				"from": "resources/licenses",
+				"to": "legal/resources/licenses"
+			}
+		]
 	},
 	"dependencies": {
 		"@codemirror/commands": "6.11.1",
@@ -82,5 +98,6 @@
 		"typescript": "7.0.2",
 		"vite": "8.3.5",
 		"vitest": "5.0.5"
-	}
+	},
+	"license": "SEE LICENSE IN LICENSE"
 }

@@ -15,3 +15,9 @@ Like SVNBox, electron-builder receives the `.icon` document directly and package
 Run `npm run icons:build` to export the selected concept's previews and copy `icon.png` / `icon.icns` here. It uses the existing concept build script and Xcode / Icon Composer 27+. `package:dir` runs it automatically. `icon-source.json` records the foreground hash and native composition.
 
 `icon.svg` retains the earlier original vector mark as source material; it is no longer the packaged application icon. The comparison interface's small monochrome mark is separate from the macOS application icon.
+
+## License texts
+
+[`licenses/`](licenses/) stores verbatim third-party license and copyright texts. `npm/` is generated from installed production dependencies, deduplicated by content hash; `upstream/` preserves the shadcn/ui license and the license omitted from react-remove-scroll-bar's npm archive. The complete package inventory and provenance are in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md).
+
+Electron's full `LICENSES.chromium.html` and `LICENSE.electron.txt` ship with the runtime. The application also includes the Diffolio license, third-party inventory, and linked texts under `Contents/Resources/legal/`.

@@ -1,3 +1,4 @@
+// Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
 import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '../../lib/utils';

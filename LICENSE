@@ -1,0 +1,81 @@
+Diffolio Source Available License 1.0
+
+Copyright (c) 2026 Kelvin
+
+This is a custom source-available license, not an OSI-approved open source
+license. By exercising the permissions below, you agree to these terms.
+
+1. Scope
+
+"Software" means the original Diffolio source code, application, documentation,
+and artwork made available under this license. A "Modified Version" means a
+version of the Software with changes or additions, including a renamed,
+rebranded, or repackaged version. Separately licensed third-party materials
+are excluded from this definition and remain governed by their own licenses.
+
+2. Free use and modification
+
+Subject to these terms, you may use, copy, study, and modify the Software
+without paying a license fee. This permission expressly includes personal
+use and internal use by companies and other organizations of any size,
+including for commercial work. You may deploy original or Modified Versions
+to your organization's personnel for its internal business purposes.
+
+3. Free redistribution
+
+You may distribute the Software and Modified Versions to third parties free
+of charge, in source or executable form, provided that you include this
+license, preserve applicable copyright and third-party notices, and clearly
+identify any modifications. Recipients receive the same permissions under
+this license for the Software. You may not impose terms that remove those
+permissions or authorize conduct prohibited by section 4.
+
+4. No paid resale or distribution
+
+Without separate written permission from the copyright holder, you may not
+sell, resell, rent, license for a fee, or otherwise require payment or other
+consideration from a third party for copies of, or access to, the Software
+or a Modified Version. This restriction applies whether the Software is
+unmodified, renamed, rebranded, repackaged, or included in a paid bundle or
+product whose value derives substantially from the Software.
+
+Using Diffolio to perform paid work or to create, compare, or maintain your
+own commercial files, products, or services is permitted. This license does
+not restrict those files, work results, or independently created products.
+Charging for independent installation, training, customization, or support
+services is permitted if receiving or using the Software does not require
+purchasing those services and the Software itself is supplied free of charge.
+Voluntary donations are permitted if they are not a condition of receiving
+or using the Software or a Modified Version.
+
+5. Attribution and names
+
+Preserve this license and the applicable copyright, attribution, and
+third-party license notices in redistributed source code and application
+packages. Do not represent a Modified Version as an official Diffolio
+release or imply endorsement by the copyright holder. This license grants
+no trademark rights beyond truthful identification and attribution.
+
+6. Third-party materials
+
+THIRD_PARTY_NOTICES.md identifies dependencies and adapted components with
+their own licenses. Those licenses, including any rights to commercial use
+and redistribution of those components, are not limited by this license.
+Preserve the notices and license texts required by those licenses.
+
+7. Termination and separate permission
+
+Permissions under this license terminate automatically if you breach its
+terms. The copyright holder may grant separate written permissions,
+including permission for paid distribution. Rights not expressly granted
+by this license are reserved. Nothing here restricts rights that cannot
+be restricted under applicable law.
+
+8. Warranty and liability
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED "AS IS",
+WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+THE COPYRIGHT HOLDERS AND CONTRIBUTORS ARE NOT LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH
+THE SOFTWARE OR ITS USE, WHETHER IN CONTRACT, TORT, OR OTHERWISE.
