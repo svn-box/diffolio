@@ -1,7 +1,7 @@
 import { FileDiff, X, Plus } from 'lucide-react';
-import { useWorkspace, useActiveSession, workspaceStore } from '../../state/workspace';
-import { sessionTitle, isDirty } from '../../state/session';
-import { IconButton } from '../Primitives';
+import { useWorkspace, useActiveSession, workspaceStore } from '@/state/workspace';
+import { sessionTitle, isDirty } from '@/state/session';
+import { IconButton } from '@/components/Primitives';
 
 export function SessionTabs() {
 	const sessions = useWorkspace((state) => state.sessions);

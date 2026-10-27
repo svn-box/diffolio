@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { X, Sun, Moon } from 'lucide-react';
-import { useWorkspace, workspaceStore } from '../state/workspace';
-import { IconButton, Mark } from './Primitives';
-import { Combobox } from './ui/combobox';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { IconButton, Mark } from '@/components/Primitives';
+import { Combobox } from '@/components/ui/combobox';
 import { version } from '../../../../package.json';
-import { AppUpdateSection } from './AppUpdateSection';
+import { AppUpdateSection } from '@/components/AppUpdateSection';
 
 export function SettingsDialog() {
 	const dialog = useRef<HTMLDialogElement>(null);

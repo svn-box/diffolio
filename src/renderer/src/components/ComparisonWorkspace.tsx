@@ -1,12 +1,12 @@
-import { useActiveSession, useWorkspace, workspaceStore } from '../state/workspace';
-import { sessionView } from '../state/session';
-import { useEditorRuntime } from '../editor/EditorRuntime';
-import { Pathbar } from './Pathbar';
-import { FolderCompare } from './FolderCompare';
-import { ImageCompare } from './ImageCompare';
-import { TextCompare } from './TextCompare';
-import { Inspector } from './Inspector';
-import { EditingBar } from './EditingBar';
+import { useActiveSession, useWorkspace, workspaceStore } from '@/state/workspace';
+import { sessionView } from '@/state/session';
+import { useEditorRuntime } from '@/editor/EditorRuntime';
+import { Pathbar } from '@/components/Pathbar';
+import { FolderCompare } from '@/components/FolderCompare';
+import { ImageCompare } from '@/components/ImageCompare';
+import { TextCompare } from '@/components/TextCompare';
+import { Inspector } from '@/components/Inspector';
+import { EditingBar } from '@/components/EditingBar';
 
 export function ComparisonWorkspace() {
 	const session = useActiveSession();

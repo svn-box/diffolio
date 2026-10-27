@@ -1,7 +1,7 @@
 import type { StoreApi } from 'zustand/vanilla';
 import type { DiffolioApi, Layout, OpenResult, Preferences, RecentComparison, FolderEntry } from '../../../shared/types';
-import type { ComparisonStats } from '../editor/types';
-import type { EntryKind, Session, Side } from './session';
+import type { ComparisonStats } from '@/editor/types';
+import type { EntryKind, Session, Side } from '@/state/session';
 
 export interface WorkspaceState {
 	sessions: Session[];

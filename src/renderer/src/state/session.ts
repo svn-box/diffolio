@@ -1,5 +1,5 @@
 import type { FolderComparison, Layout, SourceFile } from '../../../shared/types';
-import { emptyStats, type ComparisonStats } from '../editor/types';
+import { emptyStats, type ComparisonStats } from '@/editor/types';
 
 export type EntryKind = 'files' | 'folders';
 export type Side = 'a' | 'b';

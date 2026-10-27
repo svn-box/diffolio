@@ -1,6 +1,6 @@
 import { ArrowRight, LockKeyhole } from 'lucide-react';
-import { useActiveSession } from '../state/workspace';
-import { formatSize } from './Primitives';
+import { useActiveSession } from '@/state/workspace';
+import { formatSize } from '@/components/Primitives';
 
 export function Inspector() {
 	const session = useActiveSession();

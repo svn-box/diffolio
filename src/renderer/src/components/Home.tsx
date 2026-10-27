@@ -1,6 +1,6 @@
 import { ArrowRight, ClipboardPlus, Clock3, Columns2, FileDiff, FilePlus2, FolderOpen, Image, Layers3, Plus } from 'lucide-react';
 import type { RecentComparison } from '../../../shared/types';
-import { Mark } from './Primitives';
+import { Mark } from '@/components/Primitives';
 
 export function WelcomeBackdrop() {
 	return (

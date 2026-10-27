@@ -1,9 +1,9 @@
 import { ArrowLeft, Columns2, LayoutList, Info, Settings2, Plus } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useWorkspace, workspaceStore } from '../../state/workspace';
-import { activeSession } from '../../state/workspace-state';
-import { sessionTitle, sessionView } from '../../state/session';
-import { IconButton } from '../Primitives';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { activeSession } from '@/state/workspace-state';
+import { sessionTitle, sessionView } from '@/state/session';
+import { IconButton } from '@/components/Primitives';
 
 export function Titlebar() {
 	const { ready, paired, previewing, kind, title, folder, example, layout, total } = useWorkspace(

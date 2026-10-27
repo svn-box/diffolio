@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { useAppUpdates } from '../src/renderer/src/state/app-updates';
+import { useAppUpdates } from '@/state/app-updates';
 import type { AppUpdateState } from '../src/shared/app-updates';
 import { deferred } from './helpers/workspace';
 

@@ -2,8 +2,8 @@ import { EditorView } from '@codemirror/view';
 import { redo, undo } from '@codemirror/commands';
 import { getChunks, rejectChunk } from '@codemirror/merge';
 import { currentChunkIndex } from '../../../shared/chunks';
-import type { ComparisonEditor } from './create-comparison';
-import type { TextCompareHandle, TextComparisonProps } from './types';
+import type { ComparisonEditor } from '@/editor/create-comparison';
+import type { TextCompareHandle, TextComparisonProps } from '@/editor/types';
 
 export function createEditorCommands(get: () => { editor: ComparisonEditor | null; props: TextComparisonProps }): TextCompareHandle {
 	return {

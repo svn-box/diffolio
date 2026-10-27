@@ -1,6 +1,6 @@
 import { EditorState } from '@codemirror/state';
 import { expect, it } from 'vitest';
-import { createSnapshotCache } from '../src/renderer/src/editor/snapshots';
+import { createSnapshotCache } from '@/editor/snapshots';
 
 it('retains live editor history and rejects cleanup writes from retired documents', () => {
 	const ids = new Set(['first', 'second']);

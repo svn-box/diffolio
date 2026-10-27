@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode, type RefObject } from 'react';
-import { workspaceStore } from '../state/workspace';
-import { createSnapshotCache } from './snapshots';
-import type { EditorSnapshots, TextCompareHandle } from './types';
+import { workspaceStore } from '@/state/workspace';
+import { createSnapshotCache } from '@/editor/snapshots';
+import type { EditorSnapshots, TextCompareHandle } from '@/editor/types';
 
 interface EditorRuntime {
 	compare: RefObject<TextCompareHandle | null>;

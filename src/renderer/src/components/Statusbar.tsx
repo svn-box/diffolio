@@ -1,8 +1,8 @@
 import { Search, WrapText, ListFilter, ShieldCheck, Check, Pencil, ArrowUp, ArrowDown } from 'lucide-react';
-import { useWorkspace, useActiveSession, workspaceStore } from '../state/workspace';
-import { sessionView } from '../state/session';
-import { useEditorRuntime } from '../editor/EditorRuntime';
-import { IconButton } from './Primitives';
+import { useWorkspace, useActiveSession, workspaceStore } from '@/state/workspace';
+import { sessionView } from '@/state/session';
+import { useEditorRuntime } from '@/editor/EditorRuntime';
+import { IconButton } from '@/components/Primitives';
 
 export function Statusbar() {
 	const session = useActiveSession();

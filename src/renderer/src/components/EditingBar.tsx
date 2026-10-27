@@ -1,7 +1,7 @@
 import { Pencil, ArrowRight, Undo2, Redo2, Save } from 'lucide-react';
-import { useActiveSession, workspaceStore } from '../state/workspace';
-import { useEditorRuntime } from '../editor/EditorRuntime';
-import { IconButton } from './Primitives';
+import { useActiveSession, workspaceStore } from '@/state/workspace';
+import { useEditorRuntime } from '@/editor/EditorRuntime';
+import { IconButton } from '@/components/Primitives';
 
 export function EditingBar() {
 	const session = useActiveSession();

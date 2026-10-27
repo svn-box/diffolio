@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isDirty, sessionView } from '../src/renderer/src/state/session';
+import { isDirty, sessionView } from '@/state/session';
 import { deferred, editingWorkspace, source, workspace } from './helpers/workspace';
 
 describe('comparison sessions', () => {

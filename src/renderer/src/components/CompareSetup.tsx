@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeftRight, Check, Clipboard, FilePlus2, FolderOpen, Image } from 'lucide-react';
 import type { Preferences, SourceFile } from '../../../shared/types';
-import { formatSize, IconButton } from './Primitives';
-import { SourcePreview } from './SourcePreview';
-import type { EntryKind, Side } from '../state/session';
+import { formatSize, IconButton } from '@/components/Primitives';
+import { SourcePreview } from '@/components/SourcePreview';
+import type { EntryKind, Side } from '@/state/session';
 
 interface Props {
 	kind: EntryKind;

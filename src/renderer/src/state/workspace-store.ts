@@ -1,10 +1,10 @@
 import { createStore } from 'zustand/vanilla';
 import { defaultPreferences, type DiffolioApi } from '../../../shared/types';
-import { createCatalogActions } from './catalog-actions';
-import { newSession } from './session';
-import { createSessionActions } from './session-actions';
-import { createSourceActions } from './source-actions';
-import type { WorkspaceState } from './workspace-state';
+import { createCatalogActions } from '@/state/catalog-actions';
+import { newSession } from '@/state/session';
+import { createSessionActions } from '@/state/session-actions';
+import { createSourceActions } from '@/state/source-actions';
+import type { WorkspaceState } from '@/state/workspace-state';
 
 export function createWorkspaceStore(api: DiffolioApi) {
 	const session = newSession();

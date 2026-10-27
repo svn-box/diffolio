@@ -1,4 +1,4 @@
-import type { WorkspaceContext, WorkspaceState } from './workspace-state';
+import type { WorkspaceContext, WorkspaceState } from '@/state/workspace-state';
 
 type CatalogActions = Pick<WorkspaceState, 'initialize' | 'setPreference' | 'remember' | 'clearRecents'>;
 

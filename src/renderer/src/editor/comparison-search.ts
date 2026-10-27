@@ -1,8 +1,8 @@
 import { EditorView, keymap, type ViewUpdate } from '@codemirror/view';
 import { search, SearchQuery, setSearchQuery, findNext, findPrevious } from '@codemirror/search';
 import type { Extension } from '@codemirror/state';
-import { searchHighlights } from './search-highlights';
-import { revealSearchMatch } from './reveal-search-match';
+import { searchHighlights } from '@/editor/search-highlights';
+import { revealSearchMatch } from '@/editor/reveal-search-match';
 
 export interface ComparisonSearchState {
 	open: boolean;

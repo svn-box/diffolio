@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { Preferences, SourceFile } from '../../../shared/types';
-import { baseExtensions } from '../editor/extensions';
+import { baseExtensions } from '@/editor/extensions';
 
 export function SourcePreview({ file, preferences, label }: { file: SourceFile; preferences: Preferences; label: string }) {
 	const container = useRef<HTMLDivElement>(null);

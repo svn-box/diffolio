@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { ArrowDown, ArrowUp, Search, SlidersHorizontal } from 'lucide-react';
-import { ComparisonSearch, type ComparisonSearchState } from '../editor/comparison-search';
-import { IconButton } from './Primitives';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { ComparisonSearch, type ComparisonSearchState } from '@/editor/comparison-search';
+import { IconButton } from '@/components/Primitives';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 export function ComparisonSearchbar({ state, controller, unified }: { state: ComparisonSearchState; controller: ComparisonSearch; unified: boolean }) {
 	const input = useRef<HTMLInputElement>(null);

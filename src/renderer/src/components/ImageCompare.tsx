@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Columns2, SquareSplitHorizontal, Minus, Plus } from 'lucide-react';
 import type { SourceFile } from '../../../shared/types';
-import { IconButton } from './Primitives';
+import { IconButton } from '@/components/Primitives';
 
 export function ImageCompare({ a, b }: { a: SourceFile; b: SourceFile }) {
 	const [mode, setMode] = useState('split');

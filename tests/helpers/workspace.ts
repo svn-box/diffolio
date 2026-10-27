@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import { defaultPreferences, type DiffolioApi, type SourceFile } from '../../src/shared/types';
-import { createWorkspaceStore } from '../../src/renderer/src/state/workspace-store';
-import { activeSession } from '../../src/renderer/src/state/workspace-state';
+import { createWorkspaceStore } from '@/state/workspace-store';
+import { activeSession } from '@/state/workspace-state';
 
 export function deferred<T>() {
 	let resolve!: (value: T) => void;

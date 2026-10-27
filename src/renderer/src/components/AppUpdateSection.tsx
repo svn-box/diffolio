@@ -1,6 +1,6 @@
-import { useAppUpdates } from '../state/app-updates';
-import { useWorkspace } from '../state/workspace';
-import { isDirty } from '../state/session';
+import { useAppUpdates } from '@/state/app-updates';
+import { useWorkspace } from '@/state/workspace';
+import { isDirty } from '@/state/session';
 
 export function AppUpdateSection() {
 	const state = useAppUpdates((store) => store.state);

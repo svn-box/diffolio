@@ -5,9 +5,9 @@ import { highlightSelectionMatches } from '@codemirror/search';
 import { bracketMatching } from '@codemirror/language';
 import { MergeView, getChunks, unifiedMergeView } from '@codemirror/merge';
 import { currentChunkIndex } from '../../../shared/chunks';
-import { baseExtensions, markModified } from './extensions';
-import type { TextComparisonProps } from './types';
-import type { ComparisonSearch } from './comparison-search';
+import { baseExtensions, markModified } from '@/editor/extensions';
+import type { TextComparisonProps } from '@/editor/types';
+import type { ComparisonSearch } from '@/editor/comparison-search';
 
 export interface ComparisonEditor {
 	view: EditorView;

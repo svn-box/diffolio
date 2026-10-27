@@ -1,6 +1,6 @@
-import { emptyStats } from '../editor/types';
-import { hasSources, isDirty, leaf, newSession, sessionView, type Session } from './session';
-import { activeSession, patchSession, type WorkspaceContext, type WorkspaceState } from './workspace-state';
+import { emptyStats } from '@/editor/types';
+import { hasSources, isDirty, leaf, newSession, sessionView, type Session } from '@/state/session';
+import { activeSession, patchSession, type WorkspaceContext, type WorkspaceState } from '@/state/workspace-state';
 
 async function save(context: WorkspaceContext, target: Session): Promise<boolean> {
 	const { api, get, set } = context;

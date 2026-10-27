@@ -1,8 +1,8 @@
 import type { OpenResult, SourceFile } from '../../../shared/types';
-import { emptyStats } from '../editor/types';
-import { newSession, type Session, type Side } from './session';
-import { permitClose } from './session-actions';
-import { patchSession, type WorkspaceContext, type WorkspaceState } from './workspace-state';
+import { emptyStats } from '@/editor/types';
+import { newSession, type Session, type Side } from '@/state/session';
+import { permitClose } from '@/state/session-actions';
+import { patchSession, type WorkspaceContext, type WorkspaceState } from '@/state/workspace-state';
 
 type SourceActions = Pick<WorkspaceState, 'acceptOpen' | 'load' | 'paste' | 'selectFolder' | 'openFolderEntry' | 'cancelTask' | 'updateProgress'>;
 

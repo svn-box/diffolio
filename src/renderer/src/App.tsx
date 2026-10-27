@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { FileDiff } from 'lucide-react';
-import { useWorkspace, workspaceStore } from './state/workspace';
-import { EditorRuntimeProvider } from './editor/EditorRuntime';
-import { useAppLifecycle } from './hooks/useAppLifecycle';
-import { WelcomeBackdrop } from './components/Home';
-import { Titlebar } from './components/shell/Titlebar';
-import { HomeSidebar } from './components/shell/HomeSidebar';
-import { Workspace } from './components/Workspace';
-import { SettingsDialog } from './components/SettingsDialog';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { EditorRuntimeProvider } from '@/editor/EditorRuntime';
+import { useAppLifecycle } from '@/hooks/useAppLifecycle';
+import { WelcomeBackdrop } from '@/components/Home';
+import { Titlebar } from '@/components/shell/Titlebar';
+import { HomeSidebar } from '@/components/shell/HomeSidebar';
+import { Workspace } from '@/components/Workspace';
+import { SettingsDialog } from '@/components/SettingsDialog';
 
 function AppWindow() {
 	const home = useWorkspace((state) => state.home);

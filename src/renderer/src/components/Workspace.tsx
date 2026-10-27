@@ -1,12 +1,12 @@
-import { useWorkspace, workspaceStore } from '../state/workspace';
-import { activeSession } from '../state/workspace-state';
-import { sessionView } from '../state/session';
-import { Home } from './Home';
-import { SessionTabs } from './shell/SessionTabs';
-import { WorkspaceMessages } from './shell/WorkspaceMessages';
-import { EntryWorkspace } from './EntryWorkspace';
-import { ComparisonWorkspace } from './ComparisonWorkspace';
-import { Statusbar } from './Statusbar';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { activeSession } from '@/state/workspace-state';
+import { sessionView } from '@/state/session';
+import { Home } from '@/components/Home';
+import { SessionTabs } from '@/components/shell/SessionTabs';
+import { WorkspaceMessages } from '@/components/shell/WorkspaceMessages';
+import { EntryWorkspace } from '@/components/EntryWorkspace';
+import { ComparisonWorkspace } from '@/components/ComparisonWorkspace';
+import { Statusbar } from '@/components/Statusbar';
 
 function WelcomeWorkspace() {
 	const recents = useWorkspace((state) => state.recents);

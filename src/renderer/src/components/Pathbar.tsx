@@ -1,7 +1,7 @@
 import { Pencil, Folder, ChevronDown, ArrowLeftRight } from 'lucide-react';
-import { useActiveSession, workspaceStore } from '../state/workspace';
-import { leaf, sessionView } from '../state/session';
-import { IconButton, formatSize } from './Primitives';
+import { useActiveSession, workspaceStore } from '@/state/workspace';
+import { leaf, sessionView } from '@/state/session';
+import { IconButton, formatSize } from '@/components/Primitives';
 
 export function Pathbar() {
 	const session = useActiveSession();

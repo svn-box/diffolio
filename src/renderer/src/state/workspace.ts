@@ -1,6 +1,6 @@
 import { useStore } from 'zustand';
-import { createWorkspaceStore } from './workspace-store';
-import { activeSession, type WorkspaceState } from './workspace-state';
+import { createWorkspaceStore } from '@/state/workspace-store';
+import { activeSession, type WorkspaceState } from '@/state/workspace-state';
 
 export const workspaceStore = createWorkspaceStore(window.diffolio);
 

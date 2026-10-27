@@ -1,6 +1,6 @@
 import { LoaderCircle, X } from 'lucide-react';
-import { useWorkspace, workspaceStore } from '../../state/workspace';
-import { IconButton } from '../Primitives';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { IconButton } from '@/components/Primitives';
 
 export function WorkspaceMessages() {
 	const error = useWorkspace((state) => state.error);

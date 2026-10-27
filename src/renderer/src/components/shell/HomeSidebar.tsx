@@ -1,9 +1,9 @@
 import { Settings2 } from 'lucide-react';
 import { exampleFiles } from '../../../../shared/demo';
-import { useWorkspace, workspaceStore } from '../../state/workspace';
-import { hasSources } from '../../state/session';
-import { HomeNavigation } from '../Home';
-import { IconButton, Mark } from '../Primitives';
+import { useWorkspace, workspaceStore } from '@/state/workspace';
+import { hasSources } from '@/state/session';
+import { HomeNavigation } from '@/components/Home';
+import { IconButton, Mark } from '@/components/Primitives';
 
 export function HomeSidebar() {
 	const activeCount = useWorkspace((state) => state.sessions.filter(hasSources).length);

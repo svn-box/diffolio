@@ -1,9 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useMemo } from 'react';
-import { createComparison, type ComparisonEditor } from '../editor/create-comparison';
-import { createEditorCommands } from '../editor/commands';
-import type { TextCompareHandle, TextComparisonProps } from '../editor/types';
-import { ComparisonSearch, initialSearchState } from '../editor/comparison-search';
-import { ComparisonSearchbar } from './ComparisonSearchbar';
+import { createComparison, type ComparisonEditor } from '@/editor/create-comparison';
+import { createEditorCommands } from '@/editor/commands';
+import type { TextCompareHandle, TextComparisonProps } from '@/editor/types';
+import { ComparisonSearch, initialSearchState } from '@/editor/comparison-search';
+import { ComparisonSearchbar } from '@/components/ComparisonSearchbar';
 
 export const TextCompare = forwardRef<TextCompareHandle, TextComparisonProps>(function TextCompare(props, ref) {
 	const container = useRef<HTMLDivElement>(null);

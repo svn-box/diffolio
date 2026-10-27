@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { ChevronDown, ChevronRight, File, Folder, Minus, Plus, Check, Pencil, Search, AlertTriangle, Link } from 'lucide-react';
 import type { FolderComparison, FolderEntry } from '../../../shared/types';
-import { formatSize } from './Primitives';
+import { formatSize } from '@/components/Primitives';
 
 export function FolderCompare({ folder, onOpen }: { folder: FolderComparison; onOpen(entry: FolderEntry): void }) {
 	const [query, setQuery] = useState('');

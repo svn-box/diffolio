@@ -17,6 +17,10 @@
 
 文件以一个清晰职责为单位，通常控制在 300 行以内；超过时先检查是否承担多个职责。不要仅按行数切碎紧密相关的逻辑，也不要把原来的大组件直接搬成同样大的 Hook 或 store。
 
+## 路径别名
+
+沿用 SVNBox 的约定，`@/` 指向 `src/renderer/src/`。渲染层内部模块及引用这些模块的 TypeScript 测试使用该别名；跨到共享类型、主进程或项目元数据的引用保留明确的相对路径。TypeScript、Electron Vite 与 Vitest 使用同一映射，避免只在编辑器中能解析而构建或测试失败。配置路径以配置文件的位置为基准。
+
 ## 状态归属
 
 `createWorkspaceStore(api)` 使用 `zustand/vanilla` 创建独立状态实例，通过注入 `DiffolioApi` 在测试中替换原生操作。`workspace.ts` 绑定真实 preload 接口与 React `useStore`；组件订阅所需数据，组合派生值使用 `useShallow` 保持引用稳定。

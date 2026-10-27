@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useEditorRuntime } from '../editor/EditorRuntime';
-import { workspaceStore } from '../state/workspace';
-import { isDirty } from '../state/session';
-import { useAppUpdates } from '../state/app-updates';
+import { useEditorRuntime } from '@/editor/EditorRuntime';
+import { workspaceStore } from '@/state/workspace';
+import { isDirty } from '@/state/session';
+import { useAppUpdates } from '@/state/app-updates';
 
 export function useAppLifecycle(): void {
 	const { compare } = useEditorRuntime();

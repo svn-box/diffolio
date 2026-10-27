@@ -1,5 +1,5 @@
-import { useActiveSession, useWorkspace, workspaceStore } from '../state/workspace';
-import { CompareSetup } from './CompareSetup';
+import { useActiveSession, useWorkspace, workspaceStore } from '@/state/workspace';
+import { CompareSetup } from '@/components/CompareSetup';
 
 export function EntryWorkspace() {
 	const session = useActiveSession();

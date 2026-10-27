@@ -1,10 +1,10 @@
 // Adapted from shadcn/ui (MIT); see THIRD_PARTY_NOTICES.md.
 import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { Button } from './button';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 export interface ComboboxOption {
 	value: string;
 	label: string;

@@ -1,4 +1,4 @@
-import type { EditorSnapshot, EditorSnapshots } from './types';
+import type { EditorSnapshot, EditorSnapshots } from '@/editor/types';
 
 export function createSnapshotCache(isCurrent: (id: string) => boolean): EditorSnapshots & { retain(ids: Set<string>): void } {
 	const snapshots = new Map<string, EditorSnapshot>();
