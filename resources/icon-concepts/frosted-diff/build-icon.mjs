@@ -78,6 +78,7 @@ try {
 		throw new Error('Icon Composer did not produce a valid ICNS.');
 	}
 	await copyFile(join(output, 'Icon.icns'), join(root, 'icon.icns'));
+	await copyFile(join(output, 'Assets.car'), resolve(root, '../../Assets.car'));
 } finally {
 	await rm(temporary, { recursive: true, force: true });
 }

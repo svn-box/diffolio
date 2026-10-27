@@ -60,3 +60,9 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# Rust / Tauri build output
+/src-tauri/target/
+/src-tauri/gen/
+/target/
+/resources/Assets.car

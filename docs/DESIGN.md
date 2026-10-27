@@ -1,3 +1,5 @@
+> Tauri port: this document preserves the original product/design baseline. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
+
 ---
 name: 'Diffolio'
 description: 'A compact, considered file comparison workspace for macOS.'

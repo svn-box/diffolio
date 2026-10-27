@@ -1,0 +1,30 @@
+{
+  "source": "Native Tauri WKWebView snapshots",
+  "version": "0.1.1",
+  "contentArea": {
+    "height": 564,
+    "scale": 2,
+    "url": "tauri://localhost",
+    "width": 964
+  },
+  "checks": [
+    "Native window preserves the 964 × 564 content area",
+    "Search uses the shared comparison bar",
+    "Opening search keeps A and B aligned",
+    "Native Find menu preserves the selected search scope",
+    "Native close is cancelled while unsaved results remain",
+    "Result saves through the real Tauri bridge and Rust atomic writer",
+    "Split and unified editors switch without losing state",
+    "Native IPC reads actual text fixtures",
+    "Rust folder comparison hashes actual image contents",
+    "Folder path validation uses the real native backend",
+    "Native image inputs retain their data and MIME type",
+    "Mixed text/image comparisons are rejected",
+    "A cancellation arriving before the worker starts is retained",
+    "Native drop events hit-test A/B and load actual files through Rust",
+    "Preview never installs an Electron release as a Tauri update",
+    "Native WebKit layout stays within the window"
+  ],
+  "capture": "npm run test:native:release",
+  "note": "Content only; native traffic lights are not part of WebKit snapshots."
+}

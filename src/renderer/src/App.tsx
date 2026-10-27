@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FileDiff } from 'lucide-react';
 import { useWorkspace, workspaceStore } from '@/state/workspace';
 import { EditorRuntimeProvider } from '@/editor/EditorRuntime';
@@ -14,6 +14,16 @@ function AppWindow() {
 	const [dragging, setDragging] = useState(false);
 	const { load } = workspaceStore.getState();
 	useAppLifecycle();
+	useEffect(() => {
+		const drag = (event: Event) => setDragging((event as CustomEvent<boolean>).detail);
+		const error = (event: Event) => workspaceStore.getState().fail((event as CustomEvent<string>).detail);
+		window.addEventListener('diffolio-drag', drag);
+		window.addEventListener('diffolio-error', error);
+		return () => {
+			window.removeEventListener('diffolio-drag', drag);
+			window.removeEventListener('diffolio-error', error);
+		};
+	}, []);
 
 	return (
 		<div

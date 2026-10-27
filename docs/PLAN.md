@@ -1,3 +1,5 @@
+> Tauri port: this document preserves the original product/design baseline. Runtime changes and migration status are tracked in [MIGRATION.md](MIGRATION.md).
+
 # Diffolio 开发计划
 
 更新日期：2026 年 10 月 27 日。

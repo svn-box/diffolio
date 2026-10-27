@@ -1,0 +1,58 @@
+{
+	"$schema": "https://schema.tauri.app/config/2",
+	"productName": "Diffolio",
+	"version": "0.1.1",
+	"identifier": "app.diffolio.tauri-preview",
+	"build": {
+		"beforeDevCommand": "npm run dev:web",
+		"devUrl": "http://127.0.0.1:1420",
+		"beforeBuildCommand": "npm run build",
+		"frontendDist": "../dist"
+	},
+	"app": {
+		"macOSPrivateApi": true,
+		"windows": [
+			{
+				"label": "main",
+				"title": "Diffolio",
+				"width": 964,
+				"height": 564,
+				"minWidth": 880,
+				"minHeight": 540,
+				"center": true,
+				"titleBarStyle": "Overlay",
+				"hiddenTitle": true,
+				"trafficLightPosition": { "x": 18, "y": 18 },
+				"backgroundColor": "#faf9f7",
+				"windowEffects": { "effects": ["sidebar"], "state": "followsWindowActiveState" }
+			}
+		],
+		"security": {
+			"csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost; object-src 'none'; base-uri 'self'; frame-src 'none'",
+			"devCsp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost ws://127.0.0.1:1420 http://127.0.0.1:1420; object-src 'none'; base-uri 'self'; frame-src 'none'",
+			"capabilities": [
+				{
+					"identifier": "main-window",
+					"windows": ["main"],
+					"permissions": ["core:event:default", "core:window:allow-start-dragging", "core:window:allow-toggle-maximize", "core:webview:allow-internal-toggle-devtools"]
+				}
+			]
+		}
+	},
+	"plugins": { "updater": { "pubkey": "", "endpoints": [] } },
+	"bundle": {
+		"active": true,
+		"targets": ["app", "dmg"],
+		"category": "DeveloperTool",
+		"shortDescription": "A considered file comparison workspace for macOS",
+		"copyright": "Copyright © 2026 Kelvin",
+		"icon": ["../resources/icon.icns", "icons/icon.png"],
+		"resources": {
+			"../LICENSE": "legal/LICENSE",
+			"../THIRD_PARTY_NOTICES.md": "legal/THIRD_PARTY_NOTICES.md",
+			"../resources/licenses/": "legal/resources/licenses/",
+			"../resources/Assets.car": "Assets.car"
+		},
+		"macOS": { "minimumSystemVersion": "13.3", "signingIdentity": "-", "infoPlist": "Info.plist" }
+	}
+}

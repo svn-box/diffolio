@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFile, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { PNG } from 'pngjs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -35,6 +36,9 @@ if (
 }
 await copyFile(join(concept, 'icon.icns'), join(resources, 'icon.icns'));
 await copyFile(join(concept, 'icon.png'), join(resources, 'icon.png'));
+await mkdir(join(root, 'src-tauri/icons'), { recursive: true });
+// Icon Composer exports 16-bit PNGs; Tauri's window icon decoder expects RGBA8.
+await writeFile(join(root, 'src-tauri/icons/icon.png'), PNG.sync.write(PNG.sync.read(await readFile(join(resources, 'icon.png'))), { bitDepth: 8 }));
 await writeFile(
 	join(resources, 'icon-source.json'),
 	JSON.stringify(

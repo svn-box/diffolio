@@ -1,63 +1,43 @@
-# Zustand 重构与首次提交审查
+# Tauri preview review
 
-日期：2026 年 10 月 27 日。
+Baseline: Diffolio Electron 0.1.1, commit `2b8aa9ee60b494ef12d9bcb62f473fd07f3f9ac6`.
 
-审查范围包括首次提交的应用代码、此次状态管理与模块拆分、自动化验证、文档与资源引用，以及提交和打包内容。仓库尚无历史提交，使用重构前工作区的 Git tree `2dc20c0913f21c890926c5ea3282f9906cf91101` 作为本次变更基准，并检查首次入库的主进程、preload 和文件处理代码。
+## Scope and findings
 
-## 交付范围
+The migration retains the original UI implementation and introduces a Tauri adapter plus a Rust backend. No Electron main/preload runtime, original release automation, private signing material or replica research is copied. The original Electron checkout remains unchanged.
 
-- 固定 Zustand 5.0.16，使用独立可测试的 vanilla store 和 React selector 管理工作区状态。
-- 会话、输入、保存/关闭、设置/最近记录按职责拆分；CodeMirror 实例、撤销历史与阅读位置保留在编辑器层。
-- `App.tsx` 从 899 行降为 69 行，`TextCompare.tsx` 从 329 行降为 24 行；原 1,814 行样式拆成 12 个按原顺序导入的模块。
-- `src/`、`tests/`、`scripts/` 中单文件分别最多 287、131、262 行。这里按职责拆分，不以生成数据、锁文件或产品文档的长度判断源码结构。
-- 保留原有紧凑布局、欢迎页侧栏、比较入口和 shadcn Combobox。
-
-## Standards
-
-独立审查初次发现 1 项 P2：剪贴板读取只检查文档版本，可能先返回并使之后发起的文件读取失效。已改为让文件、剪贴板、文件夹选择与下钻共享输入代次，在异步返回和关闭确认后校验；切换输入模式也使旧请求失效。
-
-新增双向交错完成顺序的回归测试后通过。审查者重新检查并独立复现验证，原发现已关闭，无新增可操作的 Standards 发现。模块职责、约 300 行文件目标、格式约束及编辑器运行时的状态归属符合约定。
-
-## Spec
-
-独立审查初次发现 1 项 P2：计划中已标记共享图片平移，但两侧滚动容器没有同步。这是既有实现缺口。已加入双向横纵滚动同步，并记录程序触发的滚动位置，防止回传和尺寸截断引起的反弹。
-
-实际回归进一步发现图片在 200% 时被 Flex 收缩至天然尺寸。已为并排图片设置 `flex-shrink: 0`，测试实际 1,600px 宽度及 A→B、B→A 的横纵平移，再恢复适应和分割模式。独立复核确认适应仍受最大宽度约束，分割模式不受此选择器影响；原发现已关闭，无新增 Spec 发现。
-
-## 验证结果
-
-| 检查 | 结果 |
+| Area | Review outcome |
 | --- | --- |
-| 类型检查与生产构建 | 通过 |
-| Prettier | 通过 |
-| Vitest | 6 个文件、36 项测试通过 |
-| Electron 核心回归 | 文本比较、块采用、保存、跨布局撤销/重做、主题、目录下钻、实际图片缩放/平移、分割和错误恢复通过 |
-| Electron 入口回归 | 独立 A/B 输入、模式切换、取消、拖入及遮罩清理、空文本、类型错误恢复、草稿继续和紧凑窗口通过 |
-| macOS 打包与产物检查 | 原生图标构建、生产 preload、文件对话框、剪贴板 A/B、包内容排除检查通过 |
-| 颜色对比度 | 92 对，0 项 AA 失败 |
-| CSS 结构比较 | 与基准相同，仅额外包含经审查的图片缩放修复 |
-| 文档与资源链接 | 本地链接存在，指向文件均纳入提交 |
-| 提交内容 | 排除依赖、构建/测试产物、个人工作目录、签名材料及第三方参考截图 |
+| Interface | Existing components, editor, CSS/tokens and artwork retained; only startup, desktop adapter and native drag feedback are added |
+| File fidelity | UTF-8/BOM/LF/CRLF/CR round trips preserved; binary and invalid UTF-8 inputs rejected |
+| Saving | Sibling temporary file, file flush, repeated destination hash check, symlink/read-only rejection and atomic rename |
+| Repeated saves | Metadata registry updates after app writes; stale and external snapshots are rejected |
+| Memory | Backend stores metadata/hashes rather than duplicate editor text or image data; save IPC omits redundant original content |
+| Cancellation | Early cancellation survives the interval before a blocking worker registers its task |
+| Folder scan | Symlinks compared without following cycles, special files rejected, streaming hashes and entry limit retained |
+| Unsaved work | Native window close routes through the existing save/discard/cancel workflow; native test cancels the close and confirms the result remains dirty |
+| Clipboard | Non-text/empty clipboard becomes empty text; actual errors remain errors; original system clipboard is never changed by tests |
+| Native icon | Original Icon Composer catalog and ICNS retained; Tauri decoder gets RGBA8 rather than the original RGBA16 PNG |
+| Updates | Separate signed Tauri updater path implemented; disabled until a dedicated HTTPS feed/public key exists; Electron releases cannot be installed |
+| Build | macOS 27 proc-macro strip workaround is limited to build tools; shipped executable remains stripped |
+| Packaging | Production build excludes test report/snapshot/dialog overrides; legal texts and native icon catalog are included |
 
-保留测试和截图需要的 `fixtures/`、原创公开资源与捕获记录。参考研究中的本地截图改为本地文件索引，避免新克隆仓库出现失效图片链接。构建产物位于 `release/mac-arm64/Diffolio.app`，不进入 Git。
+## Evidence
 
-两条审查线各发现 1 项 P2，均已修复并复核关闭；无未解决的审查发现。当前功能边界和后续待办继续以 [开发计划](PLAN.md) 为准。
+- 27 retained frontend/state tests.
+- 13 Rust tests, including UTF-8 fidelity, save conflicts, repeated writes, read-only/symlink targets, folder hashes/cycles, cancellation, preferences, path normalization and empty clipboard semantics.
+- `cargo clippy --all-targets -- -D warnings`.
+- Chromium + Playwright WebKit UI flow checks, with an additional live Electron baseline. Key geometry is compared within two CSS pixels; welcome and entry layout measurements are identical on this Mac. Native scrollbar allocation matches Electron; headless Chromium uses overlay scrollbars.
+- 16 native checks against optimized Rust and the embedded production frontend (`tauri://localhost`), including search A/B alignment (0 px offset), native menu search, save, unsaved-close protection, actual filesystem/image data, early cancellation, native drop-event hit testing and disabled preview updates.
+- Native WebKit screenshots in `resources/screenshots/tauri-*.png`; local browser/Electron comparison output in ignored `work/visual/`.
+- `scripts/verify-package.mjs` validates the app and mounted DMG, arm64 architecture, ad-hoc signature, native icon catalog, matching legal files/executables and absence of test hooks/Electron runtime.
 
+## Acceptance boundaries
 
-## 应用更新与共享搜索复核（2026-10-27）
+The preview is for local evaluation on macOS Apple Silicon. Developer ID signing, Apple notarization, a dedicated public release feed and signed cross-version replacement are not configured. No existing GitHub release or Electron update channel is changed.
 
-### Standards
+Physical Finder dragging, real Chinese IME composition, accessibility and older macOS releases still require hands-on acceptance. Automated Unicode insertion and injected native drag events validate the bridge and UI, not an actual keyboard input method or physical drag gesture. Screenshot comparisons do not guarantee pixel identity across OS/WebKit versions.
 
-发现并修复一项异步约束问题：较早的更新 RPC 失败会覆盖新到达的主进程快照。渲染侧现同时检查请求编号与发起时 revision，过期失败不再覆盖当前状态；旧失败遇到新快照、同 revision 的较新请求，以及当前失败反馈三项回归通过。规范复核未留下未解决项。
+## Local artifact measurements
 
-### Spec
-
-发现并修复一项搜索范围问题：选择 A 后再次从原生菜单查找，范围会回到 B。现有搜索已打开时保持当前范围，只重新聚焦；从明确文稿侧触发时仍使用该侧。真实菜单回归覆盖此行为，需求复核未留下未解决项。
-
-### 验证与边界
-
-70 项单元测试通过；共享搜索的两侧垂直偏移从原来的约 56px 修正为 0px。搜索范围、选项、跳转与环绕、键盘、统一布局、编辑后计数、紧凑深浅主题和折叠命中定位均通过 Electron 回归。原有比较、保存、入口、图片与打包检查通过；设计机械检查无剩余项，现有 92 组配色检查没有 AA 失败。
-
-更新通过打包应用的真实菜单、preload、IPC、状态与界面验收；网络和实际安装客户端由测试替换，验证当前版本、失败恢复、下载进度、分别确认下载/安装、未保存保护与固定发布页。发行预览检查最终 ZIP 的更新清单、SHA-512、SHA-256、DMG/ZIP 内容与解压应用启动。两个不同签名正式版本之间的真实替换仍需在后续发版中完成验收，不能用这些模拟客户端结果替代。
-
-Kaleidoscope 底栏核查只更新后续任务的范围与优先级，显示选项、忽略空白、完整块决策、文本处理与外部编辑器联动不据此标记为已实现。
+Verified DMG: **6.60 MiB**; application file bytes: **14.14 MiB**. The Electron 0.1.1 local preview DMG was 136.8 MiB, so the installer is approximately 95.2% smaller. These are installer/application sizes, not memory or speed benchmarks. The exact hashes and sizes are saved in ignored `work/package-report.json`.
