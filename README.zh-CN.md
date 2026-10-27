@@ -141,7 +141,7 @@ Diffolio 是一款紧凑的 macOS 文件对比工具，用于比较本机文本�
 
 **0.1.0** 面向 Apple Silicon（arm64）。打开带版本号的 DMG，将 Diffolio 拖到 Applications；也可解压 ZIP 后移入 Applications。功能与当前限制见 [0.1.0 发布说明](docs/releases/0.1.0.md)。
 
-当前发布命令生成未使用 Developer ID 签名、尚未 Apple 公证的本地候选包，目前没有配置在线下载地址。构建和验证 DMG、ZIP 与 SHA-256 校验文件的步骤见 [发布流程](docs/RELEASING.md)。
+版本标签触发 GitHub Actions 签名、公证与发布，手动运行只生成独立目录下的未签名预览。仓库和发行配置正在准备；配置、构建与验收步骤见 [发布流程](docs/RELEASING.md)。
 
 ## 开发
 

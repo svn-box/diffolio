@@ -1,35 +1,30 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
-import { fileChecksum, readReleaseMetadata, verifyReleaseFiles, writeReleaseFiles } from '../scripts/release-metadata.mjs';
+import { fileChecksum, previewMode, readReleaseMetadata, verifyReleaseFiles } from '../scripts/release-metadata.mjs';
+import { releaseFixture as fixture, cleanupReleaseFixtures } from './helpers/release.mjs';
 
-const temporary = [];
-
-async function fixture() {
-	const root = await mkdtemp(join(tmpdir(), 'diffolio-release-test-'));
-	temporary.push(root);
-	const version = '0.1.0';
-	await writeFile(join(root, 'package.json'), JSON.stringify({ version, build: { appId: 'app.diffolio.desktop' } }));
-	await writeFile(join(root, 'package-lock.json'), JSON.stringify({ version, packages: { '': { version } } }));
-	await mkdir(join(root, 'docs/releases'), { recursive: true });
-	await writeFile(join(root, 'docs/releases/0.1.0.md'), '# Diffolio 0.1.0\n\nFirst release.\n');
-	const metadata = await readReleaseMetadata(root);
-	await mkdir(metadata.directory, { recursive: true });
-	for (const name of metadata.archives) {
-		await writeFile(join(metadata.directory, name), `test artifact: ${name}`);
-	}
-	await writeReleaseFiles(metadata, metadata.directory, 'a'.repeat(40));
-	return metadata;
-}
-
-afterEach(async () => {
-	for (const path of temporary.splice(0)) {
-		await rm(path, { recursive: true, force: true });
-	}
-});
+afterEach(cleanupReleaseFixtures);
 
 describe('release metadata and integrity', () => {
+	it('separates signed output from unsigned previews and refuses unsigned tags', async () => {
+		const metadata = await fixture();
+		const signed = await readReleaseMetadata(metadata.root);
+		expect(signed.directory).toBe(join(metadata.root, 'release/0.1.0/macos/arm64'));
+		expect(metadata.directory).toBe(join(metadata.root, 'release/preview/0.1.0/macos/arm64'));
+		expect(previewMode([], {})).toBe(false);
+		expect(previewMode(['--unsigned'], {})).toBe(true);
+		expect(() => previewMode(['--unsigned'], { GITHUB_REF_TYPE: 'tag' })).toThrow('cannot');
+		expect(() => previewMode(['--unexpected'], {})).toThrow('Only');
+		await expect(readReleaseMetadata(metadata.root, { tag: 'v0.2.0' })).rejects.toThrow('tag must match');
+		await expect(verifyReleaseFiles({ ...metadata, unsigned: false })).rejects.toThrow('developerIdSigned');
+	});
+
+	it('records the verified signing team for the signed release mode', async () => {
+		const metadata = await fixture({ unsigned: false });
+		expect(await verifyReleaseFiles(metadata)).toMatchObject({ developerIdSigned: true, notarized: true, teamId: 'DUMMY00000' });
+	});
+
 	it('records matching artifacts and their committed source without claiming signing', async () => {
 		const metadata = await fixture();
 		const manifest = await verifyReleaseFiles(metadata);

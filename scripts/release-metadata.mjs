@@ -5,10 +5,20 @@ import { copyFile, lstat, readFile, readdir, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export async function readReleaseMetadata(root = resolve('.')) {
+export function previewMode(arguments_ = [], env = process.env) {
+	const unsigned = arguments_.length === 1 && arguments_[0] === '--unsigned';
+	assert.ok(arguments_.length === 0 || unsigned, 'Only the optional --unsigned preview flag is supported.');
+	assert.ok(!unsigned || env.GITHUB_REF_TYPE !== 'tag', 'Version tags cannot use unsigned preview installers.');
+	return unsigned;
+}
+
+export async function readReleaseMetadata(root = resolve('.'), { tag, unsigned = false } = {}) {
 	const definition = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 	const { version } = definition;
 	assert.match(version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, 'Release requires a stable three-part version.');
+	if (tag !== undefined) {
+		assert.equal(tag, `v${version}`, 'Release tag must match the package version.');
+	}
 	const lock = JSON.parse(await readFile(join(root, 'package-lock.json'), 'utf8'));
 	assert.equal(lock.version, version, 'Lockfile version must match package.json.');
 	assert.equal(lock.packages[''].version, version, 'Root package lock version must match package.json.');
@@ -16,7 +26,16 @@ export async function readReleaseMetadata(root = resolve('.')) {
 	assert.ok((await lstat(notes)).isFile(), 'Release notes must be a regular file.');
 	assert.ok((await readFile(notes, 'utf8')).startsWith(`# Diffolio ${version}\n`), 'Release notes heading must match the version.');
 	const archives = ['dmg', 'zip'].map((extension) => `Diffolio-${version}-macOS-arm64.${extension}`);
-	return { root, definition, version, tag: `v${version}`, notes, archives, directory: join(root, 'release', version, 'macos', 'arm64') };
+	return {
+		root,
+		definition,
+		version,
+		tag: `v${version}`,
+		notes,
+		archives,
+		unsigned,
+		directory: join(root, 'release', ...(unsigned ? ['preview'] : []), version, 'macos', 'arm64'),
+	};
 }
 
 export async function fileChecksum(path) {
@@ -27,8 +46,11 @@ export async function fileChecksum(path) {
 	return hash.digest('hex');
 }
 
-export async function writeReleaseFiles(metadata, directory, revision) {
+export async function writeReleaseFiles(metadata, directory, revision, teamId) {
 	assert.match(revision, /^[a-f\d]{40}$/, 'A committed source revision is required.');
+	if (!metadata.unsigned) {
+		assert.match(teamId ?? '', /^[A-Z\d]{10}$/, 'Signed release metadata requires a verified Apple team.');
+	}
 	const files = await Promise.all(
 		metadata.archives.map(async (name) => ({ name, bytes: (await lstat(join(directory, name))).size, sha256: await fileChecksum(join(directory, name)) })),
 	);
@@ -42,8 +64,9 @@ export async function writeReleaseFiles(metadata, directory, revision) {
 				platform: 'darwin',
 				arch: 'arm64',
 				bundleId: metadata.definition.build.appId,
-				developerIdSigned: false,
-				notarized: false,
+				developerIdSigned: !metadata.unsigned,
+				notarized: !metadata.unsigned,
+				...(metadata.unsigned ? {} : { teamId }),
 				sourceRevision: revision,
 				builtAt: new Date().toISOString(),
 				files,
@@ -74,12 +97,15 @@ export async function verifyReleaseFiles(metadata, directory = metadata.director
 		platform: 'darwin',
 		arch: 'arm64',
 		bundleId: metadata.definition.build.appId,
-		developerIdSigned: false,
-		notarized: false,
+		developerIdSigned: !metadata.unsigned,
+		notarized: !metadata.unsigned,
 	})) {
 		assert.equal(manifest[key], value, `Invalid release manifest ${key}.`);
 	}
 	assert.match(manifest.sourceRevision, /^[a-f\d]{40}$/);
+	if (!metadata.unsigned) {
+		assert.match(manifest.teamId ?? '', /^[A-Z\d]{10}$/, 'Signed manifest requires an Apple team.');
+	}
 	assert.ok(Number.isFinite(Date.parse(manifest.builtAt)), 'Invalid release timestamp.');
 	const files = await Promise.all(
 		metadata.archives.map(async (name) => ({ name, bytes: (await lstat(join(directory, name))).size, sha256: await fileChecksum(join(directory, name)) })),
@@ -90,6 +116,6 @@ export async function verifyReleaseFiles(metadata, directory = metadata.director
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-	const metadata = await readReleaseMetadata();
+	const metadata = await readReleaseMetadata(resolve('.'), { tag: process.env.GITHUB_REF_TYPE === 'tag' ? (process.env.GITHUB_REF_NAME ?? '') : undefined });
 	console.log(`Release metadata ready: ${metadata.tag}, macOS arm64; notes: ${metadata.notes}`);
 }

@@ -13,16 +13,18 @@
 		"test": "vitest run",
 		"test:e2e": "npm run build && node scripts/e2e.mjs",
 		"test:entry": "npm run build && node scripts/entry-e2e.mjs",
-		"format": "prettier --write src tests scripts electron.vite.config.ts package.json tsconfig.json",
-		"format:check": "prettier --check src tests scripts electron.vite.config.ts package.json tsconfig.json",
+		"format": "prettier --write src tests scripts .github/workflows electron.vite.config.ts package.json tsconfig.json",
+		"format:check": "prettier --check src tests scripts .github/workflows electron.vite.config.ts package.json tsconfig.json",
 		"icons:build": "node scripts/build-icons.mjs",
 		"docs:screenshots": "npm run package:dir && node scripts/capture-readme.mjs",
 		"package:dir": "npm run icons:build && npm run build && electron-builder --mac dir --publish never",
 		"design:check": "node scripts/design-tokens.mjs",
 		"test:packaged": "node scripts/smoke-packaged.mjs",
 		"release:check": "node scripts/release-metadata.mjs",
-		"release:mac": "npm run release:check && npm run format:check && npm test && npm run icons:build && npm run build && node scripts/release-mac.mjs --unsigned",
-		"release:verify": "node scripts/verify-release.mjs"
+		"release:mac": "node scripts/release-mac.mjs",
+		"release:mac:preview": "node scripts/release-mac.mjs --unsigned && node scripts/verify-release.mjs --unsigned",
+		"release:verify": "node scripts/verify-release.mjs",
+		"release:publish": "node scripts/github-release.mjs publish"
 	},
 	"build": {
 		"appId": "app.diffolio.desktop",

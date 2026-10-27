@@ -141,7 +141,7 @@ Three-way merging, Git/CLI integration, Fluid-style connectors, whitespace-ignor
 
 Version **0.1.0** targets Apple Silicon (arm64). Open the versioned DMG and drag Diffolio to Applications, or extract the ZIP and move the app there. See the [0.1.0 release notes](docs/releases/0.1.0.md) for features and current limits.
 
-The current release command produces an unsigned local candidate without Apple notarization. No hosted download is configured yet. To build and verify the DMG, ZIP and SHA-256 checksums, follow the [release instructions](docs/RELEASING.md).
+Version tags trigger the signed and notarized GitHub Actions release workflow. Manual runs produce unsigned previews in a separate directory. Repository and signing configuration are being prepared; see the [release instructions](docs/RELEASING.md) for setup, DMG/ZIP generation and verification.
 
 ## Development
 
