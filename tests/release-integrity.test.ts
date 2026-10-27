@@ -15,6 +15,8 @@ const execute = promisify(execFile);
 let temporary: string;
 let publicKey: string;
 let signature: string;
+let version: string;
+let newerVersion: string;
 const contents = Buffer.from('Independent Tauri CLI interoperability fixture.');
 
 async function cli(arguments_: string[], env = process.env) {
@@ -26,13 +28,16 @@ async function cli(arguments_: string[], env = process.env) {
 }
 
 beforeAll(async () => {
+	version = (await readReleaseMetadata()).version;
+	const [major, minor, patch] = version.split('.').map(Number);
+	newerVersion = `${major}.${minor}.${patch + 1}`;
 	temporary = await mkdtemp(join(tmpdir(), 'diffolio-signature-test-'));
 	const keyPath = join(temporary, 'throwaway.key');
 	await cli(['signer', 'generate', '--ci', '--password', '', '--write-keys', keyPath]);
 	publicKey = (await readFile(`${keyPath}.pub`, 'utf8')).trim();
 	const archive = join(temporary, 'fixture.app.tar.gz');
 	await writeFile(archive, contents);
-	await cli(['signer', 'sign', '--app-version', '0.3.0', archive], {
+	await cli(['signer', 'sign', '--app-version', version, archive], {
 		...process.env,
 		TAURI_SIGNING_PRIVATE_KEY: await readFile(keyPath, 'utf8'),
 		TAURI_SIGNING_PRIVATE_KEY_PASSWORD: '',
@@ -48,17 +53,17 @@ afterAll(async () => {
 
 describe('Tauri updater release integrity', () => {
 	it('accepts a version-bound signature produced by the installed Tauri CLI', () => {
-		expect(() => verifyUpdateSignature(contents, signature, publicKey, '0.3.0')).not.toThrow();
+		expect(() => verifyUpdateSignature(contents, signature, publicKey, version)).not.toThrow();
 	});
 
 	it('rejects changed archive bytes and a newer version paired with an old archive', () => {
-		expect(() => verifyUpdateSignature(Buffer.concat([contents, Buffer.from('tampered')]), signature, publicKey, '0.3.0')).toThrow(/signature/);
-		expect(() => verifyUpdateSignature(contents, signature, publicKey, '0.4.0')).toThrow(/Signed version/);
+		expect(() => verifyUpdateSignature(Buffer.concat([contents, Buffer.from('tampered')]), signature, publicKey, version)).toThrow(/signature/);
+		expect(() => verifyUpdateSignature(contents, signature, publicKey, newerVersion)).toThrow(/Signed version/);
 	});
 
 	it('rejects edits to the signed version in the trusted comment', () => {
-		const edited = Buffer.from(Buffer.from(signature, 'base64').toString().replace('version:0.3.0', 'version:0.4.0')).toString('base64');
-		expect(() => verifyUpdateSignature(contents, edited, publicKey, '0.4.0')).toThrow(/trusted comment/);
+		const edited = Buffer.from(Buffer.from(signature, 'base64').toString().replace(`version:${version}`, `version:${newerVersion}`)).toString('base64');
+		expect(() => verifyUpdateSignature(contents, edited, publicKey, newerVersion)).toThrow(/trusted comment/);
 	});
 
 	it('checks the update signature even after an attacker recalculates the manifest and all checksums', async () => {
@@ -70,14 +75,14 @@ describe('Tauri updater release integrity', () => {
 		await writeFile(join(directory, metadata.archives[1]), contents);
 		await writeFile(join(directory, metadata.archives[2]), signature);
 		await writeReleaseFiles(metadata, directory, 'a'.repeat(40), 'ABCDEFGHIJ');
-		await expect(verifyReleaseFiles(metadata, directory)).resolves.toMatchObject({ version: '0.3.0' });
+		await expect(verifyReleaseFiles(metadata, directory)).resolves.toMatchObject({ version });
 		await writeFile(join(directory, metadata.archives[1]), 'replaced archive');
 		await writeReleaseFiles(metadata, directory, 'a'.repeat(40), 'ABCDEFGHIJ');
 		await expect(verifyReleaseFiles(metadata, directory)).rejects.toThrow(/signature/);
 	});
 
 	it('refuses mismatched tags and prevents unsigned previews from reaching GitHub', async () => {
-		await expect(readReleaseMetadata(resolve('.'), { tag: 'v0.1.1' })).rejects.toThrow(/tag/);
+		await expect(readReleaseMetadata(resolve('.'), { tag: `v${newerVersion}` })).rejects.toThrow(/tag/);
 		let called = false;
 		await expect(
 			publishRelease({ unsigned: true }, 'a'.repeat(40), 'svn-box/diffolio', 'unused', () => {
