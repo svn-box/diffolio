@@ -9,15 +9,14 @@
     <a href="#features">Features</a> ·
     <a href="#screenshots">Screenshots</a> ·
     <a href="#installation">Installation</a> ·
-    <a href="#usage">Usage</a> ·
-    <a href="#development">Development</a>
+    <a href="#usage">Usage</a>
   </p>
   <p><sub>v0.1.0 · macOS · Apple Silicon (arm64)</sub></p>
 </div>
 
 Diffolio compares local text files, folders and images in a compact desktop window. Open two versions, inspect their differences, and create an editable result when you need one. Compared inputs open read-only; saving a result is an explicit action.
 
-The current app interface is in **Simplified Chinese**. This repository provides English and Chinese documentation. Diffolio is currently built for personal use on macOS; the local application package targets Apple Silicon.
+Diffolio runs on macOS with Apple Silicon and currently has a **Simplified Chinese** interface.
 
 ## Features
 
@@ -31,7 +30,7 @@ The current app interface is in **Simplified Chinese**. This repository provides
 
 ## Screenshots
 
-Captured from the packaged application at **1280 × 800** logical pixels, using the included fixtures and an isolated temporary data directory. The screenshots show the Chinese interface with a 14px editor font. Recent entries are actual fixture comparisons; no personal files or clipboard contents are used. The default application window remains **964 × 564** and can be resized.
+Explore text, folder and image comparisons in light and dark workspaces.
 
 **Text comparison** — read both versions across the full window, with stable colors for additions, deletions and modifications.
 
@@ -89,9 +88,15 @@ Slide the divider between two matching-size sample images. Side-by-side viewing 
 
 Choose system, light or dark appearance and adjust editor size with the searchable font-size control. Preferences are saved on this Mac.
 
-![Diffolio appearance settings and the open searchable font-size Combobox](resources/screenshots/font-combobox.png)
+![Diffolio appearance settings and the open searchable font-size picker](resources/screenshots/font-combobox.png)
 
 </details>
+
+## Installation
+
+Download the macOS Apple Silicon (arm64) build from [Releases](https://github.com/svn-box/diffolio/releases). Open the DMG and drag Diffolio to Applications, or extract the ZIP and move the app there.
+
+See the [0.1.0 release notes](docs/releases/0.1.0.md) for features and supported formats.
 
 ## Usage
 
@@ -131,80 +136,6 @@ Use the return arrow to visit recent comparisons and **继续比较** (Continue 
 | ⌘W       | Close the current comparison       |
 | ⌘,       | Open settings                      |
 
-## Current scope
+## Supported files and limits
 
-Text input supports **UTF-8**, including BOM and LF, CRLF or CR line endings. Opened text/image files and saved results are limited to **16 MiB per file**; folder scans are limited to **100,000 entries**. These are implementation limits, not performance benchmark claims. Symlink entries are compared as links rather than followed during directory traversal.
-
-Three-way merging, Git/CLI integration, Fluid-style connectors, whitespace-ignore rules, folder copy/synchronization and image pixel-difference masks remain planned. See [PLAN.md](docs/PLAN.md) for implementation status and the wider scope.
-
-## Installation
-
-Version **0.1.0** targets Apple Silicon (arm64). Open the versioned DMG and drag Diffolio to Applications, or extract the ZIP and move the app there. See the [0.1.0 release notes](docs/releases/0.1.0.md) for features and current limits.
-
-Version tags trigger the signed and notarized GitHub Actions release workflow. Manual runs produce unsigned previews in a separate directory. Repository and signing configuration are being prepared; see the [release instructions](docs/RELEASING.md) for setup, DMG/ZIP generation and verification.
-
-## Development
-
-### Run from source
-
-Use **Node.js 22.12+ and npm**. From the project directory:
-
-```bash
-npm ci
-npm run dev
-```
-
-To build and run the compiled application:
-
-```bash
-npm run build
-npm start
-```
-
-The stack is Electron, React, TypeScript, Zustand and CodeMirror. Zustand manages comparison sessions, result drafts, preferences, recents and task feedback. Editor instances and undo history stay in the editor layer. The font-size control uses the shadcn Radix Popover + cmdk Command composition. Dependencies are pinned in `package.json` and `package-lock.json`.
-
-### Package for macOS
-
-The icon build requires **Xcode / Icon Composer 27+**, selected with `xcode-select`. Packaging uses the chosen `frosted-diff` native `.icon` document, a full native background and a transparent foreground, following SVNBox's build approach. It produces an asset catalog and a compatible ICNS.
-
-```bash
-npm run package:dir
-open release/mac-arm64/Diffolio.app
-```
-
-`npm run icons:build` rebuilds only the icon resources. The application package contains runtime files and compiled icons; development references, fixtures and screenshots stay outside it.
-
-### Verify changes
-
-```bash
-npm run typecheck
-npm run format:check
-npm test
-npm run test:e2e
-npm run test:entry
-npm run design:check
-npm run test:packaged
-```
-
-Build the application package before running `test:packaged`. The Electron checks use temporary app data; clipboard checks restore their original contents. The contrast report covers the workspace's light/dark color pairs.
-
-### Refresh the screenshots
-
-```bash
-npm run docs:screenshots
-```
-
-This builds the app and captures its actual macOS window using fixtures and temporary app data. It requires macOS screen-recording access for the terminal/automation host. Capture details and source hashes are recorded beside the images; see [the screenshot notes](resources/screenshots/README.md).
-
-### Project documentation
-
-| Document                                                 | Contents                                                    |
-| -------------------------------------------------------- | ----------------------------------------------------------- |
-| [Product brief](docs/PRODUCT.md)                         | Intended users, product purpose and project constraints     |
-| [Development plan](docs/PLAN.md)                         | Milestones, implemented scope and remaining work            |
-| [Design system](docs/DESIGN.md)                          | Layout, color, typography and interaction rules             |
-| [Code architecture](docs/ARCHITECTURE.md)                 | State ownership, module responsibilities and regression checks |
-| [Refactor review](docs/REVIEW.md)                         | Findings, fixes and verification before the initial commit  |
-| [Release instructions](docs/RELEASING.md)                  | Version checks, DMG/ZIP generation and installer acceptance |
-| [Comparison fixtures](fixtures/README.md)                | Text, folder, image and future merge samples                |
-| [Public resources](resources/README.md)                  | README screenshots, selected artwork and native icon build  |
+Text input supports **UTF-8**, including BOM and LF, CRLF or CR line endings. Opened text/image files and saved results are limited to **16 MiB per file**; folder scans are limited to **100,000 entries**. Symlink entries are compared as links rather than followed during directory traversal.
