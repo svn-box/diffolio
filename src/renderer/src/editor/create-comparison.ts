@@ -8,11 +8,14 @@ import { currentChunkIndex } from '../../../shared/chunks';
 import { baseExtensions, markModified } from '@/editor/extensions';
 import type { TextComparisonProps } from '@/editor/types';
 import type { ComparisonSearch } from '@/editor/comparison-search';
+import type { Side } from '../../../shared/types';
 
 export interface ComparisonEditor {
 	view: EditorView;
 	left: EditorView | null;
 	search: ComparisonSearch;
+	side(): Side;
+	selectSide(side: Side): void;
 	destroy(): void;
 }
 
@@ -21,23 +24,48 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 	const previous = current.snapshots.get(current.id);
 	let merging: MergeView | undefined;
 	let scrolling = false;
+	let view: EditorView;
+	let left: EditorView | null = null;
+	let activeSide = current.layout === 'unified' ? ('b' as Side) : (previous?.side ?? 'b');
 
-	function report(view: EditorView): void {
+	function report(): void {
+		if (!view) {
+			return;
+		}
 		const chunks = getChunks(view.state)?.chunks ?? [];
 		const added = chunks.filter((chunk) => chunk.fromA === chunk.toA).length;
 		const deleted = chunks.filter((chunk) => chunk.fromB === chunk.toB).length;
+		const active = activeSide === 'a' && left ? left : view;
+		const ranges = activeSide === 'a' ? chunks.map((chunk) => ({ fromB: chunk.fromA, toB: chunk.toA })) : chunks;
+		const leftState = left?.state ?? previous?.leftState;
 		getProps().onStats({
 			total: chunks.length,
 			added,
 			deleted,
 			modified: chunks.length - added - deleted,
-			current: currentChunkIndex(chunks, view.state.selection.main.head) + 1,
+			current: currentChunkIndex(ranges, active.state.selection.main.head) + 1,
 			canUndo: undoDepth(view.state) > 0,
 			canRedo: redoDepth(view.state) > 0,
+			canUndoA: !!leftState && undoDepth(leftState) > 0,
+			canRedoA: !!leftState && redoDepth(leftState) > 0,
+			activeSide,
 		});
 	}
 
+	function snapshot(): void {
+		if (view) {
+			current.snapshots.set(current.id, {
+				state: view.state,
+				leftState: left?.state ?? previous?.leftState,
+				side: activeSide,
+				focused: view.hasFocus || !!left?.hasFocus,
+				scroll: merging ? merging.dom.scrollTop : view.scrollDOM.scrollTop,
+			});
+		}
+	}
+
 	function extensions(side: 'a' | 'b'): Extension[] {
+		const restored = side === 'a' ? previous?.leftState : previous?.state;
 		return [
 			...baseExtensions(side === 'a' ? current.a : current.b, current.preferences),
 			highlightActiveLineGutter(),
@@ -47,32 +75,35 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 			keymap.of([...defaultKeymap, ...historyKeymap]),
 			history(),
 			markModified,
-			EditorState.readOnly.of(side === 'a' || !current.editing),
-			EditorView.editable.of(side === 'b' && current.editing),
-			EditorView.contentAttributes.of({ 'aria-label': side === 'a' ? '原始文件 A' : current.editing ? '编辑比较结果' : '对照文件 B', spellcheck: 'false', tabindex: '0' }),
-			side === 'b' && previous ? historyField.init(() => previous.state.field(historyField)) : [],
+			EditorState.readOnly.of(!current.editing[side]),
+			EditorView.editable.of(current.editing[side]),
+			EditorView.contentAttributes.of({
+				'aria-label': current.editing[side] ? `编辑 ${side.toUpperCase()} 副本` : `原始文件 ${side.toUpperCase()}`,
+				spellcheck: 'false',
+				tabindex: '0',
+			}),
+			restored ? historyField.init(() => restored.field(historyField)) : [],
 			EditorView.updateListener.of((update) => {
-				if (side !== 'b') {
-					return;
+				if (update.view.hasFocus && (update.focusChanged || update.selectionSet)) {
+					activeSide = side;
 				}
 				if (update.docChanged) {
-					getProps().onChange(update.state.doc.toString());
+					getProps().onChange(side, update.state.doc.toString());
 				}
-				current.snapshots.set(current.id, { state: update.state, scroll: merging ? merging.dom.scrollTop : update.view.scrollDOM.scrollTop });
-				report(update.view);
+				snapshot();
+				report();
 			}),
 		];
 	}
 
-	const selection = previous && previous.state.doc.toString() === current.content ? previous.state.selection : undefined;
+	const selection = previous && previous.state.doc.toString() === current.content.b ? previous.state.selection : undefined;
+	const selectionA = previous?.leftState?.doc.toString() === current.content.a ? previous.leftState.selection : undefined;
 	const collapseUnchanged = current.preferences.collapse ? { margin: 3, minSize: 6 } : undefined;
 	const diffConfig = { scanLimit: 2000, timeout: 1500 };
-	let view: EditorView;
-	let left: EditorView | null = null;
 	if (current.layout === 'split') {
 		merging = new MergeView({
-			a: { doc: current.a.content, extensions: extensions('a') },
-			b: { doc: current.content, selection, extensions: extensions('b') },
+			a: { doc: current.content.a, selection: selectionA, extensions: extensions('a') },
+			b: { doc: current.content.b, selection, extensions: extensions('b') },
 			parent: root,
 			highlightChanges: true,
 			gutter: true,
@@ -96,25 +127,34 @@ export function createComparison(root: HTMLElement, getProps: () => TextComparis
 	} else {
 		view = new EditorView({
 			parent: root,
-			doc: current.content,
+			doc: current.content.b,
 			selection,
 			extensions: [
 				...extensions('b'),
-				unifiedMergeView({ original: current.a.content, mergeControls: false, highlightChanges: true, gutter: true, collapseUnchanged, diffConfig }),
+				unifiedMergeView({ original: current.content.a, mergeControls: false, highlightChanges: true, gutter: true, collapseUnchanged, diffConfig }),
 			],
 		});
 		view.scrollDOM.scrollTop = previous?.scroll ?? 0;
 	}
 	search.attach(left, view);
-	report(view);
+	if (previous?.focused) {
+		(activeSide === 'a' && left ? left : view).focus();
+	}
+	report();
 	return {
 		view,
 		left,
 		search,
+		side: () => activeSide,
+
+		selectSide(side) {
+			activeSide = side;
+			report();
+		},
 
 		destroy() {
 			search.detach();
-			current.snapshots.set(current.id, { state: view.state, scroll: merging ? merging.dom.scrollTop : view.scrollDOM.scrollTop });
+			snapshot();
 			if (merging) {
 				merging.destroy();
 			} else {

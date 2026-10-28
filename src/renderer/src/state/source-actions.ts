@@ -1,13 +1,13 @@
 import type { OpenResult, SourceFile } from '../../../shared/types';
 import { emptyStats } from '@/editor/types';
-import { newSession, type Session, type Side } from '@/state/session';
+import { newDraft, newSession, type Session, type Side } from '@/state/session';
 import { permitClose } from '@/state/session-actions';
 import { patchSession, type WorkspaceContext, type WorkspaceState } from '@/state/workspace-state';
 
 type SourceActions = Pick<WorkspaceState, 'acceptOpen' | 'load' | 'paste' | 'selectFolder' | 'openFolderEntry' | 'cancelTask' | 'updateProgress'>;
 
 function withSources(target: Session, result: OpenResult, side?: Side, example = false): Session {
-	const reset = { documentId: crypto.randomUUID(), editing: false, savedPath: undefined, stats: emptyStats, example };
+	const reset = { documentId: crypto.randomUUID(), drafts: { a: newDraft(), b: newDraft() }, stats: emptyStats, example };
 	if (result.folder) {
 		return {
 			...target,
@@ -17,8 +17,6 @@ function withSources(target: Session, result: OpenResult, side?: Side, example =
 			entryKind: 'folders',
 			folder: result.folder,
 			folderPaths: { a: result.folder.left, b: result.folder.right },
-			content: '',
-			savedContent: '',
 		};
 	}
 	const a = side === 'b' ? target.a : result.files[0];
@@ -26,7 +24,7 @@ function withSources(target: Session, result: OpenResult, side?: Side, example =
 	if (a && b && a.kind !== b.kind) {
 		throw new Error('请选择相同类型的两个文件。');
 	}
-	return { ...target, ...reset, a, b, entryKind: 'files', folder: undefined, content: b?.content ?? '', savedContent: b?.content ?? '' };
+	return { ...target, ...reset, a, b, entryKind: 'files', folder: undefined, drafts: { a: newDraft(a?.content), b: newDraft(b?.content) } };
 }
 
 export function createSourceActions(context: WorkspaceContext): SourceActions {

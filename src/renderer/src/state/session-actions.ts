@@ -1,27 +1,7 @@
 import { emptyStats } from '@/editor/types';
-import { hasSources, isDirty, leaf, newSession, sessionView, type Session } from '@/state/session';
-import { activeSession, patchSession, type WorkspaceContext, type WorkspaceState } from '@/state/workspace-state';
-
-async function save(context: WorkspaceContext, target: Session): Promise<boolean> {
-	const { api, get, set } = context;
-	if (!target.b || !target.editing) {
-		return true;
-	}
-	try {
-		const result = await api.save(target.content, target.b);
-		if (!result) {
-			return false;
-		}
-		if (get().sessions.some((session) => session.id === target.id && session.documentId === target.documentId)) {
-			patchSession(context, target.id, { savedContent: target.content, savedPath: result.path });
-			set({ notice: `已保存 ${leaf(result.path)}` });
-		}
-		return true;
-	} catch (reason) {
-		get().fail(reason);
-		return false;
-	}
-}
+import { hasSources, isDirty, newDraft, newSession, sessionView, type Session } from '@/state/session';
+import { activeSession, patchDraft, patchSession, type WorkspaceContext, type WorkspaceState } from '@/state/workspace-state';
+import { saveDrafts } from '@/state/draft-saving';
 
 export async function permitClose(context: WorkspaceContext, targets: Session[]): Promise<boolean> {
 	const changed = targets.filter(isDirty);
@@ -32,7 +12,7 @@ export async function permitClose(context: WorkspaceContext, targets: Session[])
 		}
 		if (choice === 'save') {
 			for (const target of changed) {
-				if (!(await save(context, target))) {
+				if (!(await saveDrafts(context, target))) {
 					return false;
 				}
 			}
@@ -40,7 +20,14 @@ export async function permitClose(context: WorkspaceContext, targets: Session[])
 	}
 	// A native dialog may finish after the user has edited or replaced its target.
 	return targets.every((target) =>
-		context.get().sessions.some((session) => session.id === target.id && session.documentId === target.documentId && session.content === target.content),
+		context
+			.get()
+			.sessions.some(
+				(session) =>
+					session.id === target.id &&
+					session.documentId === target.documentId &&
+					(['a', 'b'] as const).every((side) => session.drafts[side].content === target.drafts[side].content),
+			),
 	);
 }
 
@@ -104,31 +91,33 @@ export function createSessionActions(context: WorkspaceContext): SessionActions 
 			patchSession(context, get().activeId, { layout });
 		},
 
-		startEditing() {
+		startEditing(side = 'b') {
 			const current = activeSession(get());
 			if (sessionView(current).paired && current.b?.kind === 'text') {
-				patchSession(context, current.id, { editing: true });
+				patchDraft(context, current.id, side, { editing: true });
+				if (side === 'a' && current.layout === 'unified') {
+					patchSession(context, current.id, { layout: 'split' });
+				}
 			}
 		},
 
 		swapSources() {
 			const current = activeSession(get());
-			if (current.editing || !current.a || !current.b || current.a.kind !== 'text') {
+			if (current.drafts.a.editing || current.drafts.b.editing || !current.a || !current.b || current.a.kind !== 'text') {
 				return;
 			}
 			patchSession(context, current.id, {
 				documentId: crypto.randomUUID(),
 				a: current.b,
 				b: current.a,
-				content: current.a.content,
-				savedContent: current.a.content,
+				drafts: { a: newDraft(current.b.content), b: newDraft(current.a.content) },
 				stats: emptyStats,
 			});
 		},
 
-		changeContent(id, documentId, content) {
-			if (get().sessions.some((session) => session.id === id && session.documentId === documentId && session.editing)) {
-				patchSession(context, id, { content });
+		changeContent(id, documentId, content, side = 'b') {
+			if (get().sessions.some((session) => session.id === id && session.documentId === documentId && session.drafts[side].editing)) {
+				patchDraft(context, id, side, { content });
 			}
 		},
 
@@ -139,9 +128,9 @@ export function createSessionActions(context: WorkspaceContext): SessionActions 
 			}
 		},
 
-		async saveSession(id) {
+		async saveSession(id, side) {
 			const target = get().sessions.find((session) => session.id === id);
-			return target ? save(context, target) : false;
+			return target ? saveDrafts(context, target, side) : false;
 		},
 
 		async closeSession(id) {

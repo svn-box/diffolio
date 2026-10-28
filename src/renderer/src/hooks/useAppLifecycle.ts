@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useEditorRuntime } from '@/editor/EditorRuntime';
 import { workspaceStore } from '@/state/workspace';
 import { isDirty } from '@/state/session';
+import { activeSession } from '@/state/workspace-state';
 import { useAppUpdates } from '@/state/app-updates';
 
 export function useAppLifecycle(): void {
@@ -67,7 +68,7 @@ export function useAppLifecycle(): void {
 					}
 					break;
 				case 'save':
-					void state.saveSession(state.activeId);
+					void state.saveSession(state.activeId, activeSession(state).stats.activeSide);
 					break;
 				case 'close-tab':
 					void state.closeSession(state.activeId);

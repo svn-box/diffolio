@@ -26,11 +26,11 @@ export interface WorkspaceState {
 	openSettings(): void;
 	setEntryKind(kind: EntryKind): void;
 	setLayout(layout: Layout): void;
-	startEditing(): void;
+	startEditing(side?: Side): void;
 	swapSources(): void;
-	changeContent(id: string, documentId: string, content: string): void;
+	changeContent(id: string, documentId: string, content: string, side?: Side): void;
 	updateStats(id: string, documentId: string, stats: ComparisonStats): void;
-	saveSession(id: string): Promise<boolean>;
+	saveSession(id: string, side?: Side): Promise<boolean>;
 	closeSession(id: string): Promise<void>;
 	closeWindow(): Promise<void>;
 	acceptOpen(result: OpenResult, side?: Side, example?: boolean, targetId?: string): Promise<void>;
@@ -60,4 +60,11 @@ export function activeSession(state: Pick<WorkspaceState, 'sessions' | 'activeId
 
 export function patchSession({ set }: WorkspaceContext, id: string, patch: Partial<Session>): void {
 	set((state) => ({ sessions: state.sessions.map((session) => (session.id === id ? { ...session, ...patch } : session)) }));
+}
+
+export function patchDraft(context: WorkspaceContext, id: string, side: Side, patch: Partial<Session['drafts']['a']>): void {
+	const session = context.get().sessions.find((item) => item.id === id);
+	if (session) {
+		patchSession(context, id, { drafts: { ...session.drafts, [side]: { ...session.drafts[side], ...patch } } });
+	}
 }

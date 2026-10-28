@@ -1,8 +1,19 @@
-import type { FolderComparison, Layout, SourceFile } from '../../../shared/types';
+import type { FolderComparison, Layout, SourceFile, Side } from '../../../shared/types';
 import { emptyStats, type ComparisonStats } from '@/editor/types';
 
 export type EntryKind = 'files' | 'folders';
-export type Side = 'a' | 'b';
+export type { Side };
+
+export interface TextDraft {
+	editing: boolean;
+	content: string;
+	savedContent: string;
+	savedPath?: string;
+}
+
+export function newDraft(content = ''): TextDraft {
+	return { editing: false, content, savedContent: content };
+}
 
 export interface Session {
 	id: string;
@@ -11,18 +22,15 @@ export interface Session {
 	b?: SourceFile;
 	folder?: FolderComparison;
 	layout: Layout;
-	editing: boolean;
-	content: string;
-	savedContent: string;
+	drafts: Record<Side, TextDraft>;
 	stats: ComparisonStats;
 	example?: boolean;
-	savedPath?: string;
 	entryKind: EntryKind;
 	folderPaths?: Partial<Record<Side, string>>;
 }
 
 export function newSession(entryKind: EntryKind = 'files'): Session {
-	return { id: crypto.randomUUID(), documentId: crypto.randomUUID(), entryKind, layout: 'split', editing: false, content: '', savedContent: '', stats: emptyStats };
+	return { id: crypto.randomUUID(), documentId: crypto.randomUUID(), entryKind, layout: 'split', drafts: { a: newDraft(), b: newDraft() }, stats: emptyStats };
 }
 
 export function leaf(path: string): string {
@@ -40,7 +48,12 @@ export function sessionTitle(session: Session): string {
 }
 
 export function isDirty(session: Session): boolean {
-	return session.editing && session.content !== session.savedContent;
+	return isSideDirty(session, 'a') || isSideDirty(session, 'b');
+}
+
+export function isSideDirty(session: Session, side: Side): boolean {
+	const draft = session.drafts[side];
+	return draft.editing && draft.content !== draft.savedContent;
 }
 
 export function hasSources(session: Session): boolean {

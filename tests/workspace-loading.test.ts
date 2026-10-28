@@ -100,7 +100,7 @@ describe('asynchronous comparison inputs', () => {
 		actions.cancelTask();
 		confirmation.resolve('discard');
 		await loading;
-		expect(current().content).toBe('draft\n');
+		expect(current().drafts.b.content).toBe('draft\n');
 		expect(current().b?.name).toBe('after.ts');
 	});
 

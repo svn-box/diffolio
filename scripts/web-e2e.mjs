@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import packageInfo from '../package.json' with { type: 'json' };
 import { mockDesktop } from './helpers/mock-desktop.mjs';
 import { exerciseSettings, exerciseUpdates } from './helpers/settings-check.mjs';
-import { exerciseFooter, exerciseResultFooter, footerGeometry } from './helpers/footer-check.mjs';
+import { exerciseFooter, exerciseResultFooter, footerGeometry, footerAction } from './helpers/footer-check.mjs';
 
 const output = resolve('work/visual');
 const { version } = packageInfo;
@@ -102,17 +102,21 @@ async function exercise(page, name, sendAction) {
 	await page.keyboard.press('Escape');
 	await input.fill('studio');
 	await shot('search');
-	await page.getByRole('button', { name: '创建结果', exact: true }).click();
-	const editor = page.getByRole('textbox', { name: '编辑比较结果', exact: true });
+	await page.getByRole('button', { name: name === 'electron' ? '创建结果' : '编辑 B', exact: true }).click();
+	const editor = page.getByRole('textbox', { name: name === 'electron' ? '编辑比较结果' : '编辑 B 副本', exact: true });
 	await editor.focus();
 	await page.keyboard.press('Meta+End');
 	await page.keyboard.insertText('\n迁移验证 👨‍👩‍👧‍👦');
 	await expect(editor).toContainText('迁移验证');
 	await page.getByRole('button', { name: '统一布局 ⌘2', exact: true }).click();
-	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).toContainText('迁移验证');
+	await expect(page.getByRole('textbox', { name: name === 'electron' ? '编辑比较结果' : '编辑 B 副本', exact: true })).toContainText('迁移验证');
 	await page.getByRole('button', { name: '双栏布局 ⌘1', exact: true }).click();
-	await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
-	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).not.toContainText('迁移验证');
+	if (name === 'electron') {
+		await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
+	} else {
+		await footerAction(page, 'B', '撤销');
+	}
+	await expect(page.getByRole('textbox', { name: name === 'electron' ? '编辑比较结果' : '编辑 B 副本', exact: true })).not.toContainText('迁移验证');
 	if (name !== 'electron') {
 		await exerciseResultFooter(page, output, name);
 	}

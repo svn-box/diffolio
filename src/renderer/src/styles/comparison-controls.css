@@ -48,17 +48,10 @@
 	margin: 0 5px;
 	background: var(--border);
 }
-.footer-overview-trigger,
-.footer-create-result,
-.footer-use-a,
-.footer-save-result {
+.footer-overview-trigger {
 	height: 26px;
 	padding: 0 7px;
 	border-radius: 5px;
-	gap: 5px;
-	font-size: 11px;
-}
-.footer-overview-trigger {
 	font-size: 10px;
 	gap: 3px;
 }
@@ -66,47 +59,81 @@
 	color: var(--accent);
 	background: var(--accent-soft);
 }
-.footer-result-identity {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 82px;
-	flex-shrink: 0;
+.footer-result {
+	gap: 4px;
 }
-.footer-create-result {
+.footer-result > :first-child {
+	margin-right: 8px;
+}
+.footer-result > :last-child {
+	margin-left: 8px;
+}
+.footer-result > :nth-child(4) {
+	margin-left: 4px;
+}
+.reverse-merge-icon {
+	transform: rotate(180deg);
+}
+.footer-edit-button {
+	position: relative;
+}
+.footer-edit-button.is-editing {
 	color: var(--accent);
 }
-.footer-result-state {
-	display: inline-flex;
-	align-items: center;
-	gap: 5px;
-	font-size: 10px;
+.footer-edit-button[data-state='open'] {
+	background: var(--accent-soft);
 }
-.footer-result-state.is-dirty {
-	color: var(--text);
-}
-.footer-result-state.is-saved {
-	color: var(--success);
-}
-.result-dirty-dot {
-	width: 5px;
-	height: 5px;
+.side-dirty-dot {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	width: 4px;
+	height: 4px;
 	border-radius: 50%;
 	background: var(--accent);
 }
-.footer-use-a {
+.footer-edit-menu {
+	width: 196px;
+	padding: 5px;
+	z-index: 30;
+	font-size: 11px;
+}
+.side-menu-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 8px 9px;
 	color: var(--text);
 }
-.footer-save-result {
-	color: var(--accent);
-	background: color-mix(in srgb, var(--accent) 9%, transparent);
+.side-menu-heading strong {
+	font-size: 11px;
+	font-weight: 600;
 }
-.footer-save-result:hover:not(:disabled) {
-	background: color-mix(in srgb, var(--accent) 16%, transparent);
-}
-.footer-save-result:disabled {
+.side-menu-heading > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
 	color: var(--text-muted);
-	background: transparent;
+	font-size: 10px;
+}
+.footer-edit-menu > button {
+	justify-content: flex-start;
+	width: 100%;
+	height: 28px;
+	padding: 0 8px;
+	gap: 7px;
+	border-radius: 4px;
+	font-size: 11px;
+}
+.menu-key {
+	margin-left: auto;
+	color: var(--text-muted);
+	font-size: 10px;
+}
+.side-menu-divider {
+	height: 1px;
+	margin: 4px 5px;
+	background: var(--border);
 }
 .difference-count {
 	margin-right: 6px;

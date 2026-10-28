@@ -70,5 +70,5 @@ export async function exerciseSettings(page, output, name) {
 	await page.getByRole('button', { name: '更新日志', exact: true }).click();
 	await expect(page.locator('.updates-page')).toBeVisible();
 	await page.getByRole('button', { name: '继续比较', exact: true }).click();
-	await expect(page.getByRole('textbox', { name: '编辑比较结果', exact: true })).toBeVisible();
+	await expect(page.getByRole('textbox', { name: '编辑 B 副本', exact: true })).toBeVisible();
 }

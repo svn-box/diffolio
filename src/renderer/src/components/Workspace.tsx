@@ -6,7 +6,6 @@ import { SessionTabs } from '@/components/shell/SessionTabs';
 import { WorkspaceMessages } from '@/components/shell/WorkspaceMessages';
 import { EntryWorkspace } from '@/components/EntryWorkspace';
 import { ComparisonWorkspace } from '@/components/ComparisonWorkspace';
-import { Statusbar } from '@/components/Statusbar';
 import { UpdatesPage } from '@/components/UpdatesPage';
 
 function WelcomeWorkspace() {
@@ -33,7 +32,6 @@ export function Workspace() {
 			{!home && <SessionTabs />}
 			<WorkspaceMessages />
 			{home ? homePage === 'updates' ? <UpdatesPage /> : <WelcomeWorkspace /> : !ready ? <EntryWorkspace /> : <ComparisonWorkspace />}
-			{!home && ready && <Statusbar />}
 		</main>
 	);
 }

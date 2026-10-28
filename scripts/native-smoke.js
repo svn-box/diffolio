@@ -54,7 +54,10 @@
 			);
 		};
 		assert(footerLayout() && !document.querySelector('.editing-bar'), 'Comparison tools occupy one centered 36px footer');
-		assert(button('当前差异采用 A').disabled && button('另存结果').disabled && button('撤销编辑 ⌘Z').disabled, 'Read-only comparisons enable only existing safe commands');
+		assert(
+			document.querySelectorAll('.footer-result button').length === 6 && !button('Copy A to B').disabled,
+			'Six symmetric controls can create independent drafts from read-only inputs',
+		);
 		await click('查找 ⌘F');
 		const field = await until(() => document.querySelector('[aria-label="搜索比较内容"]'), 'search');
 		input(field, 'studio');
@@ -69,10 +72,24 @@
 		await invoke('smoke_action', { action: 'find' });
 		assert(button('搜索 A').getAttribute('aria-pressed') === 'true', 'Native Find menu preserves the selected search scope');
 		await snapshot('search-light');
-		await click('创建结果');
-		await click('当前差异采用 A');
+		for (const [name, side] of [
+			['Copy A to B', 'B'],
+			['Keep Both (A then B)', 'B'],
+			['Copy B to A', 'A'],
+			['Keep Both (B then A)', 'A'],
+		]) {
+			await click(name);
+			await until(() => document.querySelector(`.footer-edit-button[data-side="${side.toLowerCase()}"]`).dataset.dirty === 'true', 'dirty target');
+			await click(`编辑 ${side}`);
+			await click(`撤销 ${side}`);
+			await until(() => document.querySelector(`.footer-edit-button[data-side="${side.toLowerCase()}"]`).dataset.dirty === 'false', 'undone target');
+		}
+		assert(true, 'Both copy directions and ordered Keep Both decisions are independently undoable');
+		await click('Copy A to B');
 		await until(async () => (await invoke('smoke_action', { action: 'status' })).dirty, 'native dirty state');
-		assert(!button('撤销编辑 ⌘Z').disabled && button('重做编辑 ⌘⇧Z').disabled, 'History button availability comes from actual CodeMirror history');
+		await click('编辑 B');
+		assert(!button('撤销 B').disabled && button('重做 B').disabled, 'Side menus reflect actual independent CodeMirror history');
+		await click('继续编辑 B');
 		await snapshot('footer-editing-light');
 		await invoke('smoke_action', { action: 'minimum-window' });
 		await until(() => innerWidth === 880, 'minimum width');
@@ -107,10 +124,14 @@
 		await new Promise((resolve) => setTimeout(resolve, 200));
 		const guarded = await invoke('smoke_action', { action: 'status' });
 		assert(guarded.visible && guarded.dirty && !guarded.canClose, 'Native close is cancelled while unsaved results remain');
-		await click('另存结果');
+		await click('编辑 B');
+		await click('另存 B');
 		await until(() => document.querySelector('.save-notice')?.textContent.includes('已保存'), 'saved result');
 		assert(true, 'Result saves through the real Tauri bridge and Rust atomic writer');
-		assert(footerLayout() && document.querySelector('.footer-result-state').textContent === '已保存', 'Saving preserves footer geometry and exposes the result state');
+		assert(
+			footerLayout() && document.querySelector('.footer-edit-button[data-side="b"]').dataset.dirty === 'false',
+			'Saving preserves footer geometry and exposes the result state',
+		);
 		await snapshot('footer-saved');
 		await click('统一布局 ⌘2');
 		await until(() => document.querySelectorAll('.cm-editor').length === 1, 'unified');
@@ -124,7 +145,9 @@
 		await invoke('smoke_action', { action: 'paths', paths: [base + '/text/before.ts', base + '/text/before.ts'] });
 		await until(() => document.querySelector('.difference-count')?.textContent === '内容相同', 'identical comparison');
 		assert(
-			button('上一处差异').disabled && button('下一处差异').disabled && button('当前差异采用 A').disabled,
+			button('上一处差异').disabled &&
+				button('下一处差异').disabled &&
+				['Copy A to B', 'Copy B to A', 'Keep Both (A then B)', 'Keep Both (B then A)'].every((name) => button(name).disabled),
 			'Identical files disable difference navigation and block adoption',
 		);
 		const folder = await window.diffolio.readPaths([base + '/left', base + '/right']);

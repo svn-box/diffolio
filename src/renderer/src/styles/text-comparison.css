@@ -80,8 +80,15 @@
 	min-height: 0;
 }
 .content-main {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
 	min-width: 0;
+	overflow: hidden;
+}
+.comparison-document {
+	flex: 1;
+	min-height: 0;
 	overflow: hidden;
 }
 .text-comparison {

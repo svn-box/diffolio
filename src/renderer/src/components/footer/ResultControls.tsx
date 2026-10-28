@@ -1,56 +1,41 @@
-import { ArrowRight, Check, FilePenLine, Pencil, Redo2, Save, Undo2 } from 'lucide-react';
-import { useActiveSession, useWorkspace, workspaceStore } from '@/state/workspace';
-import { isDirty } from '@/state/session';
+import { MoreHorizontal, Play } from 'lucide-react';
+import { useActiveSession, useWorkspace } from '@/state/workspace';
 import { useEditorRuntime } from '@/editor/EditorRuntime';
 import { IconButton } from '@/components/Primitives';
+import { SideEditControl } from '@/components/footer/SideEditControl';
 
 export function ResultControls() {
 	const session = useActiveSession();
 	const busy = useWorkspace((state) => !!state.busy);
 	const { compare } = useEditorRuntime();
-	const { startEditing, saveSession } = workspaceStore.getState();
-	const dirty = isDirty(session);
-	const saved = !!session.savedPath && !dirty;
+	const disabled = !session.stats.total || busy;
+	const reverseDisabled = disabled || session.layout === 'unified';
 	return (
-		<div className="footer-result" role="group" aria-label="结果操作">
-			<div className="footer-result-identity">
-				{session.editing ? (
-					<span
-						className={`footer-result-state${dirty ? ' is-dirty' : saved ? ' is-saved' : ''}`}
-						title={dirty ? '结果副本有未保存修改' : (session.savedPath ?? '正在编辑独立的结果副本')}
-					>
-						{dirty ? <span className="result-dirty-dot" /> : saved ? <Check size={13} /> : <FilePenLine size={13} />}
-						{dirty ? '未保存' : saved ? '已保存' : '结果副本'}
-					</span>
-				) : (
-					<button className="footer-create-result" aria-label="创建结果" disabled={busy} onClick={startEditing}>
-						<Pencil size={13} />
-						创建结果
-					</button>
-				)}
-			</div>
-			<span className="footer-divider" aria-hidden="true" />
-			<button
-				className="footer-use-a"
-				aria-label="当前差异采用 A"
-				title="当前差异采用 A"
-				disabled={!session.editing || !session.stats.total || busy}
-				onClick={() => compare.current?.useA()}
+		<div className="footer-result" role="group" aria-label="块操作">
+			<SideEditControl side="a" />
+			<IconButton label="Keep Both (A then B)" title="保留双方：A 在前、B 在后，写入 B 副本" disabled={disabled} onClick={() => compare.current?.merge('keep-a-b')}>
+				<MoreHorizontal size={15} />
+			</IconButton>
+			<IconButton label="Copy A to B" title="复制当前差异 A → B" disabled={disabled} onClick={() => compare.current?.merge('copy-a-b')}>
+				<Play size={13} fill="currentColor" />
+			</IconButton>
+			<IconButton
+				label="Copy B to A"
+				title={session.layout === 'unified' ? '切换双栏后复制 B → A' : '复制当前差异 B → A'}
+				disabled={reverseDisabled}
+				onClick={() => compare.current?.merge('copy-b-a')}
 			>
-				<ArrowRight size={14} />
-				采用 A
-			</button>
-			<IconButton label="撤销编辑 ⌘Z" disabled={!session.editing || !session.stats.canUndo || busy} onClick={() => compare.current?.undo()}>
-				<Undo2 size={15} />
+				<Play size={13} fill="currentColor" className="reverse-merge-icon" />
 			</IconButton>
-			<IconButton label="重做编辑 ⌘⇧Z" disabled={!session.editing || !session.stats.canRedo || busy} onClick={() => compare.current?.redo()}>
-				<Redo2 size={15} />
+			<IconButton
+				label="Keep Both (B then A)"
+				title="保留双方：B 在前、A 在后，写入 A 副本（双栏）"
+				disabled={reverseDisabled}
+				onClick={() => compare.current?.merge('keep-b-a')}
+			>
+				<MoreHorizontal size={15} />
 			</IconButton>
-			<span className="footer-divider" aria-hidden="true" />
-			<button className="footer-save-result" aria-label="另存结果" title="另存结果" disabled={!session.editing || busy} onClick={() => void saveSession(session.id)}>
-				<Save size={14} />
-				另存
-			</button>
+			<SideEditControl side="b" />
 		</div>
 	);
 }

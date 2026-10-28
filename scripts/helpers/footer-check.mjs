@@ -16,16 +16,23 @@ export async function footerGeometry(page) {
 	assert.equal(geometry.overflow, false);
 	const [left, center, right] = geometry.boxes;
 	assert.ok(left.right < center.x && center.right < right.x, 'Footer groups must remain separate.');
-	assert.ok(Math.abs(center.x + center.width / 2 - geometry.center) < 1, 'Result actions must stay centered on the full workspace.');
+	assert.ok(Math.abs(center.x + center.width / 2 - geometry.center) < 1, 'Result actions must stay centered on the comparison surface.');
 	assert.ok(left.x >= geometry.x && right.right <= geometry.right, 'Footer controls must fit the window.');
 	return geometry;
 }
 
 export async function exerciseFooter(page, output, name) {
 	await expect(page.locator('.editing-bar')).toHaveCount(0);
-	await expect(page.getByRole('button', { name: '当前差异采用 A', exact: true })).toBeDisabled();
-	await expect(page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true })).toBeDisabled();
-	await expect(page.getByRole('button', { name: '另存结果', exact: true })).toBeDisabled();
+	await expect(page.locator('.footer-result button')).toHaveCount(6);
+	assert.deepEqual(await page.locator('.footer-result button').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label'))), [
+		'编辑 A',
+		'Keep Both (A then B)',
+		'Copy A to B',
+		'Copy B to A',
+		'Keep Both (B then A)',
+		'编辑 B',
+	]);
+	await expect(page.getByRole('button', { name: 'Copy A to B', exact: true })).toBeEnabled();
 	await footerGeometry(page);
 	for (const label of ['长行自动换行', '折叠不变区域']) {
 		const toggle = page.getByRole('button', { name: label, exact: true });
@@ -56,19 +63,63 @@ export async function exerciseFooter(page, output, name) {
 	await page.setViewportSize({ width: 964, height: 564 });
 }
 
+export async function footerAction(page, side, action) {
+	await page.getByRole('button', { name: `编辑 ${side}`, exact: true }).click();
+	await expect(page.getByRole('dialog', { name: `${side} 编辑操作`, exact: true })).toBeVisible();
+	await page.getByRole('button', { name: `${action} ${side}`, exact: true }).click();
+	if (action !== '另存') {
+		await expect(page.getByRole('textbox', { name: `编辑 ${side} 副本`, exact: true })).toBeFocused();
+	}
+}
+
+async function draftContent(page, side) {
+	return page.evaluate(async (side) => {
+		const { workspaceStore } = await import('/src/state/workspace.ts');
+		const state = workspaceStore.getState();
+		return state.sessions.find((session) => session.id === state.activeId).drafts[side].content;
+	}, side);
+}
+
 export async function exerciseResultFooter(page, output, name) {
-	const editor = page.getByRole('textbox', { name: '编辑比较结果', exact: true });
-	const before = await editor.textContent();
-	await page.getByRole('button', { name: '当前差异采用 A', exact: true }).click();
-	await expect(editor).not.toHaveText(before);
-	await expect(page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true })).toBeEnabled();
-	await expect(page.locator('.footer-result-state')).toHaveText('未保存');
+	const a = page.locator('.cm-merge-a .cm-content');
+	const b = page.locator('.cm-merge-b .cm-content');
+	const originalA = await draftContent(page, 'a');
+	const originalB = await draftContent(page, 'b');
+	for (const [label, target] of [
+		['Copy A to B', 'B'],
+		['Keep Both (A then B)', 'B'],
+		['Copy B to A', 'A'],
+		['Keep Both (B then A)', 'A'],
+	]) {
+		await page.getByRole('button', { name: label, exact: true }).click();
+		await expect.poll(() => draftContent(page, target.toLowerCase())).not.toBe(target === 'A' ? originalA : originalB);
+		await expect(page.locator(`.footer-edit-button[data-side="${target.toLowerCase()}"]`)).toHaveAttribute('data-dirty', 'true');
+		await footerAction(page, target, '撤销');
+		await expect.poll(() => draftContent(page, 'a')).toBe(originalA);
+		await expect.poll(() => draftContent(page, 'b')).toBe(originalB);
+	}
+	await footerAction(page, 'B', '重做');
+	await expect.poll(() => draftContent(page, 'b')).not.toBe(originalB);
+	await a.focus();
+	await page.keyboard.press('Meta+End');
+	await page.keyboard.insertText('\nA 独立副本 🔎');
+	await expect(a).toContainText('A 独立副本');
+	const editedB = await draftContent(page, 'b');
+	await page.getByRole('button', { name: '统一布局 ⌘2', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Copy B to A', exact: true })).toBeDisabled();
+	await page.getByRole('button', { name: '编辑 A', exact: true }).click();
+	await expect(page.locator('.cm-editor')).toHaveCount(2);
+	await expect(a).toContainText('A 独立副本');
+	await footerAction(page, 'A', '撤销');
+	await expect.poll(() => draftContent(page, 'a')).toBe(originalA);
+	await expect.poll(() => draftContent(page, 'b')).toBe(editedB);
 	await page.screenshot({ path: join(output, `${name}-footer-editing-light.png`) });
-	await page.getByRole('button', { name: '撤销编辑 ⌘Z', exact: true }).click();
-	await expect(editor).toHaveText(before);
-	await expect(page.getByRole('button', { name: '重做编辑 ⌘⇧Z', exact: true })).toBeEnabled();
-	await page.getByRole('button', { name: '重做编辑 ⌘⇧Z', exact: true }).click();
-	await expect(editor).not.toHaveText(before);
+	await page.getByRole('button', { name: '编辑 B', exact: true }).click();
+	await expect(page.getByRole('button', { name: '撤销 B', exact: true })).toBeEnabled();
+	await expect(page.getByRole('button', { name: '重做 B', exact: true })).toBeDisabled();
+	await page.screenshot({ path: join(output, `${name}-footer-edit-menu.png`) });
+	await page.keyboard.press('Escape');
+	await expect(page.getByRole('button', { name: '编辑 B', exact: true })).toBeFocused();
 	await page.setViewportSize({ width: 880, height: 540 });
 	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
 	await footerGeometry(page);
@@ -81,12 +132,12 @@ export async function exerciseResultFooter(page, output, name) {
 	await page.evaluate(() => {
 		window.__savePath = `/tmp/${'result'.repeat(40)}.ts`;
 	});
-	await page.getByRole('button', { name: '另存结果', exact: true }).click();
-	await expect(page.locator('.save-notice')).toContainText('已保存');
-	await expect(page.locator('.footer-result-state')).toHaveText('已保存');
+	await footerAction(page, 'B', '另存');
+	await expect(page.locator('.save-notice')).toContainText('已保存 B');
+	await expect(page.locator('.footer-edit-button[data-side="b"]')).toHaveAttribute('data-dirty', 'false');
 	await footerGeometry(page);
 	const feedback = await page.locator('.save-notice').boundingBox();
-	assert.ok(feedback.x >= 0 && feedback.x + feedback.width <= 880, 'Long save names must fit above the footer.');
+	assert.ok(feedback.x >= 0 && feedback.x + feedback.width <= 690, 'Save feedback must fit the comparison surface.');
 	await page.screenshot({ path: join(output, `${name}-footer-save-long.png`) });
 	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
 	await page.setViewportSize({ width: 964, height: 564 });

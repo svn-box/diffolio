@@ -12,7 +12,7 @@ Compare local text files, folders and images in a compact desktop window. The in
 
 - **Text:** split and unified views, syntax highlighting, inline differences, change navigation, wrapping and unchanged-region folding.
 - **Search:** one shared search bar, A/B scope, match navigation, case sensitivity, whole words and regular expressions.
-- **Results:** create an editable copy from B, adopt a change from A, edit, undo/redo across layouts and save with the original BOM/newline convention. External changes to the destination are checked before saving.
+- **Results:** edit independent A/B copies, copy a change in either direction, keep both versions in either order, undo/redo across layouts and save each copy with its original BOM/newline convention. External changes to the destination are checked before saving.
 - **Folders:** compare actual file contents, filter names/differences, open paired files, follow progress and cancel scans.
 - **Images:** compare PNG, JPEG, WebP and GIF, with shared zoom/pan and a wipe slider for matching dimensions.
 - **Workspace:** tabs, recent comparisons, native file dialogs, Finder drag/drop, clipboard text, light/dark/system appearance and adjustable editor text size.
@@ -27,7 +27,7 @@ Compare local text files, folders and images in a compact desktop window. The in
 
 Download the Apple Silicon DMG from [GitHub Releases](https://github.com/svn-box/diffolio/releases/latest), open it and drag Diffolio to Applications. Moving from Electron 0.1.x or a local preview requires this installation once. Settings and recent comparisons use a separate data directory.
 
-Drop two files or folders into the window, add sources to A and B separately, or start with the built-in example. Original inputs open read-only. Choose **创建结果** to edit a result and **另存结果** to save it.
+Drop two files or folders into the window, add sources to A and B separately, or start with the built-in example. Original inputs open read-only. Click the A or B pencil to edit that copy; click it again for Undo, Redo and Save As. The middle arrows copy the current difference to the other side; the ellipses keep both versions in the order shown by their tooltips. Command-S saves the active side.
 
 Use ⌘N for a new comparison, ⌘O to open files, ⌘F to search, ⌘G / ⇧⌘G to navigate matches, ⌘1 / ⌘2 to switch layouts, and ⌘, for settings.
 

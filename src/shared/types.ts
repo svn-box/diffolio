@@ -2,6 +2,7 @@ import type { AppUpdateAction, AppUpdateState } from './app-updates';
 
 export type Appearance = 'system' | 'light' | 'dark';
 export type Layout = 'split' | 'unified';
+export type Side = 'a' | 'b';
 
 export interface Preferences {
 	appearance: Appearance;

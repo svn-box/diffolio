@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 2,
-	"generatedAt": "2026-10-27T17:58:53.101Z",
+	"generatedAt": "2026-10-28T03:05:25.935Z",
 	"title": "Design System: Diffolio",
 	"extensions": {
 		"shadows": [
@@ -54,7 +54,7 @@
 	],
 	"narrative": {
 		"northStar": "The Comparison Workbench",
-		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.\n\nText comparison uses one stable 36px footer: display options on the left, result actions centered on the full window and difference navigation on the right. Detailed counts and text formats live in Overview; save feedback sits above the row.",
+		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.\n\nText comparison uses one stable 36px footer: display options on the left, six symmetric block actions centered on the comparison area and difference navigation on the right. Detailed counts and text formats live in Overview; save feedback sits above the row.",
 		"keyCharacteristics": [
 			"Compact native window proportions and grouped toolbar controls.",
 			"Violet for interaction; green, red and blue for comparison meaning.",
@@ -92,7 +92,7 @@
 			},
 			{
 				"name": "The Single Footer Rule",
-				"body": "Keep display options, result actions and difference navigation in one stable row. Keep result actions centered on the full workspace and move detailed metadata into Overview.",
+				"body": "Keep display options, symmetric block actions and difference navigation in one stable row aligned to the comparison area. Keep per-side edit/save/history details in the corresponding pencil popover and comparison metadata in Overview.",
 				"section": "components"
 			}
 		],
@@ -118,7 +118,7 @@
 			"Don't restore a comparison rail, translucent welcome rail, violet navigation hover, competing empty-state action card or always-visible tabs.",
 			"Don't make the source body a replacement button or use a full-width Paste strip with shared or partial corners.",
 			"Don't add global wrapping/collapse switches, an identity footer or filler prose to Settings, or apply the welcome artwork to update history.",
-			"Don't add a second editing row, let save feedback displace controls, or show unimplemented block actions in the footer."
+			"Don't add a second editing row, let save feedback displace controls, or share one side's dirty/history state with the other."
 		]
 	}
 }

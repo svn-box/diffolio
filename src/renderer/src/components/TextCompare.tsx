@@ -22,7 +22,7 @@ export const TextCompare = forwardRef<TextCompareHandle, TextComparisonProps>(fu
 			current.destroy();
 			editor.current = null;
 		};
-	}, [props.id, props.layout, props.editing, props.preferences.fontSize, props.preferences.wrap, props.preferences.collapse, controller]);
+	}, [props.id, props.layout, props.editing.a, props.editing.b, props.preferences.fontSize, props.preferences.wrap, props.preferences.collapse, controller]);
 
 	return (
 		<div className="text-comparison-workspace">

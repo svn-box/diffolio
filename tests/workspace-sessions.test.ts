@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { emptyStats } from '@/editor/types';
 import { isDirty, sessionView } from '@/state/session';
 import { deferred, editingWorkspace, source, workspace } from './helpers/workspace';
 
@@ -27,7 +28,7 @@ describe('comparison sessions', () => {
 		await actions.acceptOpen({ files: [b] }, 'b');
 		await actions.acceptOpen({ files: [source('a.txt')] });
 		expect(sessionView(current()).paired).toBe(true);
-		expect(current().content).toBe('');
+		expect(current().drafts.b.content).toBe('');
 		const before = current();
 		await expect(actions.acceptOpen({ files: [{ ...source(), kind: 'image' }] }, 'a')).rejects.toThrow('相同类型');
 		expect(current()).toBe(before);
@@ -37,7 +38,7 @@ describe('comparison sessions', () => {
 		const { actions, current } = workspace();
 		await actions.acceptOpen({ files: [source(), source()] });
 		const original = current();
-		const stats = { total: 2, added: 1, deleted: 0, modified: 1, current: 2, canUndo: false, canRedo: false };
+		const stats = { ...emptyStats, total: 2, added: 1, deleted: 0, modified: 1, current: 2, canUndo: false, canRedo: false };
 		actions.updateStats(original.id, original.documentId, stats);
 		actions.addSession();
 		actions.activateSession(original.id);
@@ -48,7 +49,7 @@ describe('comparison sessions', () => {
 		actions.updateStats(original.id, original.documentId, stats);
 		actions.changeContent(original.id, original.documentId, 'stale');
 		expect(current().stats.total).toBe(0);
-		expect(current().content).not.toBe('stale');
+		expect(current().drafts.b.content).not.toBe('stale');
 	});
 
 	it('cancels a dirty close, then discards and returns to a valid empty home', async () => {
@@ -72,8 +73,8 @@ describe('comparison sessions', () => {
 		actions.changeContent(current().id, current().documentId, 'newer draft');
 		task.resolve({ path: '/tmp/result.ts' });
 		expect(await saving).toBe(true);
-		expect(current().savedContent).toBe('draft\n');
-		expect(current().content).toBe('newer draft');
+		expect(current().drafts.b.savedContent).toBe('draft\n');
+		expect(current().drafts.b.content).toBe('newer draft');
 		expect(isDirty(current())).toBe(true);
 	});
 
@@ -90,7 +91,7 @@ describe('comparison sessions', () => {
 		actions.changeContent(id, current().documentId, 'newer draft');
 		confirmation.resolve('discard');
 		await closing;
-		expect(current().content).toBe('newer draft');
+		expect(current().drafts.b.content).toBe('newer draft');
 	});
 
 	it('does not resurrect closed sessions when their pending saves finish', async () => {
