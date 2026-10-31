@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import packageInfo from '../package.json' with { type: 'json' };
 import { mockDesktop } from './helpers/mock-desktop.mjs';
 import { exerciseSettings, exerciseUpdates } from './helpers/settings-check.mjs';
+import { exerciseProperties } from './helpers/properties-check.mjs';
 import { exerciseFooter, exerciseResultFooter, footerGeometry, footerAction } from './helpers/footer-check.mjs';
 
 const output = resolve('work/visual');
@@ -32,6 +33,7 @@ const sources = Object.fromEntries(
 					bytes: bytes.length,
 					bom: false,
 					lineEnding: 'LF',
+					metadata: { modifiedAt: '2026-10-26T04:16:20.458Z', createdAt: '2026-10-25T04:16:20.458Z', permissions: '-rw-r--r--' },
 					...(image ? { imageUrl: `data:image/png;base64,${bytes.toString('base64')}` } : {}),
 				},
 			];
@@ -132,12 +134,21 @@ async function exercise(page, name, sendAction) {
 		await expect(page.getByRole('button', { name: '下一处差异', exact: true })).toBeDisabled();
 		await footerGeometry(page);
 		await page.screenshot({ path: join(output, `${name}-footer-identical.png`) });
+		await exerciseProperties(page, output, name, 'text');
+		await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
 	}
 	await sendAction('paths', [join(fixtureRoot, 'left/assets/preview.png'), join(fixtureRoot, 'right/assets/preview.png')]);
 	await expect(page.locator('.image-comparison')).toBeVisible();
+	if (name !== 'electron') {
+		await expect(page.locator('.file-properties')).toHaveCount(0);
+		await exerciseProperties(page, output, name, 'image');
+	}
 	await shot('image');
 	await sendAction('paths', [join(fixtureRoot, 'left'), join(fixtureRoot, 'right')]);
 	await expect(page.locator('.folder-comparison')).toBeVisible();
+	if (name !== 'electron') {
+		await exerciseProperties(page, output, name, 'folder');
+	}
 	await shot('folder');
 	assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
 	assert.deepEqual(errors, [], `${name}: unexpected renderer errors`);

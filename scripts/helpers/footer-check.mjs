@@ -56,7 +56,7 @@ export async function exerciseFooter(page, output, name) {
 	await expect(page.locator('.difference-count')).toContainText('1 /');
 	await page.setViewportSize({ width: 880, height: 540 });
 	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
-	await expect(page.locator('.inspector')).toBeVisible();
+	await expect(page.getByRole('dialog', { name: '文件属性', exact: true })).toBeVisible();
 	await footerGeometry(page);
 	await page.screenshot({ path: join(output, `${name}-footer-minimum-readonly.png`) });
 	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
@@ -129,6 +129,7 @@ export async function exerciseResultFooter(page, output, name) {
 	await page.screenshot({ path: join(output, `${name}-footer-minimum-dark.png`) });
 	await page.evaluate(() => window.diffolio.preferences({ appearance: 'light' }));
 	await expect(page.locator('html')).toHaveAttribute('data-appearance', 'light');
+	await page.keyboard.press('Escape');
 	await page.evaluate(() => {
 		window.__savePath = `/tmp/${'result'.repeat(40)}.ts`;
 	});
@@ -137,8 +138,8 @@ export async function exerciseResultFooter(page, output, name) {
 	await expect(page.locator('.footer-edit-button[data-side="b"]')).toHaveAttribute('data-dirty', 'false');
 	await footerGeometry(page);
 	const feedback = await page.locator('.save-notice').boundingBox();
-	assert.ok(feedback.x >= 0 && feedback.x + feedback.width <= 690, 'Save feedback must fit the comparison surface.');
+	const surface = await page.locator('.content-main').boundingBox();
+	assert.ok(feedback.x >= surface.x && feedback.x + feedback.width <= surface.x + surface.width, 'Save feedback must fit the comparison surface.');
 	await page.screenshot({ path: join(output, `${name}-footer-save-long.png`) });
-	await page.getByRole('button', { name: '显示文件信息', exact: true }).click();
 	await page.setViewportSize({ width: 964, height: 564 });
 }

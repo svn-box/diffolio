@@ -1,23 +1,31 @@
-import { ArrowLeft, Columns2, LayoutList, Info, Settings2, Plus } from 'lucide-react';
+import { ArrowLeft, Columns2, LayoutList, Settings2, Plus } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useWorkspace, workspaceStore } from '@/state/workspace';
 import { activeSession } from '@/state/workspace-state';
 import { sessionTitle, sessionView } from '@/state/session';
 import { IconButton } from '@/components/Primitives';
 import { AppUpdateControl } from '@/components/AppUpdateControl';
+import { FileProperties } from '@/components/FileProperties';
 
 export function Titlebar() {
-	const { ready, paired, previewing, kind, title, folder, example, layout, total } = useWorkspace(
+	const { ready, paired, previewing, kind, title, folder, example, layout, total, documentId } = useWorkspace(
 		useShallow((state) => {
 			const session = activeSession(state);
-			return { ...sessionView(session), title: sessionTitle(session), folder: session.folder, example: session.example, layout: session.layout, total: session.stats.total };
+			return {
+				...sessionView(session),
+				title: sessionTitle(session),
+				folder: session.folder,
+				example: session.example,
+				layout: session.layout,
+				total: session.stats.total,
+				documentId: session.documentId,
+			};
 		}),
 	);
 	const home = useWorkspace((state) => state.home);
 	const homePage = useWorkspace((state) => state.homePage);
-	const inspector = useWorkspace((state) => state.inspector);
 	const busy = useWorkspace((state) => !!state.busy);
-	const { showHome, setLayout, toggleInspector, openSettings, addSession } = workspaceStore.getState();
+	const { showHome, setLayout, openSettings, addSession } = workspaceStore.getState();
 	return (
 		<header className="titlebar">
 			{!home && (
@@ -54,11 +62,7 @@ export function Titlebar() {
 							</IconButton>
 						</div>
 					)}
-					{ready && (
-						<IconButton label="显示文件信息" active={inspector} onClick={toggleInspector}>
-							<Info size={18} />
-						</IconButton>
-					)}
+					{ready && <FileProperties key={documentId} />}
 					<IconButton label="设置 ⌘," onClick={openSettings}>
 						<Settings2 size={17} />
 					</IconButton>

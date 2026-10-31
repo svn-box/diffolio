@@ -11,6 +11,12 @@ export interface Preferences {
 	collapse: boolean;
 }
 
+export interface FileMetadata {
+	modifiedAt?: string | null;
+	createdAt?: string | null;
+	permissions?: string | null;
+}
+
 export interface SourceFile {
 	id: string;
 	name: string;
@@ -22,6 +28,7 @@ export interface SourceFile {
 	lineEnding: 'LF' | 'CRLF' | 'CR';
 	hash?: string;
 	imageUrl?: string;
+	metadata?: FileMetadata;
 }
 
 export interface FolderEntry {
@@ -40,6 +47,8 @@ export interface FolderComparison {
 	left: string;
 	right: string;
 	entries: FolderEntry[];
+	leftMetadata?: FileMetadata;
+	rightMetadata?: FileMetadata;
 }
 
 export interface OpenResult {

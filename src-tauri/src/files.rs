@@ -66,6 +66,7 @@ pub fn text_source(name: &str, content: String) -> Result<SourceFile, String> {
         line_ending: "LF".into(),
         hash: None,
         image_url: None,
+        metadata: None,
     })
 }
 
@@ -107,6 +108,7 @@ pub fn read_source(path: &Path) -> Result<SourceFile, String> {
     source.path = Some(path_string(path)?);
     source.bytes = bytes.len();
     source.hash = Some(hash(&bytes));
+    source.metadata = Some(crate::file_metadata::from_metadata(&info));
     if let Some(mime) = mime {
         source.kind = "image".into();
         source.image_url = Some(format!("data:{mime};base64,{}", STANDARD.encode(&bytes)));

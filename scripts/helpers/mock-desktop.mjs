@@ -6,6 +6,7 @@ export function mockDesktop({ sources, defaults, fixtureRoot, version }) {
 	let recents = [];
 	let updateState = { phase: 'idle', currentVersion: version, revision: 0 };
 	window.__updateActions = [];
+	window.__revealedPaths = [];
 	window.__setUpdateState = (state) => {
 		updateState = { currentVersion: version, revision: updateState.revision + 1, ...state };
 		updateListeners.forEach((listener) => listener(updateState));
@@ -63,7 +64,9 @@ export function mockDesktop({ sources, defaults, fixtureRoot, version }) {
 		dirty: () => {},
 		close: () => {},
 		cancel: () => {},
-		reveal: async () => {},
+		reveal: async (path) => {
+			window.__revealedPaths.push(path);
+		},
 		filePath: () => '',
 		onAction: (callback) => {
 			action.add(callback);

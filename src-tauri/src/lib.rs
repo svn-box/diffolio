@@ -1,5 +1,6 @@
 mod commands;
 mod dialogs;
+mod file_metadata;
 mod files;
 mod folders;
 mod menu;

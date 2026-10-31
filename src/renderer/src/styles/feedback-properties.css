@@ -1,0 +1,141 @@
+.message {
+	min-height: 36px;
+	padding: 6px 14px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: var(--diff-deleted);
+	color: var(--danger);
+	font-size: 11px;
+	border-bottom: 1px solid var(--border);
+}
+.message > span {
+	flex: 1;
+	user-select: text;
+}
+.message .icon-button {
+	color: inherit;
+}
+.message.loading {
+	background: var(--accent-soft);
+	color: var(--accent);
+}
+.drop-overlay {
+	position: absolute;
+	inset: 72px 12px 12px;
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+	color: var(--accent);
+	background: color-mix(in srgb, var(--bg) 96%, transparent);
+	border: 2px dashed var(--accent);
+	border-radius: 12px;
+	pointer-events: none;
+}
+.drop-overlay strong {
+	font-size: 22px;
+	font-weight: 500;
+}
+.drop-overlay > span {
+	color: var(--text-muted);
+}
+.file-properties {
+	--property-surface: color-mix(in srgb, var(--raised) 95%, transparent);
+	display: flex;
+	flex-direction: column;
+	width: min(500px, calc(100vw - 24px));
+	max-height: var(--radix-popover-content-available-height);
+	padding: 0 12px 10px;
+	border-radius: 12px;
+	background: var(--property-surface);
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	z-index: 35;
+	font-size: 12px;
+}
+.file-properties-arrow {
+	fill: var(--property-surface);
+	filter: drop-shadow(0 -1px 0 var(--border));
+}
+.file-properties h2 {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	margin: 0;
+	font-size: 12px;
+	font-weight: 600;
+}
+.property-table-scroll {
+	min-height: 0;
+	overflow: auto;
+}
+.file-properties table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	font-variant-numeric: tabular-nums;
+}
+.property-label-column {
+	width: 72px;
+}
+.file-properties th,
+.file-properties td {
+	height: 26px;
+	padding: 4px 8px;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.file-properties thead th {
+	border-bottom: 1px solid var(--border);
+}
+.file-properties tbody tr {
+	border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+}
+.file-properties tbody th {
+	color: var(--text-muted);
+	font-size: 11px;
+	font-weight: 500;
+	text-align: right;
+}
+.file-properties .property-different {
+	color: var(--modified);
+}
+.property-mono td {
+	font-family: var(--font-mono);
+	font-size: 11px;
+}
+.property-actions {
+	display: grid;
+	grid-template-columns: 72px minmax(0, 1fr) minmax(0, 1fr);
+	flex-shrink: 0;
+	padding-top: 5px;
+}
+.property-actions .text-button {
+	justify-self: start;
+	height: 28px;
+	padding: 0 8px;
+	gap: 4px;
+	font-size: 11px;
+}
+.property-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+@media (prefers-reduced-transparency: reduce) {
+	.file-properties {
+		background: var(--raised);
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+}

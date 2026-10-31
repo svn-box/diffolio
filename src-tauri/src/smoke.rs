@@ -146,6 +146,9 @@ pub async fn smoke_snapshot(window: tauri::WebviewWindow, name: String) -> Resul
         "footer-editing-light",
         "footer-minimum-editing",
         "footer-saved",
+        "properties-text",
+        "properties-folder",
+        "properties-image",
     ]
     .contains(&name.as_str())
     {

@@ -10,7 +10,6 @@ export interface WorkspaceState {
 	recents: RecentComparison[];
 	home: boolean;
 	homePage: 'recents' | 'updates';
-	inspector: boolean;
 	error: string;
 	notice: string;
 	busy: { id: string; label: string; count?: number } | null;
@@ -40,7 +39,6 @@ export interface WorkspaceState {
 	openFolderEntry(entry: FolderEntry): Promise<void>;
 	cancelTask(): void;
 	updateProgress(taskId: string, count: number): void;
-	toggleInspector(): void;
 	clearError(): void;
 	clearNotice(): void;
 	fail(reason: unknown): void;

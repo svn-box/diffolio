@@ -27,11 +27,6 @@
 	.path-size {
 		display: none;
 	}
-	.inspector {
-		width: 190px;
-		min-width: 190px;
-		padding: 18px 13px;
-	}
 }
 @media (prefers-reduced-motion: reduce) {
 	*,

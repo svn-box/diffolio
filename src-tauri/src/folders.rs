@@ -179,5 +179,9 @@ pub fn compare_folders(
         left: path_string(left)?,
         right: path_string(right)?,
         entries: scanner.entries,
+        left_metadata: crate::file_metadata::from_metadata(&fs::metadata(left).map_err(io_error)?),
+        right_metadata: crate::file_metadata::from_metadata(
+            &fs::metadata(right).map_err(io_error)?,
+        ),
     })
 }

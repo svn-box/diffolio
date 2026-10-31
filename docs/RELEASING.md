@@ -37,6 +37,10 @@ Update `package.json`, both root versions in `package-lock.json`, `src-tauri/Car
 
 Run formatting, unit/Rust tests, clippy, notices and native embedded-frontend verification before committing. Use `npm run test:native:release` for native checks. The `native-smoke` feature is excluded from the final application, which is rebuilt normally after the native test.
 
+CI prepares icons and checks third-party notices once in the source-check step, then invokes `node scripts/release-macos.mjs` directly. Standalone `npm run release:mac` and preview/package commands retain their preparation, so they can still run independently. Signing, notarization and final installer validation remain per-release steps.
+
+Icon generation keeps a local `.cache/icons` snapshot keyed by the native icon document, build scripts, Node/pngjs versions, architecture, Xcode/SDK and macOS build. Every restored output is hash-checked before use; missing or corrupt files trigger regeneration. Version-only changes reuse the cache. Logs report `Icons: built.` or `Icons: cached.`; `npm run icons:build -- --force` regenerates it. A clean CI checkout builds once; no cross-tag GitHub cache is assumed.
+
 Push the main commit and its annotated `vVERSION` tag. The workflow builds a signed app and DMG, notarizes/staples them, signs the final updater archive with `--app-version`, and verifies the extracted archive and mounted DMG. It checks the architecture, bundle identity, version, native icon assets, legal notices, code signatures, notarization tickets, Gatekeeper and updater signature. It then uploads a draft, verifies every uploaded asset's SHA-256/size, rechecks the tag commit and publishes it as the latest release.
 
 Release assets: the DMG, `.app.tar.gz`, `.app.tar.gz.sig`, `latest.json`, `SHA256SUMS`, `release-manifest.json` and release notes. The static feed has a `darwin-aarch64` platform entry and a version-specific GitHub download URL.

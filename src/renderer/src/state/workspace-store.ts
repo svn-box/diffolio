@@ -17,7 +17,6 @@ export function createWorkspaceStore(api: DiffolioApi) {
 			recents: [],
 			home: true,
 			homePage: 'recents',
-			inspector: false,
 			error: '',
 			notice: '',
 			busy: null,
@@ -31,10 +30,6 @@ export function createWorkspaceStore(api: DiffolioApi) {
 
 			showUpdates() {
 				set({ home: true, homePage: 'updates', error: '' });
-			},
-
-			toggleInspector() {
-				set((state) => ({ inspector: !state.inspector }));
 			},
 
 			clearError() {

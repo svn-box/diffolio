@@ -5,13 +5,11 @@ import { Pathbar } from '@/components/Pathbar';
 import { FolderCompare } from '@/components/FolderCompare';
 import { ImageCompare } from '@/components/ImageCompare';
 import { TextCompare } from '@/components/TextCompare';
-import { Inspector } from '@/components/Inspector';
 import { Statusbar } from '@/components/Statusbar';
 
 export function ComparisonWorkspace() {
 	const session = useActiveSession();
 	const preferences = useWorkspace((state) => state.preferences);
-	const inspector = useWorkspace((state) => state.inspector);
 	const { compare, snapshots } = useEditorRuntime();
 	const { startEditing, changeContent, updateStats, openFolderEntry } = workspaceStore.getState();
 	const { kind } = sessionView(session);
@@ -45,7 +43,6 @@ export function ComparisonWorkspace() {
 					</div>
 					<Statusbar />
 				</div>
-				{inspector && <Inspector />}
 			</div>
 		</>
 	);

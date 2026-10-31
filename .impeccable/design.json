@@ -54,7 +54,7 @@
 	],
 	"narrative": {
 		"northStar": "The Comparison Workbench",
-		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.\n\nText comparison uses one stable 36px footer: display options on the left, six symmetric block actions centered on the comparison area and difference navigation on the right. Detailed counts and text formats live in Overview; save feedback sits above the row.",
+		"overview": "Diffolio is a compact macOS comparison workbench: graphite or warm light surfaces, violet controls, and continuous document panes. Kaleidoscope informs the comparison grammar and color approach; the implemented icons, geometric artwork and Diffolio mark are original. System UI type and restrained controls keep long file names, paths and changes readable.\n\nThe welcome screen is deliberately dark and colorful, independent of workspace appearance. Its opaque graphite navigation rail sits beside a continuous teal-to-violet-to-red stage and genuine recent comparisons. New comparison and supplied-source previews use a neutral full-width task canvas; the comparison workspace follows system, light or dark appearance and gives the documents the window. Returning to recents and continuing preserves result edits and undo history.\n\nSettings is a separate compact native window with top General/Text icon tabs and aligned form rows. Update history is a dark welcome page without the welcome artwork, with manual update controls in its titlebar. Both retain the established palette and system typography.\n\nText comparison uses one stable 36px footer: display options on the left, six symmetric block actions centered on the comparison area and difference navigation on the right. Detailed counts and text formats live in Overview; save feedback sits above the row.\n\nFile information floats below the toolbar Info button as a compact A/B property table. It never consumes document width; original source attributes remain independent of editable copies.",
 		"keyCharacteristics": [
 			"Compact native window proportions and grouped toolbar controls.",
 			"Violet for interaction; green, red and blue for comparison meaning.",
@@ -93,6 +93,11 @@
 			{
 				"name": "The Single Footer Rule",
 				"body": "Keep display options, symmetric block actions and difference navigation in one stable row aligned to the comparison area. Keep per-side edit/save/history details in the corresponding pencil popover and comparison metadata in Overview.",
+				"section": "components"
+			},
+			{
+				"name": "The File Properties Rule",
+				"body": "Use a 500px end-aligned Info popover with a 32px title, 72px label column, equal A/B columns and 26px rows. Show real original-input metadata, dashes for unavailable values and per-side Finder actions. Keep documents and footer full-width; support Escape/focus return, outside dismissal and close on navigation.",
 				"section": "components"
 			}
 		],

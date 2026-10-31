@@ -93,8 +93,14 @@
 		await snapshot('footer-editing-light');
 		await invoke('smoke_action', { action: 'minimum-window' });
 		await until(() => innerWidth === 880, 'minimum width');
+		const comparisonWidth = document.querySelector('.content-main').getBoundingClientRect().width;
 		await click('显示文件信息');
-		assert(footerLayout(), 'Minimum-size footer remains centered with the inspector open');
+		await until(() => document.querySelector('.file-properties table'), 'file properties');
+		assert(
+			footerLayout() && document.querySelector('.content-main').getBoundingClientRect().width === comparisonWidth,
+			'File properties preserve the full-width comparison and centered footer',
+		);
+		assert(document.querySelector('.file-properties').textContent.includes('—'), 'Demo inputs do not invent filesystem metadata');
 		await snapshot('footer-minimum-editing');
 		await click('显示文件信息');
 		await invoke('smoke_action', { action: 'restore-window' });
@@ -142,6 +148,20 @@
 		const base = window.__DIFFOLIO_SMOKE__.root + '/../fixtures/reference';
 		const result = await window.diffolio.readPaths([base + '/text/before.ts', base + '/text/after.ts']);
 		assert(result.files.length === 2 && result.files.every((source) => source.kind === 'text'), 'Native IPC reads actual text fixtures');
+		assert(
+			result.files.every((source) => source.metadata.modifiedAt && source.metadata.createdAt && source.metadata.permissions.startsWith('-')),
+			'Native IPC returns real file times and permissions',
+		);
+		await invoke('smoke_action', { action: 'paths', paths: [base + '/text/before.ts', base + '/text/after.ts'] });
+		await until(
+			() => document.querySelector('.window-heading strong')?.textContent === 'before.ts ↔ after.ts' && !document.querySelector('.message.loading'),
+			'loaded text pair',
+		);
+		await click('显示文件信息');
+		await until(() => document.querySelector('.file-properties td')?.textContent === 'before.ts', 'real text properties');
+		assert(document.querySelector('.file-properties').textContent.includes('UTF-8'), 'Text property table includes original encoding and line endings');
+		await snapshot('properties-text');
+		await click('显示文件信息');
 		await invoke('smoke_action', { action: 'paths', paths: [base + '/text/before.ts', base + '/text/before.ts'] });
 		await until(() => document.querySelector('.difference-count')?.textContent === '内容相同', 'identical comparison');
 		assert(
@@ -181,9 +201,25 @@
 		await invoke('smoke_action', { action: 'paths', paths: [base + '/left', base + '/right'] });
 		await until(() => document.querySelector('.folder-comparison'), 'native folder workspace');
 		await snapshot('folder');
+		await click('显示文件信息');
+		await until(() => document.querySelector('.file-properties'), 'folder properties');
+		assert(
+			document.querySelector('.file-properties').textContent.includes('项目数') && !document.querySelector('.file-properties').textContent.includes('UTF-8'),
+			'Folder properties show counts without text-only fields',
+		);
+		await snapshot('properties-folder');
 		await invoke('smoke_action', { action: 'paths', paths: [base + '/left/assets/preview.png', base + '/right/assets/preview.png'] });
 		await until(() => document.querySelector('.image-comparison'), 'native image workspace');
 		await snapshot('image');
+		assert(!document.querySelector('.file-properties'), 'Changing comparisons dismisses the old property popover');
+		await click('显示文件信息');
+		await until(() => document.querySelector('.file-properties'), 'image properties');
+		assert(
+			document.querySelector('.file-properties').textContent.includes('PNG 图片') && !document.querySelector('.file-properties').textContent.includes('UTF-8'),
+			'Image properties show actual image types',
+		);
+		await snapshot('properties-image');
+		await click('显示文件信息');
 		await click('新建比较 ⌘N');
 		await until(() => document.querySelector('[data-side="a"]'), 'native drop targets');
 		for (const [side, path] of [

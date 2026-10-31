@@ -57,6 +57,14 @@ impl PreferencePatch {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct FileMetadata {
+    pub modified_at: Option<String>,
+    pub created_at: Option<String>,
+    pub permissions: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct SourceFile {
     pub id: String,
     pub name: String,
@@ -71,6 +79,8 @@ pub struct SourceFile {
     pub hash: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<FileMetadata>,
 }
 
 impl SourceFile {
@@ -86,6 +96,7 @@ impl SourceFile {
             line_ending: self.line_ending.clone(),
             hash: self.hash.clone(),
             image_url: None,
+            metadata: self.metadata.clone(),
         }
     }
 }
@@ -109,11 +120,14 @@ pub struct FolderEntry {
 }
 
 #[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct FolderComparison {
     pub id: String,
     pub left: String,
     pub right: String,
     pub entries: Vec<FolderEntry>,
+    pub left_metadata: FileMetadata,
+    pub right_metadata: FileMetadata,
 }
 
 #[derive(Clone, Debug, Serialize)]

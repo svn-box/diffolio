@@ -98,6 +98,37 @@ fn large_inputs_and_invalid_formats_are_rejected() {
 }
 
 #[test]
+#[cfg(unix)]
+fn input_properties_serialize_real_metadata_and_survive_source_snapshots() {
+    use std::os::unix::fs::PermissionsExt;
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("source.txt");
+    fs::write(&path, "original").unwrap();
+    fs::set_permissions(&path, fs::Permissions::from_mode(0o640)).unwrap();
+    let source = read_source(&path).unwrap();
+    let json = serde_json::to_value(&source).unwrap();
+    assert_eq!(json["metadata"]["permissions"], "-rw-r-----");
+    let modified = json["metadata"]["modifiedAt"].as_str().unwrap();
+    assert!(chrono::DateTime::parse_from_rfc3339(modified).is_ok());
+    assert_eq!(
+        serde_json::to_value(source.snapshot()).unwrap()["metadata"],
+        json["metadata"]
+    );
+    assert!(text_source("clipboard", String::new())
+        .unwrap()
+        .metadata
+        .is_none());
+    let folders =
+        compare_folders(root.path(), root.path(), &AtomicBool::new(false), &|_| {}).unwrap();
+    let json = serde_json::to_value(folders).unwrap();
+    assert!(json["leftMetadata"]["permissions"]
+        .as_str()
+        .unwrap()
+        .starts_with('d'));
+    assert_eq!(json["leftMetadata"], json["rightMetadata"]);
+}
+
+#[test]
 fn atomic_save_handles_new_and_existing_files_without_temporary_residue() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("result.txt");
