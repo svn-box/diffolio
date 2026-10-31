@@ -412,6 +412,8 @@ The hierarchy is compact and functional. There is no separate decorative display
 
 The main Tauri window retains the Electron baseline of 964 × 564px and permits resizing down to 880 × 540px. The titlebar leaves room for actual macOS traffic lights; it is draggable while its controls are not. The app fills the window and scrolls within content regions instead of scrolling the outer document.
 
+Native traffic-light centers align vertically with each window's title region: 26px below the main window top and 18px below the Settings window top. Tauri insets are (18, 28) and (16, 20), respectively. These values adjust the AppKit container rather than setting a button's CSS top. Validate actual native button frames after layout, resizing and appearance changes; WebKit content screenshots do not include these controls.
+
 | Region                         | Implemented size / behavior                                                                             |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------- |
 | Title toolbar                  | 52px high; return, document identity, view controls, information/settings and new comparison            |

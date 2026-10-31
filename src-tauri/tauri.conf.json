@@ -24,7 +24,7 @@
 				"hiddenTitle": true,
 				"trafficLightPosition": {
 					"x": 18,
-					"y": 18
+					"y": 28
 				},
 				"backgroundColor": "#faf9f7",
 				"windowEffects": {
@@ -47,7 +47,7 @@
 				"hiddenTitle": true,
 				"trafficLightPosition": {
 					"x": 16,
-					"y": 14
+					"y": 20
 				},
 				"backgroundColor": "#eeedeb"
 			}

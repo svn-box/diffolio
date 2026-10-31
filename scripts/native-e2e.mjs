@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
 
-const output = resolve('work/native');
+const controls = process.argv.includes('--controls');
+const output = resolve(controls ? 'work/native-controls' : 'work/native');
 await mkdir(output, { recursive: true });
 await rm(join(output, 'report.json'), { force: true });
 await rm(join(output, 'settings-report.json'), { force: true });
@@ -30,7 +31,7 @@ try {
 	]);
 	try {
 		await run(resolve(`src-tauri/target/${release ? 'release' : 'debug'}/diffolio-app`), [], {
-			env: { ...process.env, DIFFOLIO_DATA_DIR: data, DIFFOLIO_SMOKE_OUTPUT: output },
+			env: { ...process.env, DIFFOLIO_DATA_DIR: data, DIFFOLIO_SMOKE_OUTPUT: output, ...(controls ? { DIFFOLIO_SMOKE_CONTROLS: '1' } : {}) },
 			timeout: 90000,
 		});
 	} catch (error) {
@@ -41,9 +42,11 @@ try {
 	}
 	const report = JSON.parse(await readFile(join(output, 'report.json'), 'utf8'));
 	assert.equal(report.success, true, report.error);
-	const saved = await readFile(join(output, 'saved-result.ts'), 'utf8');
-	assert.ok(saved.length > 0);
-	console.log(`PASS: ${report.checks.length} native WebKit / Rust checks. Screenshots: ${output}`);
+	if (!controls) {
+		const saved = await readFile(join(output, 'saved-result.ts'), 'utf8');
+		assert.ok(saved.length > 0);
+	}
+	console.log(`PASS: ${report.checks.length} native ${controls ? 'window-control geometry checks. Report' : 'WebKit / Rust checks. Screenshots'}: ${output}`);
 } finally {
 	await rm(data, { recursive: true, force: true });
 }

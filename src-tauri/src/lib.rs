@@ -13,6 +13,8 @@ mod windows;
 mod preferences_tests;
 #[cfg(feature = "native-smoke")]
 mod smoke;
+#[cfg(feature = "native-smoke")]
+mod smoke_controls;
 #[cfg(test)]
 mod tests;
 
@@ -89,6 +91,8 @@ pub fn run() {
             smoke::smoke_action,
             #[cfg(feature = "native-smoke")]
             smoke::smoke_settings_report,
+            #[cfg(feature = "native-smoke")]
+            smoke_controls::smoke_window_controls,
         ])
         .build(tauri::generate_context!())
         .expect("Diffolio 无法启动");

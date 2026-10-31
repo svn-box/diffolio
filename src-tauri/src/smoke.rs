@@ -72,6 +72,9 @@ static STARTED: AtomicBool = AtomicBool::new(false);
 static SETTINGS_STARTED: AtomicBool = AtomicBool::new(false);
 
 pub fn start_settings(app: &AppHandle) {
+    if std::env::var_os("DIFFOLIO_SMOKE_CONTROLS").is_some() {
+        return;
+    }
     if std::env::var_os("DIFFOLIO_SMOKE_OUTPUT").is_none()
         || SETTINGS_STARTED.swap(true, Ordering::SeqCst)
     {
@@ -98,10 +101,12 @@ pub fn start(app: &AppHandle) {
         return;
     }
     let config = serde_json::json!({ "root": env!("CARGO_MANIFEST_DIR"), "output": std::env::var("DIFFOLIO_SMOKE_OUTPUT").unwrap() });
-    let script = format!(
-        "window.__DIFFOLIO_SMOKE__ = {config};\n{}",
+    let checks = if std::env::var_os("DIFFOLIO_SMOKE_CONTROLS").is_some() {
+        include_str!("../../scripts/native-controls-smoke.js")
+    } else {
         include_str!("../../scripts/native-smoke.js")
-    );
+    };
+    let script = format!("window.__DIFFOLIO_SMOKE__ = {config};\n{}", checks);
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.eval(script);
     }
